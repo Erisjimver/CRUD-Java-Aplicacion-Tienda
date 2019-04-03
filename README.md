@@ -1,8 +1,9 @@
 # javadesk
 Desktop application Developed in the NetBeans IDE, java language
-
+Base de Datos Utilizada: Oracle DataBase 11g Express Edition .
 The process to follow for the execution of the application is:
--Create a new palette called Calendar. with its respective bookstore. version used in the project: jcalendar-1.4.
+ 
+-Create a new palette called Calendar. with its respective bookstore. version used in the project: jcalendar-1.4.. 
 -Create the JasperReport library.
 -Install the necessary plugins for the iReport reports listed below:
            * iReport-5.5.0
