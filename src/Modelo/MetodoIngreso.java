@@ -1,8 +1,7 @@
 package Modelo;
 
-import Modelo.Conexion;
 import Auxiliares.SettersAndGetters;
-import static PackAdmin.EntornoAdmin.LabelEstado;
+import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.HeadlessException;
 import java.sql.CallableStatement;
 import java.sql.Connection;

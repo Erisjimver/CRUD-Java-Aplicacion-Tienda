@@ -1,7 +1,5 @@
-package PackVendedor;
+package Vista;
 
-import Ejecutora.Login;
-import PackAdmin.Facturas;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -19,7 +17,7 @@ this.setSize(1195,575);
 @Override
 public void paint(Graphics grafico) {
 Dimension height = getSize(); 
-ImageIcon Img = new ImageIcon(getClass().getResource("/Imagenes/2. VendedorFondo.jpg"));  
+ImageIcon Img = new ImageIcon(getClass().getResource("/Vista/Imagenes/2. VendedorFondo.jpg"));  
 grafico.drawImage(Img.getImage(), 0, 0, height.width, height.height,null);
 setOpaque(false);
 super.paintComponent(grafico);
@@ -34,7 +32,7 @@ super.paintComponent(grafico);
         PanelPrincipal.add(Imagen,BorderLayout.CENTER);
         PanelPrincipal.revalidate();
         PanelPrincipal.repaint();
-        setIconImage(new ImageIcon(getClass().getResource("/Imagenes/Icono.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("/Vista/Imagenes/Icono.png")).getImage());
     }
 
     @SuppressWarnings("unchecked")
@@ -119,10 +117,10 @@ super.paintComponent(grafico);
 
         jMenuBar1.setBackground(new java.awt.Color(204, 204, 204));
 
-        jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Inicio.png"))); // NOI18N
+        jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Inicio.png"))); // NOI18N
         jMenu1.setText("Inicio");
 
-        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. principal.png"))); // NOI18N
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. principal.png"))); // NOI18N
         jMenuItem3.setText("Principal");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -131,7 +129,7 @@ super.paintComponent(grafico);
         });
         jMenu1.add(jMenuItem3);
 
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. cerrar sesion.png"))); // NOI18N
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. cerrar sesion.png"))); // NOI18N
         jMenuItem1.setText("Cerrar Sesion");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -140,7 +138,7 @@ super.paintComponent(grafico);
         });
         jMenu1.add(jMenuItem1);
 
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. cancelar.png"))); // NOI18N
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. cancelar.png"))); // NOI18N
         jMenuItem2.setText("Salir");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -151,11 +149,11 @@ super.paintComponent(grafico);
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Carro.png"))); // NOI18N
+        jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Carro.png"))); // NOI18N
         jMenu2.setText("Vender");
 
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. carro-de-la-compra.png"))); // NOI18N
+        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. carro-de-la-compra.png"))); // NOI18N
         jMenuItem4.setText("Vender Articulos");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -166,11 +164,11 @@ super.paintComponent(grafico);
 
         jMenuBar1.add(jMenu2);
 
-        jMenu4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Inventario.png"))); // NOI18N
+        jMenu4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Inventario.png"))); // NOI18N
         jMenu4.setText("Inventario");
 
         jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
-        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. etiqueta-del-precio.png"))); // NOI18N
+        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. etiqueta-del-precio.png"))); // NOI18N
         jMenuItem5.setText("Buscar Productos");
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -181,14 +179,14 @@ super.paintComponent(grafico);
 
         jMenuBar1.add(jMenu4);
 
-        jMenu5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Search.png"))); // NOI18N
+        jMenu5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Search.png"))); // NOI18N
         jMenu5.setText("Consultas");
 
-        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. efectivo.png"))); // NOI18N
+        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. efectivo.png"))); // NOI18N
         jMenuItem6.setText("Consultar Caja");
         jMenu5.add(jMenuItem6);
 
-        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. facturas.png"))); // NOI18N
+        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. facturas.png"))); // NOI18N
         jMenuItem7.setText("Consultar Facturas");
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -197,7 +195,7 @@ super.paintComponent(grafico);
         });
         jMenu5.add(jMenuItem7);
 
-        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. cerrar sesion.png"))); // NOI18N
+        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. cerrar sesion.png"))); // NOI18N
         jMenuItem8.setText("Consultar Cientes");
         jMenu5.add(jMenuItem8);
 

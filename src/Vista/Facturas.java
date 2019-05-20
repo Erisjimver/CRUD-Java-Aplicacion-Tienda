@@ -1,6 +1,6 @@
-package PackAdmin;
+package Vista;
 import Modelo.Conexion;
-import static PackAdmin.EntornoAdmin.LabelEstado;
+import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.*;

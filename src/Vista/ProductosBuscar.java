@@ -1,8 +1,8 @@
-package PackVendedor;
+package Vista;
 import Modelo.Conexion;
 import Modelo.Consultas;
-import static PackAdmin.EntornoAdmin.LabelEstado;
-import static PackVendedor.BuscarProFactura.r;
+import static Vista.EntornoAdmin.LabelEstado;
+import static Vista.BuscarProFactura.r;
 import java.sql.*;
 import javax.swing.table.DefaultTableModel;
 

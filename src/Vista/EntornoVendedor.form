@@ -12,7 +12,7 @@
         <Menu class="javax.swing.JMenu" name="jMenu1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/#Inicio.png"/>
+              <Image iconType="3" name="/Vista/Imagenes/#Inicio.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Inicio"/>
           </Properties>
@@ -20,7 +20,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Imagenes/1. principal.png"/>
+                  <Image iconType="3" name="/Vista/Imagenes/1. principal.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Principal"/>
               </Properties>
@@ -31,7 +31,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Imagenes/1. cerrar sesion.png"/>
+                  <Image iconType="3" name="/Vista/Imagenes/1. cerrar sesion.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Cerrar Sesion"/>
               </Properties>
@@ -42,7 +42,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Imagenes/1. cancelar.png"/>
+                  <Image iconType="3" name="/Vista/Imagenes/1. cancelar.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Salir"/>
               </Properties>
@@ -55,7 +55,7 @@
         <Menu class="javax.swing.JMenu" name="jMenu2">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/#Carro.png"/>
+              <Image iconType="3" name="/Vista/Imagenes/#Carro.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Vender"/>
           </Properties>
@@ -66,7 +66,7 @@
                   <KeyStroke key="F1"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Imagenes/1. carro-de-la-compra.png"/>
+                  <Image iconType="3" name="/Vista/Imagenes/1. carro-de-la-compra.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Vender Articulos"/>
               </Properties>
@@ -79,7 +79,7 @@
         <Menu class="javax.swing.JMenu" name="jMenu4">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/#Inventario.png"/>
+              <Image iconType="3" name="/Vista/Imagenes/#Inventario.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Inventario"/>
           </Properties>
@@ -90,7 +90,7 @@
                   <KeyStroke key="F2"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Imagenes/1. etiqueta-del-precio.png"/>
+                  <Image iconType="3" name="/Vista/Imagenes/1. etiqueta-del-precio.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Buscar Productos"/>
               </Properties>
@@ -103,7 +103,7 @@
         <Menu class="javax.swing.JMenu" name="jMenu5">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/#Search.png"/>
+              <Image iconType="3" name="/Vista/Imagenes/#Search.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Consultas"/>
           </Properties>
@@ -111,7 +111,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem6">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Imagenes/1. efectivo.png"/>
+                  <Image iconType="3" name="/Vista/Imagenes/1. efectivo.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Consultar Caja"/>
               </Properties>
@@ -119,7 +119,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem7">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Imagenes/1. facturas.png"/>
+                  <Image iconType="3" name="/Vista/Imagenes/1. facturas.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Consultar Facturas"/>
               </Properties>
@@ -130,7 +130,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem8">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Imagenes/1. cerrar sesion.png"/>
+                  <Image iconType="3" name="/Vista/Imagenes/1. cerrar sesion.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Consultar Cientes"/>
               </Properties>

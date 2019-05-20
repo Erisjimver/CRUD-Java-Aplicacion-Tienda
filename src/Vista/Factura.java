@@ -1,14 +1,14 @@
-package PackVendedor;
+package Vista;
 import Modelo.Conexion;
 import Auxiliares.DatosFechaHora;
 import Auxiliares.ValidacionCedula;
 import Modelo.MetodoIngreso;
 import Auxiliares.SettersAndGetters;
 import Modelo.Consultas;
-import static PackAdmin.EntornoAdmin.LabelEstado;
-import static PackVendedor.EntornoVendedor.LabelEstadoV;
+import static Vista.EntornoAdmin.LabelEstado;
+import static Vista.EntornoVendedor.LabelEstadoV;
 
-import static PackVendedor.EntornoVendedor.lblusuario;
+import static Vista.EntornoVendedor.lblusuario;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.*;

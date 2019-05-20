@@ -1,4 +1,4 @@
-package PackVendedor;
+package Vista;
 
 import Modelo.Conexion;
 import Auxiliares.GuardIDCate;

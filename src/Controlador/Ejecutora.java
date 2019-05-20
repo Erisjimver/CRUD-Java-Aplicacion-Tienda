@@ -1,4 +1,6 @@
-package Ejecutora;
+package Controlador;
+
+import Vista.Login;
 
 public class Ejecutora {
         

@@ -1,6 +1,5 @@
-package PackAdmin;
+package Vista;
 import Modelo.Consultas;
-import Ejecutora.Login;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -19,7 +18,7 @@ this.setSize(1195,575);
 @Override
 public void paint(Graphics grafico) {
 Dimension height = getSize();
-ImageIcon Img = new ImageIcon(getClass().getResource("/Imagenes/2. FondoPantalla.jpg"));  
+ImageIcon Img = new ImageIcon(getClass().getResource("/Vista/Imagenes/2. FondoPantalla.jpg"));  
 grafico.drawImage(Img.getImage(), 0, 0, height.width, height.height,null);
 setOpaque(false);
 super.paintComponent(grafico);
@@ -34,7 +33,7 @@ super.paintComponent(grafico);
         PanelPrincipal.add(Imagen,BorderLayout.CENTER);
         PanelPrincipal.revalidate();
         PanelPrincipal.repaint();
-        setIconImage(new ImageIcon(getClass().getResource("/Imagenes/Icono.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("/Vista/Imagenes/Icono.png")).getImage());
     }
 
     @SuppressWarnings("unchecked")
@@ -51,15 +50,15 @@ super.paintComponent(grafico);
         LabelEstado = new javax.swing.JLabel();
         Menu = new javax.swing.JMenuBar();
         MenuInicio = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        Principal = new javax.swing.JMenuItem();
         CerrarCecion = new javax.swing.JMenuItem();
         MenuSalir = new javax.swing.JMenuItem();
         MenuInventario = new javax.swing.JMenu();
         MenuNuevaCategoria = new javax.swing.JMenuItem();
         MenuNuevoProducto = new javax.swing.JMenuItem();
         MenuCaja = new javax.swing.JMenu();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        Efectivo = new javax.swing.JMenuItem();
+        Facturas = new javax.swing.JMenuItem();
         MenuReportes = new javax.swing.JMenu();
         EmpleadosItem = new javax.swing.JMenuItem();
         SucursalesItem = new javax.swing.JMenuItem();
@@ -150,19 +149,19 @@ super.paintComponent(grafico);
 
         Menu.setBackground(new java.awt.Color(97, 212, 195));
 
-        MenuInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Inicio.png"))); // NOI18N
+        MenuInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Inicio.png"))); // NOI18N
         MenuInicio.setText("Inicio");
 
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. principal.png"))); // NOI18N
-        jMenuItem1.setText("Principal");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        Principal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. principal.png"))); // NOI18N
+        Principal.setText("Principal");
+        Principal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                PrincipalActionPerformed(evt);
             }
         });
-        MenuInicio.add(jMenuItem1);
+        MenuInicio.add(Principal);
 
-        CerrarCecion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. cerrar sesion.png"))); // NOI18N
+        CerrarCecion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. cerrar sesion.png"))); // NOI18N
         CerrarCecion.setText("Cerrar Sesion");
         CerrarCecion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -171,7 +170,7 @@ super.paintComponent(grafico);
         });
         MenuInicio.add(CerrarCecion);
 
-        MenuSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. cancelar.png"))); // NOI18N
+        MenuSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. cancelar.png"))); // NOI18N
         MenuSalir.setText("Salir");
         MenuSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -182,10 +181,10 @@ super.paintComponent(grafico);
 
         Menu.add(MenuInicio);
 
-        MenuInventario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Inventario.png"))); // NOI18N
+        MenuInventario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Inventario.png"))); // NOI18N
         MenuInventario.setText("Inventario");
 
-        MenuNuevaCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. categorias.png"))); // NOI18N
+        MenuNuevaCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. categorias.png"))); // NOI18N
         MenuNuevaCategoria.setText("Categorias");
         MenuNuevaCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -194,7 +193,7 @@ super.paintComponent(grafico);
         });
         MenuInventario.add(MenuNuevaCategoria);
 
-        MenuNuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. agregarP.png"))); // NOI18N
+        MenuNuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. agregarP.png"))); // NOI18N
         MenuNuevoProducto.setText("Nuevo Producto");
         MenuNuevoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -205,33 +204,33 @@ super.paintComponent(grafico);
 
         Menu.add(MenuInventario);
 
-        MenuCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Ingresos.png"))); // NOI18N
+        MenuCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Ingresos.png"))); // NOI18N
         MenuCaja.setText("Caja");
 
-        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. efectivo.png"))); // NOI18N
-        jMenuItem7.setText("Efectivo");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+        Efectivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. efectivo.png"))); // NOI18N
+        Efectivo.setText("Efectivo");
+        Efectivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
+                EfectivoActionPerformed(evt);
             }
         });
-        MenuCaja.add(jMenuItem7);
+        MenuCaja.add(Efectivo);
 
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. facturas.png"))); // NOI18N
-        jMenuItem2.setText("Facturas");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        Facturas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. facturas.png"))); // NOI18N
+        Facturas.setText("Facturas");
+        Facturas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                FacturasActionPerformed(evt);
             }
         });
-        MenuCaja.add(jMenuItem2);
+        MenuCaja.add(Facturas);
 
         Menu.add(MenuCaja);
 
-        MenuReportes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Reportes.png"))); // NOI18N
+        MenuReportes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Reportes.png"))); // NOI18N
         MenuReportes.setText("Reportes");
 
-        EmpleadosItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. archivo (1).png"))); // NOI18N
+        EmpleadosItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. archivo (1).png"))); // NOI18N
         EmpleadosItem.setText("Reporte de empleados");
         EmpleadosItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -240,7 +239,7 @@ super.paintComponent(grafico);
         });
         MenuReportes.add(EmpleadosItem);
 
-        SucursalesItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. archivo (2).png"))); // NOI18N
+        SucursalesItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. archivo (2).png"))); // NOI18N
         SucursalesItem.setText("Reporte de sucursales");
         SucursalesItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -249,11 +248,11 @@ super.paintComponent(grafico);
         });
         MenuReportes.add(SucursalesItem);
 
-        ClientesItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. archivo (2).png"))); // NOI18N
+        ClientesItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. archivo (2).png"))); // NOI18N
         ClientesItem.setText("Reportes de clientes");
         MenuReportes.add(ClientesItem);
 
-        FacturaItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. archivo (2).png"))); // NOI18N
+        FacturaItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. archivo (2).png"))); // NOI18N
         FacturaItem.setText("Reporte Facturas");
         FacturaItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -264,10 +263,10 @@ super.paintComponent(grafico);
 
         Menu.add(MenuReportes);
 
-        MenuAdministrador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Usuarios.png"))); // NOI18N
+        MenuAdministrador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Usuarios.png"))); // NOI18N
         MenuAdministrador.setText("Administrador");
 
-        ManuUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. usuario.png"))); // NOI18N
+        ManuUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. usuario.png"))); // NOI18N
         ManuUsuario.setText("Crear Usuario");
         ManuUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -276,7 +275,7 @@ super.paintComponent(grafico);
         });
         MenuAdministrador.add(ManuUsuario);
 
-        MenuSucursal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1. Sucursal.png"))); // NOI18N
+        MenuSucursal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. Sucursal.png"))); // NOI18N
         MenuSucursal.setText("Sucursal");
         MenuSucursal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -301,7 +300,7 @@ super.paintComponent(grafico);
         
     }//GEN-LAST:event_CerrarCecionActionPerformed
 
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+    private void EfectivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EfectivoActionPerformed
         // TODO add your handling code here:
         Facturas in = new Facturas();
         in.setSize(1195,575);
@@ -310,7 +309,7 @@ super.paintComponent(grafico);
         PanelPrincipal.add(in,BorderLayout.CENTER);
         PanelPrincipal.revalidate();
         PanelPrincipal.repaint();        
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
+    }//GEN-LAST:event_EfectivoActionPerformed
 
     private void ManuUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ManuUsuarioActionPerformed
         Usuarios pro=new Usuarios();
@@ -356,7 +355,7 @@ super.paintComponent(grafico);
         PanelPrincipal.repaint();
     }//GEN-LAST:event_MenuNuevoProductoActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void PrincipalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrincipalActionPerformed
         // TODO add your handling code here:
         IEntornoAdmin Imagen = new IEntornoAdmin();
         Imagen.setLocation(2,2);
@@ -365,7 +364,7 @@ super.paintComponent(grafico);
         PanelPrincipal.revalidate();
         PanelPrincipal.repaint();
 
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_PrincipalActionPerformed
 
     private void EmpleadosItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmpleadosItemActionPerformed
       //  consulta.Reportes("C:\\Users\\Isra\\Documents\\NetBeansProjects\\ZonaMovil\\src\\Reportes\\Vendedores.jrxml");
@@ -377,7 +376,7 @@ super.paintComponent(grafico);
         consulta.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Sucursal.jrxml");
     }//GEN-LAST:event_SucursalesItemActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void FacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FacturasActionPerformed
         // TODO add your handling code here:
         Facturas in = new Facturas();
         in.setSize(1195,575);
@@ -386,7 +385,7 @@ super.paintComponent(grafico);
         PanelPrincipal.add(in,BorderLayout.CENTER);
         PanelPrincipal.revalidate();
         PanelPrincipal.repaint();       
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    }//GEN-LAST:event_FacturasActionPerformed
 
     private void FacturaItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FacturaItemActionPerformed
         consulta.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Facturas.jrxml");
@@ -430,8 +429,10 @@ super.paintComponent(grafico);
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem CerrarCecion;
     private javax.swing.JMenuItem ClientesItem;
+    private javax.swing.JMenuItem Efectivo;
     private javax.swing.JMenuItem EmpleadosItem;
     private javax.swing.JMenuItem FacturaItem;
+    private javax.swing.JMenuItem Facturas;
     public static javax.swing.JLabel LabelEstado;
     private javax.swing.JMenuItem ManuUsuario;
     private javax.swing.JMenuBar Menu;
@@ -445,12 +446,10 @@ super.paintComponent(grafico);
     private javax.swing.JMenuItem MenuSalir;
     private javax.swing.JMenuItem MenuSucursal;
     public static javax.swing.JPanel PanelPrincipal;
+    private javax.swing.JMenuItem Principal;
     private javax.swing.JMenuItem SucursalesItem;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLayeredPane jLayeredPane1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSplitPane jSplitPane1;

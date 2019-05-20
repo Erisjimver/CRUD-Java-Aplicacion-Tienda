@@ -1,7 +1,5 @@
-package Ejecutora;
+package Vista;
 import Modelo.Conexion;
-import PackAdmin.EntornoAdmin;
-import PackVendedor.EntornoVendedor;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.*;

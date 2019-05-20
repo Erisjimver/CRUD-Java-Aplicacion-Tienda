@@ -1,9 +1,9 @@
-package PackAdmin;
+package Vista;
 import Modelo.Conexion;
 import Auxiliares.GuardIDCate;
 import Auxiliares.SettersAndGetters;
 import Modelo.MetodoIngreso;
-import static PackAdmin.EntornoAdmin.LabelEstado;
+import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
