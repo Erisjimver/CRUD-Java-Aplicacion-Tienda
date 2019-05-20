@@ -1,8 +1,8 @@
 package PackVendedor;
 
-import Conexion.Conexion;
+import Modelo.Conexion;
 import Auxiliares.GuardIDCate;
-import ClasesRecibeParametros.Consultas;
+import Modelo.Consultas;
 import java.sql.*;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;

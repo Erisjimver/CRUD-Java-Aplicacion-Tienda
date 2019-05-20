@@ -1,10 +1,10 @@
 package PackVendedor;
-import Conexion.Conexion;
+import Modelo.Conexion;
 import Auxiliares.DatosFechaHora;
 import Auxiliares.ValidacionCedula;
-import ClasesRecibeParametros.MetodoIngreso;
+import Modelo.MetodoIngreso;
 import Auxiliares.SettersAndGetters;
-import ClasesRecibeParametros.Consultas;
+import Modelo.Consultas;
 import static PackAdmin.EntornoAdmin.LabelEstado;
 import static PackVendedor.EntornoVendedor.LabelEstadoV;
 

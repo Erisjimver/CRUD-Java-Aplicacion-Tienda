@@ -1,5 +1,5 @@
 package PackAdmin;
-import Conexion.Conexion;
+import Modelo.Conexion;
 import static PackAdmin.EntornoAdmin.LabelEstado;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;

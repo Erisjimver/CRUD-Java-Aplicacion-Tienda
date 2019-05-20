@@ -1,6 +1,6 @@
-package ClasesRecibeParametros;
+package Modelo;
 
-import Conexion.Conexion;
+import Modelo.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

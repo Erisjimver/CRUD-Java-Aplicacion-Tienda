@@ -1,4 +1,4 @@
-package Conexion;
+package Modelo;
 import java.sql.*;
 import javax.swing.JOptionPane;
 import net.sf.jasperreports.engine.JasperExportManager;

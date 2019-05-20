@@ -1,6 +1,6 @@
 package PackVendedor;
-import Conexion.Conexion;
-import ClasesRecibeParametros.Consultas;
+import Modelo.Conexion;
+import Modelo.Consultas;
 import static PackAdmin.EntornoAdmin.LabelEstado;
 import static PackVendedor.BuscarProFactura.r;
 import java.sql.*;

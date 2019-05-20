@@ -1,5 +1,5 @@
 package PackAdmin;
-import ClasesRecibeParametros.Consultas;
+import Modelo.Consultas;
 import Ejecutora.Login;
 import java.awt.BorderLayout;
 import java.awt.Dimension;

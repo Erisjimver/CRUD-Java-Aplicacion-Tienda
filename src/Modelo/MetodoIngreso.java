@@ -1,6 +1,6 @@
-package ClasesRecibeParametros;
+package Modelo;
 
-import Conexion.Conexion;
+import Modelo.Conexion;
 import Auxiliares.SettersAndGetters;
 import static PackAdmin.EntornoAdmin.LabelEstado;
 import java.awt.HeadlessException;

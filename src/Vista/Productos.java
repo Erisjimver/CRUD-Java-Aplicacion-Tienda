@@ -1,8 +1,8 @@
 package PackAdmin;
-import Conexion.Conexion;
+import Modelo.Conexion;
 import Auxiliares.GuardIDCate;
 import Auxiliares.SettersAndGetters;
-import ClasesRecibeParametros.MetodoIngreso;
+import Modelo.MetodoIngreso;
 import static PackAdmin.EntornoAdmin.LabelEstado;
 import java.awt.Component;
 import java.awt.HeadlessException;

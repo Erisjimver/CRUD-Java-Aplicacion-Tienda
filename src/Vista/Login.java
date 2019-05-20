@@ -1,5 +1,5 @@
 package Ejecutora;
-import Conexion.Conexion;
+import Modelo.Conexion;
 import PackAdmin.EntornoAdmin;
 import PackVendedor.EntornoVendedor;
 import java.awt.HeadlessException;
