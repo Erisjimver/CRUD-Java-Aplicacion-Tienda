@@ -1,6 +1,6 @@
 package Vista;
 import Modelo.Conexion;
-import Auxiliares.GuardID;
+import Controlador.GuardID;
 import Auxiliares.GuardIDE;
 import Auxiliares.SettersAndGetters;
 import Modelo.MetodoIngreso;
