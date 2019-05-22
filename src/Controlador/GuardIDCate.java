@@ -1,4 +1,4 @@
-package Auxiliares;
+package Controlador;
 public class GuardIDCate {
     
 private final String nombre;

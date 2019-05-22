@@ -1,7 +1,7 @@
 package Vista;
 
 import Modelo.Conexion;
-import Auxiliares.GuardIDCate;
+import Controlador.GuardIDCate;
 import Modelo.Consultas;
 import java.sql.*;
 import javax.swing.DefaultComboBoxModel;

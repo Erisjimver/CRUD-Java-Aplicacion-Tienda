@@ -1,7 +1,7 @@
 package Vista;
 import Modelo.Conexion;
 import Controlador.GuardID;
-import Auxiliares.GuardIDE;
+import Controlador.GuardIDE;
 import Auxiliares.SettersAndGetters;
 import Modelo.MetodoIngreso;
 import static Vista.EntornoAdmin.LabelEstado;
@@ -394,7 +394,7 @@ public final class Usuarios extends javax.swing.JPanel {
         });
 
         BtnRegistrar.setForeground(new java.awt.Color(255, 255, 255));
-        BtnRegistrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#bloc.png"))); // NOI18N
+        BtnRegistrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#bloc.png"))); // NOI18N
         BtnRegistrar.setBorderPainted(false);
         BtnRegistrar.setContentAreaFilled(false);
         BtnRegistrar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -409,7 +409,7 @@ public final class Usuarios extends javax.swing.JPanel {
         });
 
         BtnBuscarCategorias.setForeground(new java.awt.Color(255, 255, 255));
-        BtnBuscarCategorias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#busqueda.png"))); // NOI18N
+        BtnBuscarCategorias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#busqueda.png"))); // NOI18N
         BtnBuscarCategorias.setBorderPainted(false);
         BtnBuscarCategorias.setContentAreaFilled(false);
         BtnBuscarCategorias.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -424,7 +424,7 @@ public final class Usuarios extends javax.swing.JPanel {
         });
 
         BtnEliminar.setForeground(new java.awt.Color(255, 255, 255));
-        BtnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Error.png"))); // NOI18N
+        BtnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Error.png"))); // NOI18N
         BtnEliminar.setBorderPainted(false);
         BtnEliminar.setContentAreaFilled(false);
         BtnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -443,42 +443,41 @@ public final class Usuarios extends javax.swing.JPanel {
         CrearLayout.setHorizontalGroup(
             CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CrearLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
                     .addGroup(CrearLayout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(BtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel13)
+                                .addComponent(jLabel12)
+                                .addComponent(jLabel9)
+                                .addComponent(jLabel7)
+                                .addComponent(jLabel5)
+                                .addComponent(jLabel14)
+                                .addComponent(jLabel10)
+                                .addComponent(jLabel11)))
+                        .addGap(33, 33, 33)
                         .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(CrearLayout.createSequentialGroup()
-                                .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel13)
-                                    .addComponent(jLabel12)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel14)
-                                    .addComponent(jLabel10)
-                                    .addComponent(jLabel11))
-                                .addGap(33, 33, 33)
-                                .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(ComboEmpresa, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(ComboUsuario, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(TextIdVendedor)
-                                    .addComponent(TextNombres)
-                                    .addComponent(TextApellidos)
-                                    .addComponent(TextNumeroTelf)
-                                    .addComponent(TextDireccion)
-                                    .addGroup(CrearLayout.createSequentialGroup()
-                                        .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(Password)
-                                            .addComponent(TextCedula, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))
-                                        .addGap(92, 92, 92))))
-                            .addComponent(jLabel8)))
-                    .addGroup(CrearLayout.createSequentialGroup()
-                        .addGap(66, 66, 66)
-                        .addComponent(BtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(56, 56, 56)
-                        .addComponent(BtnBuscarCategorias)
-                        .addGap(44, 44, 44)
-                        .addComponent(BtnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(27, 27, 27)
+                                .addComponent(BtnBuscarCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(43, 43, 43)
+                                .addComponent(BtnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(ComboEmpresa, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(ComboUsuario, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(TextIdVendedor)
+                                .addComponent(TextNombres)
+                                .addComponent(TextApellidos)
+                                .addComponent(TextNumeroTelf)
+                                .addComponent(TextDireccion)
+                                .addGroup(CrearLayout.createSequentialGroup()
+                                    .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(Password)
+                                        .addComponent(TextCedula, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))
+                                    .addGap(92, 92, 92))))))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         CrearLayout.setVerticalGroup(
@@ -522,15 +521,15 @@ public final class Usuarios extends javax.swing.JPanel {
                     .addComponent(jLabel10)
                     .addComponent(TextDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(CrearLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CrearLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(BtnEliminar))
+                        .addComponent(BtnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(CrearLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(BtnRegistrar)
-                            .addComponent(BtnBuscarCategorias))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(BtnBuscarCategorias, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         Buscar.setBackground(new java.awt.Color(36, 47, 65));
@@ -565,7 +564,9 @@ public final class Usuarios extends javax.swing.JPanel {
         );
         BuscarLayout.setVerticalGroup(
             BuscarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BuscarLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
