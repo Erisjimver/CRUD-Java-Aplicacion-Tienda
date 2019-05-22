@@ -1,4 +1,4 @@
-package Auxiliares;
+package Controlador;
 
 import javax.swing.JOptionPane;
 

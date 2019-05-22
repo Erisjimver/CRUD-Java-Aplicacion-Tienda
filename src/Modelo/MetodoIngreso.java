@@ -1,6 +1,6 @@
 package Modelo;
 
-import Auxiliares.SettersAndGetters;
+import Controlador.SettersAndGetters;
 import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.HeadlessException;
 import java.sql.CallableStatement;

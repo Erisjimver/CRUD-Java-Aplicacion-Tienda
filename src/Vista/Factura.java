@@ -1,9 +1,9 @@
 package Vista;
 import Modelo.Conexion;
 import Auxiliares.DatosFechaHora;
-import Auxiliares.ValidacionCedula;
+import Controlador.ValidacionCedula;
 import Modelo.MetodoIngreso;
-import Auxiliares.SettersAndGetters;
+import Controlador.SettersAndGetters;
 import Modelo.Consultas;
 import static Vista.EntornoAdmin.LabelEstado;
 import static Vista.EntornoVendedor.LabelEstadoV;

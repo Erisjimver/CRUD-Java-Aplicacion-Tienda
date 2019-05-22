@@ -1,7 +1,7 @@
 package Vista;
 import Modelo.Conexion;
 import Controlador.GuardIDCate;
-import Auxiliares.SettersAndGetters;
+import Controlador.SettersAndGetters;
 import Modelo.MetodoIngreso;
 import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.Component;
