@@ -22,6 +22,7 @@ public class SettersAndGetters {
     int idfactura,idproducto,cantidad;
     
     //categoria
+    private int idCategoria;
     private String descripcion;
     
     //usuarios
@@ -86,17 +87,24 @@ public class SettersAndGetters {
     public void setStock(int stock) {
         this.stock = stock;
     }
+    
 
-    
-    //get y set de categorias 
-    
-    public String getDescripcion() {
-        return descripcion;
+    //get y set de categorias
+    public void setIdCategoria(int idCategoria) {
+        this.idCategoria = idCategoria;
     }
-   
+    
+    public int getIdCategoria() {
+        return idCategoria;    
+    } 
+    
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+    public String getDescripcion() {
+        return descripcion;
+    }
+
 
     //get y set sucursal_empresa
     public String getRuc() {

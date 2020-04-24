@@ -3,6 +3,8 @@ import Modelo.Consultas;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 public class EntornoAdmin extends javax.swing.JFrame {
@@ -346,13 +348,17 @@ super.paintComponent(grafico);
     }//GEN-LAST:event_MenuNuevaCategoriaActionPerformed
 
     private void MenuNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuNuevoProductoActionPerformed
-        Productos p=new Productos();
+    try {
+        Productos p= new Productos();
         p.setSize(1195,575);
         p.setLocation(2,2);
         PanelPrincipal.removeAll();
         PanelPrincipal.add(p,BorderLayout.CENTER);
         PanelPrincipal.revalidate();
         PanelPrincipal.repaint();
+    } catch (Exception ex) {
+        Logger.getLogger(EntornoAdmin.class.getName()).log(Level.SEVERE, null, ex);
+    }
     }//GEN-LAST:event_MenuNuevoProductoActionPerformed
 
     private void PrincipalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrincipalActionPerformed

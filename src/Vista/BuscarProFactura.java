@@ -1,9 +1,14 @@
 package Vista;
 
+import Controlador.Funcionalidades;
+import Controlador.SettersAndGetters;
 import Modelo.Conexion;
-import Controlador.GuardIDCate;
+
 import Modelo.Consultas;
+import Modelo.MetodoIngreso;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -15,12 +20,15 @@ public final class BuscarProFactura extends javax.swing.JFrame {
     Conexion cn=new Conexion();  
     Connection c= cn.conexion();
     Consultas pr=new Consultas();
-    
+    Funcionalidades fun = new Funcionalidades();
     DefaultTableModel model = new DefaultTableModel();
+    DefaultComboBoxModel value = new DefaultComboBoxModel();
+    SettersAndGetters pp=new SettersAndGetters();
+    MetodoIngreso mi=new MetodoIngreso();
     int cantidadColumnas;
     boolean sw;
     String codMarca;
-    public BuscarProFactura() {
+    public BuscarProFactura() throws Exception {
         
         initComponents();
         this.setLocationRelativeTo(null);
@@ -183,15 +191,15 @@ public final class BuscarProFactura extends javax.swing.JFrame {
     private void ComboCategoriaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboCategoriaMousePressed
 
         try{
-            GuardIDCate categoria=(GuardIDCate) ComboCategoria.getSelectedItem(); 
-            r = cn.consultar("select p.IdProducto,p.NombreProducto,p.Marca,p.Precio,p.Stock from Producto p inner join Categoria c on p.IdCategoria = c.IdCategoria where c.descripcion='"+categoria+"'"); 
+            String clave= (String) ComboCategoria.getSelectedItem(); //toma la clave para eldiccionario Map
+            r = cn.consultar("select p.IdProducto,p.NombreProducto,p.Marca,p.Precio,p.Stock from Producto p inner join Categoria c on p.IdCategoria = c.IdCategoria where c.descripcion='"+clave+"'"); 
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)
               fila[i] = r.getObject(i+1);        
             }
         }
-        catch(Exception e)
+        catch(SQLException e)
         { 
             JOptionPane.showMessageDialog(rootPane, e);
         }
@@ -244,7 +252,11 @@ public final class BuscarProFactura extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new BuscarProFactura().setVisible(true);
+                try {
+                    new BuscarProFactura().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(BuscarProFactura.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -277,20 +289,30 @@ public final class BuscarProFactura extends javax.swing.JFrame {
            System.out.println("Error: "+e); 
         }
     }
-    public void FillComboCate()
-    {
-    DefaultComboBoxModel value;
+    public void FillComboCate() throws Exception{
+
       try {         
-         r= cn.consultar("select Descripcion,IdCategoria from Categoria");   
-         value =new DefaultComboBoxModel();
+         r = cn.consultar("select IdCategoria, descripcion from Categoria");   
+        
          ComboCategoria.setModel(value);
-         while (r.next()) { 
-         value.addElement(new GuardIDCate(r.getString(1),r.getString(2)));
+         while (r.next()) 
+         { 
+             //r.getInt(1) es la id de la tabla categorias
+             //r.getString(2) es la descripcion de la tabla categoria            
+            int clave = r.getInt(1);
+            String valor = r.getString(2);
+            pp.setIdCategoria(clave);
+            pp.setDescripcion(valor);
+            fun.DiccionarioCategoria(pp);
+            value.addElement(valor);
+            //value.addElement(new GuardIDCate(r.getString(2),r.getString(1)));
          }
          r.close();
-        } catch (SQLException ex) {
-          System.out.println("error"+ex);
-        }
+        } 
+      catch (SQLException ex) 
+      {
+        System.out.println("error"+ex);
+      }
   
     }
 }

@@ -1,7 +1,7 @@
 package Vista;
 import Modelo.Conexion;
-import Controlador.GuardIDCate;
 import Controlador.SettersAndGetters;
+import Controlador.Funcionalidades;
 import Modelo.MetodoIngreso;
 import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.Component;
@@ -18,17 +18,22 @@ public final class Productos extends javax.swing.JPanel {
     private static PreparedStatement ps;
     private String cod;
     private int idprod=0;
-
+    
     Conexion cn=new Conexion();  
     Connection c= cn.conexion();
     DefaultTableModel modelo = new DefaultTableModel();
+    DefaultComboBoxModel value = new DefaultComboBoxModel();
+    SettersAndGetters pp=new SettersAndGetters();
+    MetodoIngreso mi=new MetodoIngreso();
+    Funcionalidades fun = new Funcionalidades();
+    
     int cantidadColumnas;
     private Component rootPane;
     
-    public Productos() {
+    public Productos() throws Exception {
         initComponents();     
         this.TablaProductos.setModel(modelo);
-        FillComboCate();
+        FillComboCate1();
         IdProductos();
         buscarColumnas();
     }
@@ -85,14 +90,12 @@ public final class Productos extends javax.swing.JPanel {
     
     public void registrar(){
     
-    GuardIDCate categoria=(GuardIDCate) ComboCategoria.getSelectedItem();      
+    String clave= (String) ComboCategoria.getSelectedItem();      
         try
         {
-            SettersAndGetters pp=new SettersAndGetters();
-            MetodoIngreso mi=new MetodoIngreso();
-            String id = categoria.getID();
+            int valor = fun.obtenerIdCategoria(clave);
     
-            pp.setIdcategorias(Integer.parseInt(id));
+            pp.setIdcategorias(valor);
             pp.setNombreproducto(TextNombreP.getText());
             pp.setMarca(TextMarca.getText());
             pp.setCosto(Double.parseDouble(TextCosto.getText()));
@@ -153,6 +156,75 @@ public final class Productos extends javax.swing.JPanel {
         }
        
     }
+    
+    public void IdProductos(){
+     try{
+        r = cn.consultar("select max(IdProducto)+1 from Producto");
+        if(r.next()){
+        idprod=r.getInt(1);
+        cod=String.valueOf(idprod);
+        TextCOP.setText(cod); 
+        }
+     }catch(SQLException e)
+     {
+       
+     }         
+}
+/*
+    public void FillComboCate(){
+
+      try {         
+         r = cn.consultar("select descripcion,IdCategoria from Categoria");   
+         value =new DefaultComboBoxModel();
+          System.out.println(value);
+         ComboCategoria.setModel(value);
+         while (r.next()) { 
+             System.out.println(r.getString(1));
+             System.out.println(r.getString(2));
+           value.addElement(new GuardIDCate(r.getString(1),r.getString(2)));
+         }
+         r.close();
+        } catch (SQLException ex) {
+          System.out.println("error"+ex);
+        }
+  
+    }
+   */ 
+    public void FillComboCate1() throws Exception{
+
+      try {         
+         r = cn.consultar("select IdCategoria, descripcion from Categoria");   
+        
+         ComboCategoria.setModel(value);
+         while (r.next()) 
+         { 
+             //r.getInt(1) es la id de la tabla categorias
+             //r.getString(2) es la descripcion de la tabla categoria            
+            int clave = r.getInt(1);
+            String valor = r.getString(2);
+            pp.setIdCategoria(clave);
+            pp.setDescripcion(valor);
+            fun.DiccionarioCategoria(pp);
+            value.addElement(valor);
+            //value.addElement(new GuardIDCate(r.getString(2),r.getString(1)));
+         }
+         r.close();
+        } 
+      catch (SQLException ex) 
+      {
+        System.out.println("error"+ex);
+      }
+  
+    }
+    public void LIMPIAR(){
+    //PARA LIMPIAR LOS CAMPOS DE TEXTOS
+    TextNombreP.setText("");
+    TextMarca.setText("");
+    TextCosto.setText("");
+    TextStock.setText("");
+    TextPrecio.setText("");
+}
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -614,43 +686,6 @@ public final class Productos extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane5;
     // End of variables declaration//GEN-END:variables
 
-    public void IdProductos(){
-     try{
-        r = cn.consultar("select max(IdProducto)+1 from Producto");
-        if(r.next()){
-        idprod=r.getInt(1);
-        cod=String.valueOf(idprod);
-        TextCOP.setText(cod); 
-        }
-     }catch(SQLException e)
-     {
-       
-     }         
-}
 
-    public void FillComboCate(){
-    DefaultComboBoxModel value;
-      try {         
-         r= cn.consultar("select descripcion,IdCategoria from Categoria");   
-         value =new DefaultComboBoxModel();
-         ComboCategoria.setModel(value);
-         while (r.next()) { 
-           value.addElement(new GuardIDCate(r.getString(1),r.getString(2)));
-         }
-         r.close();
-        } catch (SQLException ex) {
-          System.out.println("error"+ex);
-        }
-  
-    }
-
-    public void LIMPIAR(){
-    //PARA LIMPIAR LOS CAMPOS DE TEXTOS
-    TextNombreP.setText("");
-    TextMarca.setText("");
-    TextCosto.setText("");
-    TextStock.setText("");
-    TextPrecio.setText("");
-}
 
 }

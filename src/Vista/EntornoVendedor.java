@@ -51,7 +51,7 @@ super.paintComponent(grafico);
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        MenuItemVender = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
@@ -152,15 +152,15 @@ super.paintComponent(grafico);
         jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Carro.png"))); // NOI18N
         jMenu2.setText("Vender");
 
-        jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. carro-de-la-compra.png"))); // NOI18N
-        jMenuItem4.setText("Vender Articulos");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+        MenuItemVender.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        MenuItemVender.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. carro-de-la-compra.png"))); // NOI18N
+        MenuItemVender.setText("Vender Articulos");
+        MenuItemVender.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+                MenuItemVenderActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem4);
+        jMenu2.add(MenuItemVender);
 
         jMenuBar1.add(jMenu2);
 
@@ -236,7 +236,7 @@ super.paintComponent(grafico);
         
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+    private void MenuItemVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemVenderActionPerformed
         Factura fact=new Factura();
         fact.setSize(1195,580);
         fact.setLocation(1,1);  
@@ -244,7 +244,7 @@ super.paintComponent(grafico);
         PanelPrincipal.add(fact,BorderLayout.CENTER);
         PanelPrincipal.revalidate();
         PanelPrincipal.repaint();
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
+    }//GEN-LAST:event_MenuItemVenderActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         IEntornoAdmin Imagen = new IEntornoAdmin();
@@ -314,6 +314,7 @@ super.paintComponent(grafico);
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JLabel LabelEstadoV;
+    private javax.swing.JMenuItem MenuItemVender;
     public static javax.swing.JPanel PanelPrincipal;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
@@ -324,7 +325,6 @@ super.paintComponent(grafico);
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;

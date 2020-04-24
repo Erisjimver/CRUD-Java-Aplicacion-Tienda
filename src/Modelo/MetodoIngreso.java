@@ -77,6 +77,7 @@ Connection c= cn.conexion();
         cs.setInt(3, to.getCantidad());
         cs.setDouble(4, to.getValorunitario());
         cs.setDouble(5, to.getValortotal()); 
+        System.out.println("nada");
         cs.execute();
         
     }

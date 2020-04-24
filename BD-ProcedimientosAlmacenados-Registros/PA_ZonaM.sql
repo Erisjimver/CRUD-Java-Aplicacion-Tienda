@@ -53,15 +53,21 @@ CREATE TRIGGER tr_idvendedor
 /*/
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
+ --secuencia id categoria
+CREATE SEQUENCE secuencia_idcategoria
+START WITH 1
+INCREMENT BY 1 
+NOMAXVALUE;
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 --registar categoria	
 create or replace procedure RegistrarCategorias
 (
- IdCategoria in number,
  Descripcion in varchar2
  )
  as
  begin
- insert into Categoria values(IdCategorias,Descripcion);
+ insert into Categoria values(secuencia_idcategoria.nextval,Descripcion);
  end RegistrarCategorias;
  /
 ----------------------------------------------------------------------------------------------------------------------
@@ -122,12 +128,11 @@ NOMAXVALUE;
 create or replace procedure RegistrarFactura
 (
  IdEmpleado in number,
- IdCliente in number,
- FechaEmision in date
+ IdCliente in number
 )
 as
 begin
-insert into Factura values(secuencia_idfactura.nextval,IdEmpleado,IdCliente,FechaEmision);
+insert into Factura values(secuencia_idfactura.nextval,IdEmpleado,IdCliente,sysdate);
 end RegistrarFactura;
 /
 ----------------------------------------------------------------------------------------------------------------------
@@ -139,12 +144,19 @@ INCREMENT BY 1
 NOMAXVALUE;
 
 --registrar Detalle de venta
-create or replace procedure RegistrarDetalleV( IdFactura in number, IdProducto in number, Cantidad in number, ValorUnitario in number, ValorTotal in number)
+create or replace procedure RegistrarDetalleV
+	( IdFactura in number, 
+		IdProducto in number, 
+		Cantidad in number, 
+		ValorUnitario in number, 
+		ValorTotal in number)
 as
 begin
 insert into Detalle_Venta values(secuencia_iddetalle_venta.nextval,IdFactura,IdProducto,Cantidad,ValorUnitario,ValorTotal);
+commit;
 end RegistrarDetalleV;
 /
+--EXEC RegistrarDetalleV(2,1,1,2,2);
 ----------------------------------------------------------------------------------------------------------------------
 -------------------ACTUALIZA---------------------
 ----------------------------------------------------------------------------------------------------------------------
@@ -207,8 +219,10 @@ end ActualizarSucursal;
    canti number:=null;
  begin
      update Producto set Stock=Stock-:new.Cantidad where IdProducto=:new.IdProducto; 
-	 commit;
+--	 commit;
  end tr_insertar_venta;
  /
+
+--el commit me dio problemas no se porque luego lo averiguo
 
  --select p.NombreProducto,p.Marca,p.Precio,p.Stock,c.Nombre from Producto p inner join Categoria c on p.IdCategorias = c.IdCategorias where p.NombreProducto like 'A%' or c.Nombre like'M%';
