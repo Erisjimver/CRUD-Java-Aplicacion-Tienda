@@ -13,6 +13,8 @@ public class Funcionalidades {
    
     Calendar calendario = new GregorianCalendar();
     Map<String,Integer> categorias = new HashMap<>();
+    Map<String,Integer> sucursales = new HashMap<>();
+    Map<String,Integer> empleados = new HashMap<>();
     
     public String fechaActual()
     {  
@@ -93,11 +95,46 @@ public class Funcionalidades {
     }
     
     public int obtenerIdCategoria(String clave){
-        int resultado=0;
+        int resultado;
         
             resultado=categorias.get(clave);
         
         return resultado;
     }
 
+    
+    //Diccionario de las ID de las categorias de las sucursales
+    public void DiccionarioSucursal(SettersAndGetters to) throws Exception{       
+       
+        sucursales.put(to.getSucursal(),to.getIdEmpresa());
+        //System.out.println(categorias.keySet());
+        //System.out.println(categorias.get("Accesorios"));
+    }
+    
+    public int obtenerIdSucursal(String clave){
+        int resultado;
+        
+            resultado=sucursales.get(clave);
+        
+        return resultado;
+    }
+ 
+    //Diccionario de las ID de las categorias de los empleados
+    public void DiccionarioEmpleado(SettersAndGetters to) throws Exception{       
+       
+        empleados.put(to.getTipoUsuario(),to.getIdTipoUsuarioV());
+        //System.out.println(categorias.keySet());
+        //System.out.println(categorias.get("Accesorios"));
+    }
+    
+    public int obtenerIdEmpleado(String clave){
+        int resultado;
+        
+            resultado = empleados.get(clave);
+        
+        return resultado;
+    }
+    
+    
+    
 }//fin de la clase

@@ -27,7 +27,7 @@ public class SettersAndGetters {
     
     //usuarios
     private int idTipoUsuarioV,idEmpresaV;
-    private String contrasenaV,cedulaV,nombresV,apellidosV,telefonoV,direccionV;
+    private String tipoUsuario,contrasenaV,cedulaV,nombresV,apellidosV,telefonoV,direccionV;
     
     //factura
     private int idvendedor,idcliente;
@@ -235,6 +235,14 @@ public class SettersAndGetters {
 
     public void setIdTipoUsuarioV(int idTipoUsuarioV) {
         this.idTipoUsuarioV = idTipoUsuarioV;
+    }
+
+    public String getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(String tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
     }
 
     public int getIdEmpresaV() {

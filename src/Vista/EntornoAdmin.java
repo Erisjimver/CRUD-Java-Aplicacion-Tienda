@@ -314,6 +314,7 @@ super.paintComponent(grafico);
     }//GEN-LAST:event_EfectivoActionPerformed
 
     private void ManuUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ManuUsuarioActionPerformed
+    try {
         Usuarios pro=new Usuarios();
         pro.setSize(1195,575);
         pro.setLocation(2,2);  
@@ -321,6 +322,9 @@ super.paintComponent(grafico);
         PanelPrincipal.add(pro,BorderLayout.CENTER);
         PanelPrincipal.revalidate();
         PanelPrincipal.repaint();
+    } catch (Exception ex) {
+        Logger.getLogger(EntornoAdmin.class.getName()).log(Level.SEVERE, null, ex);
+    }
     }//GEN-LAST:event_ManuUsuarioActionPerformed
 
     private void MenuSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuSalirActionPerformed

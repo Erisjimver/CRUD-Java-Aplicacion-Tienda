@@ -225,7 +225,7 @@ public final class Sucursal extends javax.swing.JPanel {
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 560, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 562, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addGap(250, 250, 250))))
         );
@@ -302,7 +302,7 @@ public final class Sucursal extends javax.swing.JPanel {
         });
 
         BtnRegistrar.setForeground(new java.awt.Color(255, 255, 255));
-        BtnRegistrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#bloc.png"))); // NOI18N
+        BtnRegistrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#bloc.png"))); // NOI18N
         BtnRegistrar.setBorderPainted(false);
         BtnRegistrar.setContentAreaFilled(false);
         BtnRegistrar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -317,7 +317,7 @@ public final class Sucursal extends javax.swing.JPanel {
         });
 
         BtnBuscarCategorias.setForeground(new java.awt.Color(255, 255, 255));
-        BtnBuscarCategorias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#busqueda.png"))); // NOI18N
+        BtnBuscarCategorias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#busqueda.png"))); // NOI18N
         BtnBuscarCategorias.setBorderPainted(false);
         BtnBuscarCategorias.setContentAreaFilled(false);
         BtnBuscarCategorias.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -332,7 +332,7 @@ public final class Sucursal extends javax.swing.JPanel {
         });
 
         BtnEliminar.setForeground(new java.awt.Color(255, 255, 255));
-        BtnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Error.png"))); // NOI18N
+        BtnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Error.png"))); // NOI18N
         BtnEliminar.setBorderPainted(false);
         BtnEliminar.setContentAreaFilled(false);
         BtnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -359,28 +359,28 @@ public final class Sucursal extends javax.swing.JPanel {
                                 .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel13)
                                     .addComponent(jLabel10))
-                                .addGap(21, 21, 21)
+                                .addGap(37, 37, 37)
                                 .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(TextRUC)
-                                    .addComponent(TextCOS, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)))
+                                    .addComponent(TextCOS, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                                    .addComponent(TextRUC)))
                             .addGroup(CrearLayout.createSequentialGroup()
                                 .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(TextSucursal))
+                                .addGap(18, 18, 18)
+                                .addComponent(TextSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(CrearLayout.createSequentialGroup()
                                 .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel11)
                                     .addComponent(jLabel12))
-                                .addGap(97, 97, 97)
+                                .addGap(111, 111, 111)
                                 .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(TextDireccion)
-                                    .addComponent(TextTelefono)))))
+                                    .addComponent(TextTelefono)
+                                    .addComponent(TextDireccion)))))
                     .addGroup(CrearLayout.createSequentialGroup()
                         .addGap(44, 44, 44)
                         .addComponent(BtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(55, 55, 55)
-                        .addComponent(BtnBuscarCategorias)
-                        .addGap(52, 52, 52)
+                        .addGap(56, 56, 56)
+                        .addComponent(BtnBuscarCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44)
                         .addComponent(BtnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -408,12 +408,15 @@ public final class Sucursal extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(TextDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel12))
-                .addGap(66, 66, 66)
-                .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(BtnBuscarCategorias)
-                    .addComponent(BtnEliminar)
-                    .addComponent(BtnRegistrar))
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addGap(61, 61, 61)
+                .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BtnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(CrearLayout.createSequentialGroup()
+                        .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(BtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(BtnBuscarCategorias))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(77, 77, 77))
         );
 
         Buscar.setBackground(new java.awt.Color(36, 47, 65));
@@ -450,16 +453,14 @@ public final class Sucursal extends javax.swing.JPanel {
         );
         BuscarLayout.setVerticalGroup(
             BuscarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BuscarLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE))
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 1189, Short.MAX_VALUE)
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 1191, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(Crear, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -516,13 +517,13 @@ public final class Sucursal extends javax.swing.JPanel {
         TextSucursal.setText("");
     }//GEN-LAST:event_TextSucursalMouseClicked
 
-    private void TextTelefonoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TextTelefonoMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_TextTelefonoMouseClicked
-
     private void TextDireccionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TextDireccionMouseClicked
-        // TODO add your handling code here:
+        TextDireccion.setText("");
     }//GEN-LAST:event_TextDireccionMouseClicked
+
+    private void TextTelefonoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TextTelefonoMouseClicked
+       TextTelefono.setText("");
+    }//GEN-LAST:event_TextTelefonoMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

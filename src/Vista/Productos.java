@@ -33,7 +33,7 @@ public final class Productos extends javax.swing.JPanel {
     public Productos() throws Exception {
         initComponents();     
         this.TablaProductos.setModel(modelo);
-        FillComboCate1();
+        FillComboCate();
         IdProductos();
         buscarColumnas();
     }
@@ -190,7 +190,7 @@ public final class Productos extends javax.swing.JPanel {
   
     }
    */ 
-    public void FillComboCate1() throws Exception{
+    public void FillComboCate() throws Exception{
 
       try {         
          r = cn.consultar("select IdCategoria, descripcion from Categoria");   

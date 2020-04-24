@@ -1,7 +1,6 @@
 package Vista;
+import Controlador.Funcionalidades;
 import Modelo.Conexion;
-import Controlador.GuardID;
-import Controlador.GuardIDE;
 import Controlador.SettersAndGetters;
 import Modelo.MetodoIngreso;
 import static Vista.EntornoAdmin.LabelEstado;
@@ -30,10 +29,13 @@ public final class Usuarios extends javax.swing.JPanel {
     DefaultTableModel modelo = new DefaultTableModel();
     SettersAndGetters set=new SettersAndGetters();
     MetodoIngreso mi=new MetodoIngreso();
+    DefaultComboBoxModel comboUser = new DefaultComboBoxModel();
+    DefaultComboBoxModel comboEmpresa = new DefaultComboBoxModel();
+    Funcionalidades fun = new Funcionalidades();
 
     private Component rootPane;
     
-    public Usuarios() {
+    public Usuarios() throws Exception {
         initComponents();     
         this.TablaSucursal.setModel(modelo);
         buscarColumnas();
@@ -107,14 +109,14 @@ public final class Usuarios extends javax.swing.JPanel {
         }
         else
         {
-        GuardID tu=(GuardID) ComboUsuario.getSelectedItem();
-        GuardIDE ne=(GuardIDE) ComboEmpresa.getSelectedItem();
+            String clave= (String) ComboUsuario.getSelectedItem(); 
+            String claveE= (String) ComboEmpresa.getSelectedItem(); 
         try{
-            String id = tu.getID();
-            String ide = ne.getID();                    
+            int id = fun.obtenerIdEmpleado(clave);
+            int ide = fun.obtenerIdSucursal(claveE);                    
                 
-                set.setIdTipoUsuarioV(Integer.parseInt(id));   
-                set.setIdEmpresaV(Integer.parseInt(ide));
+                set.setIdTipoUsuarioV(id);   
+                set.setIdEmpresaV(ide);
                 set.setContrasenaV(contrasena);
                 set.setCedulaV(cedula);
                 set.setNombresV(nombres);
@@ -180,6 +182,80 @@ public final class Usuarios extends javax.swing.JPanel {
         }
     } 
     
+    public void limpiar(){
+
+        TextNombres.setText("");
+        TextApellidos.setText("");
+        TextNumeroTelf.setText("");
+        TextDireccion.setText("");
+        TextCedula.setText("");
+    }
+    
+    public void obtenerIdVendedor(){
+        
+    try{       
+        st = c.createStatement();
+        r = st.executeQuery("select max(IdVendedor)+1 from Vendedor");
+        if(r.next()){
+        idv=r.getInt(1);
+        cod=String.valueOf(idv);
+        TextIdVendedor.setText(cod); 
+        }
+    }
+    catch(SQLException e){
+        LabelEstado.setText("Error: "+e);
+    }
+    }
+    
+    public void FillComboUsuario() throws Exception{
+
+      try {         
+         r = cn.consultar("select IdTipo_Usuario,Tipo_Usuario from Tipo_Usuario");   
+         ComboUsuario.setModel(comboUser);
+         while (r.next()) 
+         {            
+            String clave = r.getString(2);//Nombre de la sucursal
+            int valor = r.getInt(1);//id de la sucursal
+            set.setTipoUsuario(clave);
+            set.setIdTipoUsuarioV(valor);
+            
+            fun.DiccionarioEmpleado(set);
+            ComboUsuario.addItem(clave);
+            //ComboUsuario..addElement(clave);
+ 
+         }
+         r.close();
+        } 
+      catch (SQLException ex) 
+      {
+        System.out.println("error"+ex);
+      } 
+    } 
+    
+    public void FillComboEmpresa() throws Exception{
+
+      try {         
+         r = cn.consultar("select IdEmpresa, NombreEmpresa from Empresa");   
+         ComboEmpresa.setModel(comboEmpresa);
+         while (r.next()) 
+         {            
+            String clave = r.getString(2);//Nombre de la sucursal
+            int valor = r.getInt(1);//id de la sucursal
+            set.setSucursal(clave);
+            set.setIdEmpresa(valor);
+            
+            fun.DiccionarioSucursal(set);
+            ComboEmpresa.addItem(clave);
+            //value.addElement(clave);
+ 
+         }
+         r.close();
+        } 
+      catch (SQLException ex) 
+      {
+        System.out.println("error"+ex);
+      } 
+    } 
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -279,6 +355,11 @@ public final class Usuarios extends javax.swing.JPanel {
         jLabel11.setText("TIPO DE USUARIO:");
 
         ComboUsuario.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ComboUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboUsuarioActionPerformed(evt);
+            }
+        });
 
         jLabel12.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(204, 204, 204));
@@ -677,6 +758,10 @@ public final class Usuarios extends javax.swing.JPanel {
         TextDireccion.setText("");
     }//GEN-LAST:event_TextDireccionMouseClicked
 
+    private void ComboUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboUsuarioActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnBuscarCategorias;
@@ -711,62 +796,5 @@ public final class Usuarios extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane5;
     // End of variables declaration//GEN-END:variables
 
-public void limpiar(){
 
-    TextNombres.setText("");
-    TextApellidos.setText("");
-    TextNumeroTelf.setText("");
-    TextDireccion.setText("");
-    TextCedula.setText("");
-}
-    public void obtenerIdVendedor(){
-        
-    try{       
-        st = c.createStatement();
-        r = st.executeQuery("select max(IdVendedor)+1 from Vendedor");
-        if(r.next()){
-        idv=r.getInt(1);
-        cod=String.valueOf(idv);
-        TextIdVendedor.setText(cod); 
-        }
-    }
-    catch(SQLException e){
-        LabelEstado.setText("Error: "+e);
-    }
-    }
-    
-    
-
-public void FillComboUsuario()
-    {
-    DefaultComboBoxModel value;
-      try {         
-         r= cn.consultar("select Tipo_Usuario,IdTipo_Usuario from Tipo_Usuario");   
-         value =new DefaultComboBoxModel();
-         ComboUsuario.setModel(value);
-         while (r.next()) { 
-           value.addElement(new GuardID(r.getString(1),r.getString(2)));
-         }
-         r.close();
-        } catch (SQLException e) {
-          LabelEstado.setText("Error: "+e);
-        }
-  
-    } 
-public void FillComboEmpresa()
-    {
-    DefaultComboBoxModel value;
-      try {         
-            r= cn.consultar("select NombreEmpresa,IdEmpresa from Empresa");     
-            value =new DefaultComboBoxModel();
-            ComboEmpresa.setModel(value);
-         while (r.next()) {         
-           value.addElement(new GuardIDE(r.getString(1),r.getString(2)));
-         }
-         r.close();
-        } catch (SQLException e) {
-          LabelEstado.setText("Error: "+e);
-        }
-  
-    }
 }
