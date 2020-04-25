@@ -1,20 +1,26 @@
 package Vista;
+
+import Modelo.CRUD;
 import Modelo.Conexion;
-import Modelo.Consultas;
 import static Vista.EntornoAdmin.LabelEstado;
 import static Vista.BuscarProFactura.r;
 import java.sql.*;
 import javax.swing.table.DefaultTableModel;
 
 public final class ProductosBuscar extends javax.swing.JPanel {
-
-static Statement s;
-static ResultSet rs;
-Conexion f = new Conexion(); 
-Connection c=f.conexion();
-DefaultTableModel modelo = new DefaultTableModel();
-int cantidadColumnas;
-Consultas pr=new Consultas();
+    
+    //declarar variables
+    static Statement s;
+    static ResultSet rs;
+    int cantidadColumnas;
+    
+    //crear objetos de clase
+    Conexion f = new Conexion(); 
+    Connection c=f.conexion();
+    CRUD crud=new CRUD();
+    
+    //crear objetos de tabla
+    DefaultTableModel modelo = new DefaultTableModel();
     
     public ProductosBuscar() {
         initComponents();
@@ -184,7 +190,7 @@ Consultas pr=new Consultas();
             String nombre = TextBuscar.getText();
        //     String nombre = TextBuscar.getText().toLowerCase();
             modelo = (DefaultTableModel) TablaProductos.getModel();
-            r = pr.buscarProducto(nombre);
+            r = crud.buscarProducto(nombre);
             while (TablaProductos.getRowCount() > 0) {
                 modelo.removeRow(0);
             }

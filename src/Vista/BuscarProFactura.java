@@ -3,9 +3,7 @@ package Vista;
 import Controlador.Funcionalidades;
 import Controlador.SettersAndGetters;
 import Modelo.Conexion;
-
-import Modelo.Consultas;
-import Modelo.MetodoIngreso;
+import Modelo.CRUD;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,12 +17,11 @@ public final class BuscarProFactura extends javax.swing.JFrame {
     
     Conexion cn=new Conexion();  
     Connection c= cn.conexion();
-    Consultas pr=new Consultas();
     Funcionalidades fun = new Funcionalidades();
     DefaultTableModel model = new DefaultTableModel();
     DefaultComboBoxModel value = new DefaultComboBoxModel();
     SettersAndGetters pp=new SettersAndGetters();
-    MetodoIngreso mi=new MetodoIngreso();
+    CRUD crud=new CRUD();
     int cantidadColumnas;
     boolean sw;
     String codMarca;
@@ -169,7 +166,7 @@ public final class BuscarProFactura extends javax.swing.JFrame {
             String nombre = TextBuscar.getText();
        //     String nombre = TextBuscar.getText().toLowerCase();
             model = (DefaultTableModel) tblRegistro.getModel();
-            r = pr.buscarProducto(nombre);
+            r = crud.buscarProducto(nombre);
             while (tblRegistro.getRowCount() > 0) {
                 model.removeRow(0);
             }

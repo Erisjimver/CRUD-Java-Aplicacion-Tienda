@@ -1,4 +1,5 @@
 package Vista;
+import Modelo.CRUD;
 import Modelo.Conexion;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -10,14 +11,15 @@ public class Login extends javax.swing.JFrame {
 
     static ResultSet r;
     static Statement st;
+    private String usu,pass,nom;
 
     Conexion cn=new Conexion();  
     Connection c= cn.conexion();
+    CRUD crud= new CRUD();
     
     public Login() {
         initComponents();
         this.setLocationRelativeTo(null);
-
     }
     void acceder(String usuario, String pas)
     {
@@ -29,6 +31,8 @@ public class Login extends javax.swing.JFrame {
             while(r.next())
             {
                cap=r.getString(1);
+               nom = crud.obtenerNombreUsuario(usuario);
+              
             }
             if(cap.equals("Administrador"))
             {
@@ -36,7 +40,9 @@ public class Login extends javax.swing.JFrame {
                     EntornoAdmin ingreso = new EntornoAdmin();
                     ingreso.setVisible(true);
                     ingreso.pack();
-                    EntornoAdmin.lbluserad.setText(usuario);     
+                    
+                    EntornoAdmin.lbluserad.setText(nom);
+                   // EntornoAdmin.lbluserad.setText(nom.toUpperCase());
                 
             }
             if(cap.equals("Vendedor"))
@@ -45,7 +51,8 @@ public class Login extends javax.swing.JFrame {
                     EntornoVendedor ingresos = new EntornoVendedor();
                     ingresos.setVisible(true);
                     ingresos.pack();
-                    EntornoVendedor.lblusuario.setText(usuario);
+                    //EntornoVendedor.lblusuario.setText(nom.toUpperCase());
+                    EntornoVendedor.lblusuario.setText(nom);
             }
            if((cap.equals(""))&&(cap.equals("")))
             {
@@ -55,15 +62,15 @@ public class Login extends javax.swing.JFrame {
         catch(SQLException ex) 
         {
             Logger.getLogger(EntornoAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
        
         }
 
   
     public void conexion(){
-            
-            String usu="",pass="";
-            
+                
             usu= TextUsuario.getText();
             pass= new String(Password.getPassword());
             try{

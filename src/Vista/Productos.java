@@ -2,7 +2,7 @@ package Vista;
 import Modelo.Conexion;
 import Controlador.SettersAndGetters;
 import Controlador.Funcionalidades;
-import Modelo.MetodoIngreso;
+import Modelo.CRUD;
 import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.Component;
 import java.awt.HeadlessException;
@@ -24,7 +24,7 @@ public final class Productos extends javax.swing.JPanel {
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultComboBoxModel value = new DefaultComboBoxModel();
     SettersAndGetters pp=new SettersAndGetters();
-    MetodoIngreso mi=new MetodoIngreso();
+    CRUD mi=new CRUD();
     Funcionalidades fun = new Funcionalidades();
     
     int cantidadColumnas;

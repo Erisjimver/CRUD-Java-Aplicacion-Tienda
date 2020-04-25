@@ -1,9 +1,8 @@
 package Vista;
 import Modelo.Conexion;
 import Controlador.Funcionalidades;
-import Modelo.MetodoIngreso;
+import Modelo.CRUD;
 import Controlador.SettersAndGetters;
-import Modelo.Consultas;
 import static Vista.EntornoAdmin.LabelEstado;
 import static Vista.EntornoVendedor.LabelEstadoV;
 
@@ -33,8 +32,7 @@ public final class Factura extends javax.swing.JPanel {
     Connection c= cn.conexion();
     Funcionalidades funcionalidad=new Funcionalidades();
     SettersAndGetters set =new SettersAndGetters();
-    MetodoIngreso mi=new MetodoIngreso();
-    Consultas co=new Consultas();
+    CRUD crud=new CRUD();
     
 
     public Factura() {
@@ -95,9 +93,9 @@ public final class Factura extends javax.swing.JPanel {
             String descripcion = "" + TextNombrep.getText() + " marca " + TextMarca.getText();
             importe = Double.parseDouble(TextImporte.getText());
             int filas = TablaDetalles.getRowCount();
-            Consultas co=new Consultas();
+
             int idpro=Integer.parseInt(TextCodigop.getText());           
-            int cantbd=co.consultarCantidad(idpro);
+            int cantbd=crud.consultarCantidad(idpro);
             
             for (int i = 0; i < filas; i++) 
             {
@@ -150,17 +148,20 @@ public final class Factura extends javax.swing.JPanel {
             set.setNombre(TextNombre.getText());
             set.setTelefono(TextTelefono.getText());
             set.setDireccion(TextDireccion.getText());
-            mi.registrarCliente(set);
+            crud.registrarCliente(set);
+            System.out.println("llego aqui");
             
             String usuar =(lblusuario.getText());
-            String codEmpleado = co.obteneriIDEmpleado(usuar); 
-
-            String codCliente = co.obteneriIDcliente();
+            String codEmpleado = crud.obteneriIDEmpleado(usuar); 
+            String codCliente = crud.obteneriIDcliente();
+            System.out.println("Llego aca: " + usuar+ " aca el codigo: "+ codEmpleado);
+            System.out.println("Codigo del empleado"+codEmpleado);
+            System.out.println("Id cliente: "+codCliente);
             
             set.setIdvendedor(Integer.parseInt(codEmpleado));
             set.setIdcliente(Integer.parseInt(codCliente));
             System.out.println("Aun no se registra venta");
-            mi.registrarFactura(set);
+            crud.registrarFactura(set);
             System.out.println("Aqui inicia la factura");
             int filas = TablaDetalles.getRowCount();
             for (int i = 0; i < filas; i++) {
@@ -179,7 +180,7 @@ public final class Factura extends javax.swing.JPanel {
                 System.out.println(TablaDetalles.getValueAt(i, 4).toString());
                 //finaliza comprobacion de datos
                 
-                mi.registrarDetalleFactura(set);             
+                crud.registrarDetalleFactura(set);             
             }
             codigofac();
             limpiacontroles();
@@ -640,11 +641,10 @@ public final class Factura extends javax.swing.JPanel {
             PanelControlesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelControlesLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addGroup(PanelControlesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnQuitar)
-                    .addGroup(PanelControlesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnAgregar)
-                        .addComponent(btnBuscar)))
+                .addGroup(PanelControlesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnAgregar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnQuitar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         PanelControlesLayout.setVerticalGroup(
@@ -654,9 +654,9 @@ public final class Factura extends javax.swing.JPanel {
                 .addComponent(btnBuscar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnAgregar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnQuitar)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         Vender.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/Vender (2).png"))); // NOI18N
@@ -804,9 +804,9 @@ public final class Factura extends javax.swing.JPanel {
             LabelEstadoV.setText("cedula correcta");
               
             String nombre,telefono,direccion;
-            Consultas co=new Consultas();
+
           
-            r = co.buscarClientes(cedula); 
+            r = crud.buscarClientes(cedula); 
             if(r.next()==false){
                 
             }

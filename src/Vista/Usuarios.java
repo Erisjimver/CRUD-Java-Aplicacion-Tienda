@@ -2,7 +2,7 @@ package Vista;
 import Controlador.Funcionalidades;
 import Modelo.Conexion;
 import Controlador.SettersAndGetters;
-import Modelo.MetodoIngreso;
+import Modelo.CRUD;
 import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.Component;
 import java.awt.HeadlessException;
@@ -17,29 +17,32 @@ import javax.swing.table.DefaultTableModel;
 public final class Usuarios extends javax.swing.JPanel {
 
     //variables
-   private static ResultSet r;
+    private static ResultSet r;
     private static Statement st;
     private static PreparedStatement ps;
-    private String cod,contrasena,cedula,nombres,apellidos,telefono,direccion;
+    private String contrasena,cedula,nombres,apellidos,telefono,direccion;
     int idsucur=0,cantidadColumnas,idv;
     
     //invocacion de clases   
     Conexion cn=new Conexion();  
     Connection c= cn.conexion();
-    DefaultTableModel modelo = new DefaultTableModel();
+    CRUD crud=new CRUD();
+    Funcionalidades fun = new Funcionalidades();
     SettersAndGetters set=new SettersAndGetters();
-    MetodoIngreso mi=new MetodoIngreso();
+    
+    //creando objetos de la tabla, y los jComboBox
+    DefaultTableModel modelo = new DefaultTableModel();
     DefaultComboBoxModel comboUser = new DefaultComboBoxModel();
     DefaultComboBoxModel comboEmpresa = new DefaultComboBoxModel();
-    Funcionalidades fun = new Funcionalidades();
+    
 
     private Component rootPane;
     
     public Usuarios() throws Exception {
         initComponents();     
-        this.TablaSucursal.setModel(modelo);
+        this.TablaEmpleados.setModel(modelo);
         buscarColumnas();
-        obtenerIdVendedor();
+        mostrarIdVendedor();
         FillComboUsuario();
         FillComboEmpresa();
     }
@@ -47,7 +50,8 @@ public final class Usuarios extends javax.swing.JPanel {
     
     public void buscarColumnas(){      
         try{ 
-            r = cn.consultar("select IdVendedor,Cedula,Nombres,Apellidos,Telefono,Direccion from Vendedor"); 
+            //r = cn.consultar("select IdVendedor,Cedula,Nombres,Apellidos,Telefono,Direccion from Vendedor");
+            r = cn.consultar("select * from Vendedor order by IdVendedor");  
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
@@ -64,7 +68,9 @@ public final class Usuarios extends javax.swing.JPanel {
         limpiarTabla();
        try
        {
-            r = cn.consultar("select IdVendedor,Cedula,Nombres,Apellidos,Telefono,Direccion from Vendedor order by IdVendedor");  
+           r = cn.consultar("select * from Vendedor order by IdVendedor");  
+            
+          //  r = cn.consultar("select IdVendedor,Cedula,Nombres,Apellidos,Telefono,Direccion from Vendedor order by IdVendedor");  
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)
@@ -124,11 +130,11 @@ public final class Usuarios extends javax.swing.JPanel {
                 set.setTelefonoV(telefono);
                 set.setDireccionV(direccion);
                 
-            mi.registrarVendedor(set);
+            crud.registrarEmpleado(set);
             
             JOptionPane.showMessageDialog(null, "Vendedor registrado correctamente");
             limpiar();
-            obtenerIdVendedor();
+            mostrarIdVendedor();
         
         }
         catch(SQLException | NumberFormatException | HeadlessException ex)
@@ -137,14 +143,29 @@ public final class Usuarios extends javax.swing.JPanel {
         }
         }
     }
-       
-    public void eliminar(){
-    
-    int fila = TablaSucursal.getSelectedRow();
+
+    public void Delete()
+    {
         try
         {
-            ps = c.prepareStatement("delete from Empleados where IdEmpresa=?");
-            ps.setString(1, TablaSucursal.getValueAt(fila, 0).toString());
+            int fila = TablaEmpleados.getSelectedRow();
+            int idempleado = Integer.parseInt(TablaEmpleados.getValueAt(fila, 0).toString());
+            crud.eliminarEmpleado(idempleado);
+        }
+        catch(Exception e)
+        {
+            LabelEstado.setText("Error al eliminar: "+e); 
+        }
+        
+    }
+    
+    public void eliminaEmpleado(int idvendedor){
+    
+    int fila = TablaEmpleados.getSelectedRow();
+        try
+        {
+            ps = c.prepareStatement("delete from Vendedor where IdVendedor='"+idvendedor+"'");
+            ps.setString(1, TablaEmpleados.getValueAt(fila, 0).toString());
             int exito = ps.executeUpdate();
             if(exito==1){
                 JOptionPane.showMessageDialog(rootPane, "Sucursal eliminada...................");
@@ -156,27 +177,28 @@ public final class Usuarios extends javax.swing.JPanel {
             LabelEstado.setText("Error: "+ext); 
         }
     }
-    
-    public void actualizar(){
+
+    public void actualizar() throws Exception{
         
         try{
 
-        int fila = TablaSucursal.getSelectedRow();
-
-            ps = c.prepareCall("{call ActualizarSucursal(?,?,?,?,?)}");
-            ps.setInt(1, Integer.parseInt(TablaSucursal.getValueAt(fila, 0).toString()));
-            ps.setString(2, TablaSucursal.getValueAt(fila, 1).toString());
-            ps.setString(3, TablaSucursal.getValueAt(fila, 2).toString());
-            ps.setInt(4, Integer.parseInt(TablaSucursal.getValueAt(fila, 3).toString()));
-            ps.setString(5, TablaSucursal.getValueAt(fila, 4).toString());
-            int i=ps.executeUpdate();
-            if(i==1){
-                JOptionPane.showMessageDialog(rootPane, "Sucursal actualizada");
-                c.close();
-            }
+        int fila = TablaEmpleados.getSelectedRow();
+            
+        set.setIdvendedor(Integer.parseInt(TablaEmpleados.getValueAt(fila, 0).toString()));
+        set.setIdTipoUsuarioV(Integer.parseInt(TablaEmpleados.getValueAt(fila, 1).toString()));
+        set.setIdEmpresaV(Integer.parseInt(TablaEmpleados.getValueAt(fila, 2).toString()));
+        set.setContrasenaV(TablaEmpleados.getValueAt(fila, 3).toString());
+        set.setCedulaV(TablaEmpleados.getValueAt(fila, 4).toString());
+        set.setNombresV(TablaEmpleados.getValueAt(fila, 5).toString());
+        set.setApellidosV(TablaEmpleados.getValueAt(fila, 6).toString());
+        set.setTelefonoV(TablaEmpleados.getValueAt(fila, 7).toString());
+        set.setDireccionV(TablaEmpleados.getValueAt(fila, 8).toString());
+            
+            crud.actualizaEmpleado(set);
+            
         }
         
-        catch(SQLException | NumberFormatException | HeadlessException ex)
+        catch(Exception ex)
         {
             LabelEstado.setText("Error: "+ex);   
         }
@@ -191,20 +213,15 @@ public final class Usuarios extends javax.swing.JPanel {
         TextCedula.setText("");
     }
     
-    public void obtenerIdVendedor(){
+    public void mostrarIdVendedor() throws Exception{
         
-    try{       
-        st = c.createStatement();
-        r = st.executeQuery("select max(IdVendedor)+1 from Vendedor");
-        if(r.next()){
-        idv=r.getInt(1);
-        cod=String.valueOf(idv);
-        TextIdVendedor.setText(cod); 
+        try{       
+            String idEmpleado= crud.obteneriIDEmpleadoNoParametro();
+            TextIdVendedor.setText(idEmpleado); 
         }
-    }
-    catch(SQLException e){
+        catch(SQLException e){
         LabelEstado.setText("Error: "+e);
-    }
+        }
     }
     
     public void FillComboUsuario() throws Exception{
@@ -265,7 +282,7 @@ public final class Usuarios extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        Empleados = new javax.swing.JLabel();
         Crear = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         TextIdVendedor = new javax.swing.JTextField();
@@ -290,7 +307,7 @@ public final class Usuarios extends javax.swing.JPanel {
         BtnEliminar = new javax.swing.JButton();
         Buscar = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        TablaSucursal = new javax.swing.JTable();
+        TablaEmpleados = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(36, 47, 65));
 
@@ -308,9 +325,9 @@ public final class Usuarios extends javax.swing.JPanel {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("SUCURSAL");
+        Empleados.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        Empleados.setForeground(new java.awt.Color(255, 255, 255));
+        Empleados.setText("Empleados");
 
         javax.swing.GroupLayout headerLayout = new javax.swing.GroupLayout(header);
         header.setLayout(headerLayout);
@@ -324,9 +341,9 @@ public final class Usuarios extends javax.swing.JPanel {
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 546, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addGap(250, 250, 250))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 574, Short.MAX_VALUE)
+                .addComponent(Empleados)
+                .addGap(221, 221, 221))
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,8 +352,10 @@ public final class Usuarios extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel3)))
+                    .addComponent(jLabel1)))
+            .addGroup(headerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(Empleados))
         );
 
         Crear.setBackground(new java.awt.Color(36, 47, 65));
@@ -556,15 +575,15 @@ public final class Usuarios extends javax.swing.JPanel {
                                 .addComponent(TextDireccion)
                                 .addGroup(CrearLayout.createSequentialGroup()
                                     .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(Password)
-                                        .addComponent(TextCedula, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))
+                                        .addComponent(Password, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                                        .addComponent(TextCedula))
                                     .addGap(92, 92, 92))))))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         CrearLayout.setVerticalGroup(
             CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CrearLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(TextIdVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -609,17 +628,16 @@ public final class Usuarios extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(BtnRegistrar)
-                            .addComponent(BtnBuscarCategorias, javax.swing.GroupLayout.Alignment.TRAILING))))
-                .addContainerGap(19, Short.MAX_VALUE))
+                            .addComponent(BtnBuscarCategorias, javax.swing.GroupLayout.Alignment.TRAILING)))))
         );
 
         Buscar.setBackground(new java.awt.Color(36, 47, 65));
 
         jScrollPane5.setBackground(new java.awt.Color(255, 255, 255));
 
-        TablaSucursal.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        TablaSucursal.setForeground(new java.awt.Color(51, 51, 51));
-        TablaSucursal.setModel(new javax.swing.table.DefaultTableModel(
+        TablaEmpleados.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        TablaEmpleados.setForeground(new java.awt.Color(51, 51, 51));
+        TablaEmpleados.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {}
             },
@@ -627,21 +645,23 @@ public final class Usuarios extends javax.swing.JPanel {
 
             }
         ));
-        TablaSucursal.setGridColor(new java.awt.Color(255, 255, 255));
-        TablaSucursal.setRowHeight(20);
-        TablaSucursal.setSelectionBackground(new java.awt.Color(1, 198, 83));
-        TablaSucursal.addKeyListener(new java.awt.event.KeyAdapter() {
+        TablaEmpleados.setGridColor(new java.awt.Color(255, 255, 255));
+        TablaEmpleados.setRowHeight(20);
+        TablaEmpleados.setSelectionBackground(new java.awt.Color(1, 198, 83));
+        TablaEmpleados.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                TablaSucursalKeyReleased(evt);
+                TablaEmpleadosKeyReleased(evt);
             }
         });
-        jScrollPane5.setViewportView(TablaSucursal);
+        jScrollPane5.setViewportView(TablaEmpleados);
 
         javax.swing.GroupLayout BuscarLayout = new javax.swing.GroupLayout(Buscar);
         Buscar.setLayout(BuscarLayout);
         BuscarLayout.setHorizontalGroup(
             BuscarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BuscarLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE))
         );
         BuscarLayout.setVerticalGroup(
             BuscarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -668,7 +688,8 @@ public final class Usuarios extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Crear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(Crear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addGap(0, 101, Short.MAX_VALUE)
@@ -697,18 +718,22 @@ public final class Usuarios extends javax.swing.JPanel {
 
     private void BtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEliminarActionPerformed
 
-        eliminar();
+        Delete();
         
     }//GEN-LAST:event_BtnEliminarActionPerformed
 
-    private void TablaSucursalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TablaSucursalKeyReleased
+    private void TablaEmpleadosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TablaEmpleadosKeyReleased
         
         
     if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-        actualizar();
+        try {
+            actualizar();
+        } catch (Exception ex) {
+            Logger.getLogger(Usuarios.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
-    }//GEN-LAST:event_TablaSucursalKeyReleased
+    }//GEN-LAST:event_TablaEmpleadosKeyReleased
 
     private void PasswordFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_PasswordFocusGained
         Password.setText("");
@@ -771,8 +796,9 @@ public final class Usuarios extends javax.swing.JPanel {
     private javax.swing.JComboBox ComboEmpresa;
     private javax.swing.JComboBox ComboUsuario;
     private javax.swing.JPanel Crear;
+    private javax.swing.JLabel Empleados;
     private javax.swing.JPasswordField Password;
-    private javax.swing.JTable TablaSucursal;
+    private javax.swing.JTable TablaEmpleados;
     private javax.swing.JTextField TextApellidos;
     private javax.swing.JTextField TextCedula;
     private javax.swing.JTextField TextDireccion;
@@ -787,7 +813,6 @@ public final class Usuarios extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;

@@ -41,6 +41,39 @@ begin
 end RegistrarVendedor;
 /
 
+---actualizar Empleado
+create or replace procedure ActualizarEmpleados 
+(
+pIdVendedor in number,
+pIdTipo_Usuario in number,
+pIdEmpresa in number,
+pContrasena  in varchar2,
+pCedula in number,
+pNombres in varchar2,
+pApellidos in varchar2,
+pTelefono in varchar2,
+pDireccion in varchar2
+) 
+as 
+begin
+  update Vendedor set IdTipo_Usuario=pIdTipo_Usuario, IdEmpresa=pIdEmpresa, Contrasena=pContrasena, Cedula=pCedula,
+  Nombres=pNombres, Apellidos=pApellidos, Telefono = pTelefono, Direccion=pDireccion 
+  where IdVendedor=pIdVendedor;
+end ActualizarEmpleados;
+/
+--Delete User
+--registro de empleados
+create or replace procedure EliminarEmpleado
+(
+  id_empleado in number
+)
+as
+begin
+	delete from Vendedor where idvendedor= id_empleado;
+end EliminarEmpleado;
+/
+
+
 /*
 ----triger disparar secuencia
 CREATE TRIGGER tr_idvendedor
@@ -207,6 +240,7 @@ begin
   where IdEmpresa=pIdEmpresa;
 end ActualizarSucursal;
 /
+
 
 
 --procedimiento para vender

@@ -1,5 +1,6 @@
 package Vista;
-import Modelo.Consultas;
+
+import Modelo.CRUD;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -9,7 +10,7 @@ import javax.swing.ImageIcon;
 
 public class EntornoAdmin extends javax.swing.JFrame {
 
-Consultas consulta=new Consultas();
+    CRUD crud=new CRUD();
     
 
 public class IEntornoAdmin extends javax.swing.JPanel {
@@ -377,13 +378,13 @@ super.paintComponent(grafico);
     }//GEN-LAST:event_PrincipalActionPerformed
 
     private void EmpleadosItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmpleadosItemActionPerformed
-      //  consulta.Reportes("C:\\Users\\Isra\\Documents\\NetBeansProjects\\ZonaMovil\\src\\Reportes\\Vendedores.jrxml");
-        consulta.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Vendedores.jrxml");
+      //  crud.Reportes("C:\\Users\\Isra\\Documents\\NetBeansProjects\\ZonaMovil\\src\\Reportes\\Vendedores.jrxml");
+        crud.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Vendedores.jrxml");
         
     }//GEN-LAST:event_EmpleadosItemActionPerformed
 
     private void SucursalesItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SucursalesItemActionPerformed
-        consulta.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Sucursal.jrxml");
+        crud.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Sucursal.jrxml");
     }//GEN-LAST:event_SucursalesItemActionPerformed
 
     private void FacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FacturasActionPerformed
@@ -398,7 +399,7 @@ super.paintComponent(grafico);
     }//GEN-LAST:event_FacturasActionPerformed
 
     private void FacturaItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FacturaItemActionPerformed
-        consulta.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Facturas.jrxml");
+        crud.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Facturas.jrxml");
     }//GEN-LAST:event_FacturaItemActionPerformed
 
 

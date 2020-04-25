@@ -1,7 +1,7 @@
 package Vista;
 import Modelo.Conexion;
 import Controlador.SettersAndGetters;
-import Modelo.MetodoIngreso;
+import Modelo.CRUD;
 import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.Component;
 import java.awt.HeadlessException;
@@ -93,7 +93,7 @@ public final class Categorias extends javax.swing.JPanel {
             {
                 
                 SettersAndGetters pp=new SettersAndGetters();
-                MetodoIngreso mi=new MetodoIngreso();
+                CRUD mi=new CRUD();
                 pp.setDescripcion(TextDescripcion.getText());
                 mi.registrarCategorias(pp);
             

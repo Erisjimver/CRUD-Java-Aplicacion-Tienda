@@ -61,7 +61,7 @@ public final class Facturas extends javax.swing.JPanel {
                     {
                         LabelEstado.setText("");//mensaje de alerta
                         consulta= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto";
-                        consultar(consulta);//se llama al metodo que realiza la consulta
+                        consultar(consulta);//se llama al metodo que realiza la crud
                     }
             
                   //  if(RadioButtonNF.isSelected()==true&&num.equals("")) 
@@ -75,7 +75,7 @@ public final class Facturas extends javax.swing.JPanel {
                         else
                         {
                             consulta= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.IdFactura='"+num+"'";
-                            consultar(consulta);//se llama al metodo que realiza la consulta
+                            consultar(consulta);//se llama al metodo que realiza la crud
                         }
                     }
 
@@ -92,7 +92,7 @@ public final class Facturas extends javax.swing.JPanel {
                         String fec=formatofecha.format(fecha);
 
                         consulta= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.FechaEmision='"+fec+"'";  
-                        consultar(consulta);//se llama al metodo que realiza la consulta
+                        consultar(consulta);//se llama al metodo que realiza la crud
                         }
                     }
            
