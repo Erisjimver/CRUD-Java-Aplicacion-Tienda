@@ -238,16 +238,17 @@ Connection c= cn.conexion();
  
         try
         { 
-            ps = c.prepareCall("CALL RegistrarProductos(?,?,?,?,?,?)");
+            ps = c.prepareCall("call ActualizarProductos(?,?,?,?,?,?)");
 
             ps.setInt(1, to.getIdcategorias());
             ps.setString(2, to.getNombreproducto());      
             ps.setString(3, to.getMarca());
             ps.setDouble(4, to.getCosto());
             ps.setDouble(5, to.getPrecio());
-            ps.setInt(6, to.getStock()); 
+            ps.setInt(6, to.getStock());
             
             ps.execute();
+            
             LabelEstado.setText("Actualizacion del producto exitosa"); 
         }catch(SQLException e){
             LabelEstado.setText("Error al actualizar el Producto: "+e);
@@ -318,7 +319,7 @@ Connection c= cn.conexion();
         }
         
     } 
-   
+    
 //metodos para eliminar productos
     public void eliminaProducto(int idproducto){
         
@@ -342,7 +343,25 @@ Connection c= cn.conexion();
 //--------------------------- CONSULTAS --------------------------------------//
 //----------------------------------------------------------------------------//
 
-   
+//consulta del tipo de usuario para el LOGIN 
+    
+    public String TipoUsuario(String usuario, String contrasena) throws Exception {
+        
+        String sql="select tp.Tipo_Usuario from Vendedor v inner join Tipo_Usuario tp on v.IdTipo_Usuario = tp.IdTipo_Usuario where v.cedula='"+usuario+"' and v.Contrasena='"+contrasena+"'";         
+        String tipo_usuario="";
+        try{
+        
+            s = c.createStatement();
+            rs = s.executeQuery(sql);
+            rs.next();
+            tipo_usuario=rs.getString(1);
+        
+        }catch(SQLException e){
+            
+        }
+        return tipo_usuario;
+    }   
+    
 //Consulta de los clientes    
     public ResultSet buscarClientes(String cedula) throws Exception {
    
@@ -351,22 +370,49 @@ Connection c= cn.conexion();
         rs = ps.executeQuery();
         return rs;
     }
-    
+//Consultar clientes pro cedula    
     public ResultSet buscarClientes1(String cedula) throws Exception {
         String sql="SELECT * FROM Clientes where cedula= ?";             
         return cn.consultar(sql);
     }
     
+//Consulta todos los indices y facturas
+    public ResultSet buscaLlenarIndiceFactura() throws Exception {
+        String sql="select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto";            
+        return consultar(sql);
+    }
+    
+//se buscan todas las facturas por ID
+    public ResultSet buscaLlenarIndiceFacturaID(int idfactura) throws Exception {
+        String sql= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.IdFactura='"+idfactura+"'";
+        return consultar(sql);
+    }
+    
+//se buscan todas las facturas pode fecha
+    public ResultSet buscaLlenarIndiceFacturaFecha(String fecha) throws Exception {
+        String sql= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.FechaEmision='"+fecha+"'";  
+        return consultar(sql);
+    }                          
+
+//se buscan todos los productos buscados para llenar indice de BuscarProductoFactura
+    public ResultSet LlenarIndiceBurcarProductoCategoria(String clave) throws Exception {
+        String sql= "select p.IdProducto,p.NombreProducto,p.Marca,p.Precio,p.Stock from Producto p inner join Categoria c on p.IdCategoria = c.IdCategoria where c.descripcion='"+clave+"'";  
+        return consultar(sql);
+    }  
     
 //Consulta de los productos por nombre usando like   
     public ResultSet buscarProducto(String nombre) throws Exception {
         nombre = '%' + nombre + '%';
-        PreparedStatement ps = c.prepareStatement("SELECT * FROM producto where nombreproducto like ?");
+        ps = c.prepareStatement("SELECT * FROM producto where nombreproducto like ?");
         ps.setString(1, nombre);
         rs = ps.executeQuery();
         return rs;
     }
-    
+//Consulta de los productos por nombre usando like   
+    public ResultSet buscarTodosProducto() throws Exception {
+        String sql = "select * from producto";
+        return consultar(sql);
+    }    
 //consulta cantidad de productos
     public int consultarCantidad(int idproducto) throws Exception {
        int bdcantidad=0;
@@ -389,7 +435,18 @@ Connection c= cn.conexion();
         }
         return idcliente;
     }
-
+//consulta id del cliente
+    public String obteneriIdProducto() throws Exception {
+        
+        String idproducto="";
+        s = c.createStatement();
+        rs = s.executeQuery("select max(IdProducto)+1 from Producto");
+        if(rs.next()){
+        idproducto=rs.getString(1);
+        }
+        return idproducto;
+    }
+    
 //consulta id del empleado con parametro  
     public String obteneriIDEmpleado(String usuario) throws Exception 
     {
@@ -426,7 +483,7 @@ Connection c= cn.conexion();
         return nombre;
     }
     
-//Busqueda de reportes"    
+//Busqueda de reportes  
     public void Reportes(String Cadena){
     try{
          JasperReport reporte = JasperCompileManager.compileReport(Cadena); 
@@ -437,8 +494,21 @@ Connection c= cn.conexion();
           System.out.println("error"+e);   
         }
     }    
-  
-        
+////////////////////////////////////////////////////////////////////////////////
+///////////////////Metodo generico para consultas resul set ////////////////////
+////////////////////////////////////////////////////////////////////////////////
+    
+    public ResultSet consultar(String sql) { 
+            try 
+            { 
+                s = c.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+                rs = s.executeQuery(sql); 
+
+            } catch (SQLException e) { 
+                return null; 
+            } 
+            return rs; 
+    }        
     
     
 }//fin de la clase

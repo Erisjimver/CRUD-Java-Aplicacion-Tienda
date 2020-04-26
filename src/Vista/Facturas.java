@@ -1,4 +1,5 @@
 package Vista;
+import Modelo.CRUD;
 import Modelo.Conexion;
 import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.HeadlessException;
@@ -12,43 +13,43 @@ import javax.swing.table.DefaultTableModel;
 
 public final class Facturas extends javax.swing.JPanel {
 
-    static Statement s;
-    static ResultSet rs;
-    private String num,consulta,con;
-    Conexion f = new Conexion(); 
-    Connection c=f.conexion();
+    //declaracion de variables
+    private static ResultSet rs;
+    private String num;
+    private int cantidadColumnas;
+    
+    //creando objeto de la tabla pro defecto
     DefaultTableModel modelo = new DefaultTableModel();
-    int cantidadColumnas;
+    
+    //creando objeto de las clases
+    CRUD crud = new CRUD();
     
     public Facturas() {
         initComponents();
         this.TablaFactura.setModel(modelo);
-        BuscarProductos();
-        f.conexion();   
+        llenarIndiceTabla();
+  
     }
     
     
-   public void BuscarProductos()
+   public void llenarIndiceTabla()
     {      
         try{
-           rs = f.consultar("select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto");  
+            rs=crud.buscaLlenarIndiceFactura();
             ResultSetMetaData rsd = rs.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
+        } catch (Exception ex) {
+            LabelEstado.setText("No existe indice: "+ex);
         }
-        catch(SQLException e)
-        {
-           System.out.println("error: "+e); 
-        }
-    }
- 
-    public void BuscarProductos2()
+    } 
+   
+    public void BuscarProductosTotales()
     {
-
         try{
-            num=TextNF.getText();
+            num=TextNumeroFactura.getText();
             
             if(RadioButtonNF.isSelected()==false&&RadioButtonFecha.isSelected()==false&&RadioButtonTodo.isSelected()==false)
             {
@@ -60,8 +61,8 @@ public final class Facturas extends javax.swing.JPanel {
                     if(RadioButtonTodo.isSelected())
                     {
                         LabelEstado.setText("");//mensaje de alerta
-                        consulta= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto";
-                        consultar(consulta);//se llama al metodo que realiza la crud
+                        rs= crud.buscaLlenarIndiceFactura();
+                        consultar();//se llama al metodo que realiza la crud
                     }
             
                   //  if(RadioButtonNF.isSelected()==true&&num.equals("")) 
@@ -74,8 +75,8 @@ public final class Facturas extends javax.swing.JPanel {
                         }
                         else
                         {
-                            consulta= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.IdFactura='"+num+"'";
-                            consultar(consulta);//se llama al metodo que realiza la crud
+                            rs = crud.buscaLlenarIndiceFacturaID(Integer.parseInt(num));
+                            consultar();//se llama al metodo que realiza la crud
                         }
                     }
 
@@ -91,8 +92,8 @@ public final class Facturas extends javax.swing.JPanel {
                         SimpleDateFormat formatofecha= new SimpleDateFormat("dd/MM/YYYY");
                         String fec=formatofecha.format(fecha);
 
-                        consulta= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.FechaEmision='"+fec+"'";  
-                        consultar(consulta);//se llama al metodo que realiza la crud
+                        rs=crud.buscaLlenarIndiceFacturaFecha(fec);
+                        consultar();//se llama al metodo que realiza la crud
                         }
                     }
            
@@ -102,13 +103,15 @@ public final class Facturas extends javax.swing.JPanel {
         catch(HeadlessException e)
         {
             LabelEstado.setText(e.toString());
+        } catch (Exception ex) {
+            Logger.getLogger(Facturas.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    public void consultar(String conect){
-           con=conect;
+    public void consultar(){
+ 
            try { 
-                rs =f.consultar(con);         
+                       
                 while(rs.next())
                 { 
                     Object [] fila = new Object[cantidadColumnas];
@@ -128,8 +131,8 @@ public final class Facturas extends javax.swing.JPanel {
         
         try{
             
-                TextNF.setEnabled(true);
-                TextNF.requestFocus();
+                TextNumeroFactura.setEnabled(true);
+                TextNumeroFactura.requestFocus();
                 DateChooserFactura.setDate(null);
                 DateChooserFactura.setEnabled(false); 
     
@@ -145,8 +148,8 @@ public final class Facturas extends javax.swing.JPanel {
         try{        
           
                 DateChooserFactura.setEnabled(true);
-                TextNF.setEnabled(false);
-                TextNF.setText("");
+                TextNumeroFactura.setEnabled(false);
+                TextNumeroFactura.setText("");
 
         }
         catch(Exception e)
@@ -162,8 +165,8 @@ public final class Facturas extends javax.swing.JPanel {
 
             DateChooserFactura.setEnabled(false);
             DateChooserFactura.setDate(null);
-            TextNF.setText("");
-            TextNF.setEnabled(false);     
+            TextNumeroFactura.setText("");
+            TextNumeroFactura.setEnabled(false);     
             
         }
         catch(Exception e)
@@ -193,7 +196,7 @@ public final class Facturas extends javax.swing.JPanel {
         BtnBuscar = new javax.swing.JButton();
         RadioButtonNF = new javax.swing.JRadioButton();
         RadioButtonFecha = new javax.swing.JRadioButton();
-        TextNF = new javax.swing.JTextField();
+        TextNumeroFactura = new javax.swing.JTextField();
         RadioButtonTodo = new javax.swing.JRadioButton();
         BtnLimpiar = new javax.swing.JButton();
         DateChooserFactura = new com.toedter.calendar.JDateChooser();
@@ -236,7 +239,7 @@ public final class Facturas extends javax.swing.JPanel {
         TablaFactura.setSelectionBackground(new java.awt.Color(1, 198, 83));
         jScrollPane1.setViewportView(TablaFactura);
 
-        BtnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#busqueda.png"))); // NOI18N
+        BtnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#busqueda.png"))); // NOI18N
         BtnBuscar.setBorderPainted(false);
         BtnBuscar.setContentAreaFilled(false);
         BtnBuscar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -268,12 +271,12 @@ public final class Facturas extends javax.swing.JPanel {
             }
         });
 
-        TextNF.addKeyListener(new java.awt.event.KeyAdapter() {
+        TextNumeroFactura.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                TextNFKeyReleased(evt);
+                TextNumeroFacturaKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                TextNFKeyTyped(evt);
+                TextNumeroFacturaKeyTyped(evt);
             }
         });
 
@@ -286,7 +289,7 @@ public final class Facturas extends javax.swing.JPanel {
             }
         });
 
-        BtnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/#Error.png"))); // NOI18N
+        BtnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Error.png"))); // NOI18N
         BtnLimpiar.setBorderPainted(false);
         BtnLimpiar.setContentAreaFilled(false);
         BtnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -314,34 +317,35 @@ public final class Facturas extends javax.swing.JPanel {
                             .addComponent(RadioButtonNF))
                         .addGap(30, 30, 30)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(TextNF, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                            .addComponent(TextNumeroFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                             .addComponent(DateChooserFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(RadioButtonTodo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
-                .addComponent(BtnBuscar)
-                .addGap(30, 30, 30)
-                .addComponent(BtnLimpiar)
-                .addGap(447, 447, 447))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(BtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(BtnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(498, 498, 498))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BtnBuscar)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(RadioButtonNF)
-                            .addComponent(TextNF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(TextNumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(14, 14, 14)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(RadioButtonFecha)
                             .addComponent(DateChooserFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(RadioButtonTodo))
-                    .addComponent(BtnLimpiar))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(BtnLimpiar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                        .addComponent(BtnBuscar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(23, 23, 23)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -361,7 +365,7 @@ public final class Facturas extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBuscarActionPerformed
-        BuscarProductos2();
+        BuscarProductosTotales();
     }//GEN-LAST:event_BtnBuscarActionPerformed
 
     private void RadioButtonNFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RadioButtonNFActionPerformed
@@ -388,7 +392,7 @@ public final class Facturas extends javax.swing.JPanel {
 
     }//GEN-LAST:event_BtnLimpiarActionPerformed
 
-    private void TextNFKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextNFKeyTyped
+    private void TextNumeroFacturaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextNumeroFacturaKeyTyped
           char ca=evt.getKeyChar(); 
           
           if(Character.isLetter(ca)) {
@@ -396,21 +400,16 @@ public final class Facturas extends javax.swing.JPanel {
               evt.consume();             
               JOptionPane.showMessageDialog(null,"Ingrese solo numeros");      
           } 
-    }//GEN-LAST:event_TextNFKeyTyped
+    }//GEN-LAST:event_TextNumeroFacturaKeyTyped
 
-    private void TextNFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextNFKeyReleased
+    private void TextNumeroFacturaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextNumeroFacturaKeyReleased
         
     if(evt.getKeyCode()==KeyEvent.VK_ENTER)
     {
-           BuscarProductos2();
+           BuscarProductosTotales();
     }
-  /*  if(evt.getKeyCode()==KeyEvent.VK_ESCAPE){
-        System.exit(0);
-    }
-     else{
-                    
-    }*/
-    }//GEN-LAST:event_TextNFKeyReleased
+
+    }//GEN-LAST:event_TextNumeroFacturaKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnBuscar;
@@ -421,7 +420,7 @@ public final class Facturas extends javax.swing.JPanel {
     private javax.swing.JRadioButton RadioButtonNF;
     private javax.swing.JRadioButton RadioButtonTodo;
     private javax.swing.JTable TablaFactura;
-    private javax.swing.JTextField TextNF;
+    private javax.swing.JTextField TextNumeroFactura;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

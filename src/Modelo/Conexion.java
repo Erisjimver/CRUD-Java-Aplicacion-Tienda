@@ -11,36 +11,37 @@ Connection conexion=null;
 static Statement s;
 static ResultSet rs;
 
-public Connection conexion(){
-    
-        try { 
-            Class.forName("oracle.jdbc.OracleDriver");    
-            String BaseDeDatos = "jdbc:oracle:thin:@localhost:1521:XE";
-            conexion=DriverManager.getConnection(BaseDeDatos,"proyecto","59291");
-                
-            if (conexion != null) {
-                System.out.println("Conectando a Base de Datos...");
-            }
-        } catch (ClassNotFoundException | SQLException e) {
-            JOptionPane.showMessageDialog(null,"ERROR EN CONECTAR LA BASE DE DATOS"+e);
-        }
-        return conexion;    
-}
+    public Connection conexion(){
 
-public void cerrarconexion() throws SQLException {       
-            conexion.close();       
+            try { 
+                Class.forName("oracle.jdbc.OracleDriver");    
+                String BaseDeDatos = "jdbc:oracle:thin:@localhost:1521:XE";
+                conexion=DriverManager.getConnection(BaseDeDatos,"proyecto","59291");
+
+                if (conexion != null) {
+                    System.out.println("Conectando a Base de Datos...");
+                }
+            } catch (ClassNotFoundException | SQLException e) {
+                JOptionPane.showMessageDialog(null,"ERROR EN CONECTAR LA BASE DE DATOS"+e);
+            }
+            return conexion;    
+    }
+
+    public void cerrarconexion() throws SQLException { 
+        System.out.println("cerrando conexion");
+                conexion.close();       
     }
 
 
-public ResultSet consultar(String sql) { 
-        try { 
-            s = conexion.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-            rs = s.executeQuery(sql); 
-             
-        } catch (SQLException e) { 
-            return null; 
-        } 
-        return rs; 
+    public ResultSet consultar(String sql) { 
+            try { 
+                s = conexion.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+                rs = s.executeQuery(sql); 
+
+            } catch (SQLException e) { 
+                return null; 
+            } 
+            return rs; 
     }
 
     public void resportesPDF(String ruta, String archi) {

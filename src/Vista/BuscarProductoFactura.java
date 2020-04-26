@@ -2,7 +2,6 @@ package Vista;
 
 import Controlador.Funcionalidades;
 import Controlador.SettersAndGetters;
-import Modelo.Conexion;
 import Modelo.CRUD;
 import java.sql.*;
 import java.util.logging.Level;
@@ -11,29 +10,73 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public final class BuscarProFactura extends javax.swing.JFrame {
-    static ResultSet r;
-    static Statement st;
+public final class BuscarProductoFactura extends javax.swing.JFrame {
+
+    //declarando variables
+    private static ResultSet r;
+    private int cantidadColumnas;
     
-    Conexion cn=new Conexion();  
-    Connection c= cn.conexion();
-    Funcionalidades fun = new Funcionalidades();
-    DefaultTableModel model = new DefaultTableModel();
-    DefaultComboBoxModel value = new DefaultComboBoxModel();
+    //creando  objetos de clases
     SettersAndGetters pp=new SettersAndGetters();
     CRUD crud=new CRUD();
-    int cantidadColumnas;
-    boolean sw;
-    String codMarca;
-    public BuscarProFactura() throws Exception {
+    Funcionalidades fun = new Funcionalidades();
+    
+    //declarando objetos de tablas y jcombobox
+    DefaultTableModel model = new DefaultTableModel();
+    DefaultComboBoxModel value = new DefaultComboBoxModel();
+
+
+    public BuscarProductoFactura() throws Exception {
         
         initComponents();
         this.setLocationRelativeTo(null);
         this.tblRegistro.setModel(model);
         FillComboCate();
-        BuscarProductos();
+        LlenarIndiceTablaProductos();
     }    
+    
+    public void LlenarIndiceTablaProductos()
+    {      
+        try{
+            r = crud.consultar("select * from Producto");
+            ResultSetMetaData rsd = r.getMetaData();
+            cantidadColumnas = rsd.getColumnCount();
+            for (int i = 1; i <= cantidadColumnas; i++) {
+            model.addColumn(rsd.getColumnLabel(i));
+            }           
+        }
+        catch(SQLException e)
+        {
+           System.out.println("Error: "+e); 
+        }
+    }
+    
+    public void FillComboCate() throws Exception{
 
+      try {         
+         r = crud.consultar("select IdCategoria, descripcion from Categoria");   
+        
+         ComboCategoria.setModel(value);
+         while (r.next()) 
+         { 
+             //r.getInt(1) es la id de la tabla categorias
+             //r.getString(2) es la descripcion de la tabla categoria            
+            int clave = r.getInt(1);
+            String valor = r.getString(2);
+            pp.setIdCategoria(clave);
+            pp.setDescripcion(valor);
+            fun.DiccionarioCategoria(pp);
+            value.addElement(valor);
+            //value.addElement(new GuardIDCate(r.getString(2),r.getString(1)));
+         }
+         r.close();
+        } 
+      catch (SQLException ex) 
+      {
+        System.out.println("error"+ex);
+      }
+  
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -182,23 +225,23 @@ public final class BuscarProFactura extends javax.swing.JFrame {
                 }
             }
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,"ERROR EN CONECTAR LA BASE DE DATOS"+e);
         }
     }//GEN-LAST:event_TextBuscarKeyReleased
 
     private void ComboCategoriaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboCategoriaMousePressed
-
+        
         try{
             String clave= (String) ComboCategoria.getSelectedItem(); //toma la clave para eldiccionario Map
-            r = cn.consultar("select p.IdProducto,p.NombreProducto,p.Marca,p.Precio,p.Stock from Producto p inner join Categoria c on p.IdCategoria = c.IdCategoria where c.descripcion='"+clave+"'"); 
+            r = crud.LlenarIndiceBurcarProductoCategoria(clave);
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)
               fila[i] = r.getObject(i+1);        
             }
-        }
-        catch(SQLException e)
-        { 
-            JOptionPane.showMessageDialog(rootPane, e);
+   
+        } catch (Exception ex) {
+            Logger.getLogger(BuscarProductoFactura.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_ComboCategoriaMousePressed
 
@@ -211,7 +254,7 @@ public final class BuscarProFactura extends javax.swing.JFrame {
             Factura.TextCodigop.setText(tblRegistro.getValueAt(tblRegistro.getSelectedRow(), 0).toString());
             Factura.TextNombrep.setText(tblRegistro.getValueAt(tblRegistro.getSelectedRow(), 2).toString());
             Factura.TextMarca.setText(tblRegistro.getValueAt(tblRegistro.getSelectedRow(), 3).toString());
-            Factura.TextPrecio.setText(tblRegistro.getValueAt(tblRegistro.getSelectedRow(), 4).toString());  
+            Factura.TextPrecio.setText(tblRegistro.getValueAt(tblRegistro.getSelectedRow(), 5).toString());  
             this.dispose();
         }catch(Exception e){
             JOptionPane.showMessageDialog(rootPane,"No ha selecionado ningun producto");
@@ -235,14 +278,15 @@ public final class BuscarProFactura extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BuscarProFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BuscarProductoFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BuscarProFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BuscarProductoFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BuscarProFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BuscarProductoFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BuscarProFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BuscarProductoFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
@@ -250,9 +294,9 @@ public final class BuscarProFactura extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    new BuscarProFactura().setVisible(true);
+                    new BuscarProductoFactura().setVisible(true);
                 } catch (Exception ex) {
-                    Logger.getLogger(BuscarProFactura.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(BuscarProductoFactura.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -271,45 +315,5 @@ public final class BuscarProFactura extends javax.swing.JFrame {
     private javax.swing.JTable tblRegistro;
     // End of variables declaration//GEN-END:variables
 
-    public void BuscarProductos()
-    {      
-        try{
-          r = cn.consultar("select * from Producto");
-            ResultSetMetaData rsd = r.getMetaData();
-            cantidadColumnas = rsd.getColumnCount();
-            for (int i = 1; i <= cantidadColumnas; i++) {
-            model.addColumn(rsd.getColumnLabel(i));
-            }           
-        }
-        catch(SQLException e)
-        {
-           System.out.println("Error: "+e); 
-        }
-    }
-    public void FillComboCate() throws Exception{
-
-      try {         
-         r = cn.consultar("select IdCategoria, descripcion from Categoria");   
-        
-         ComboCategoria.setModel(value);
-         while (r.next()) 
-         { 
-             //r.getInt(1) es la id de la tabla categorias
-             //r.getString(2) es la descripcion de la tabla categoria            
-            int clave = r.getInt(1);
-            String valor = r.getString(2);
-            pp.setIdCategoria(clave);
-            pp.setDescripcion(valor);
-            fun.DiccionarioCategoria(pp);
-            value.addElement(valor);
-            //value.addElement(new GuardIDCate(r.getString(2),r.getString(1)));
-         }
-         r.close();
-        } 
-      catch (SQLException ex) 
-      {
-        System.out.println("error"+ex);
-      }
-  
-    }
+    
 }

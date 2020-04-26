@@ -143,26 +143,22 @@ public final class Factura extends javax.swing.JPanel {
 
     private void vender(){
         try{
-            System.out.println("Ojala funcione");
+            
             set.setCedula(TextCedula.getText());
             set.setNombre(TextNombre.getText());
             set.setTelefono(TextTelefono.getText());
             set.setDireccion(TextDireccion.getText());
             crud.registrarCliente(set);
-            System.out.println("llego aqui");
             
             String usuar =(lblusuario.getText());
             String codEmpleado = crud.obteneriIDEmpleado(usuar); 
             String codCliente = crud.obteneriIDcliente();
-            System.out.println("Llego aca: " + usuar+ " aca el codigo: "+ codEmpleado);
-            System.out.println("Codigo del empleado"+codEmpleado);
-            System.out.println("Id cliente: "+codCliente);
             
             set.setIdvendedor(Integer.parseInt(codEmpleado));
             set.setIdcliente(Integer.parseInt(codCliente));
-            System.out.println("Aun no se registra venta");
+
             crud.registrarFactura(set);
-            System.out.println("Aqui inicia la factura");
+
             int filas = TablaDetalles.getRowCount();
             for (int i = 0; i < filas; i++) {
 
@@ -171,14 +167,6 @@ public final class Factura extends javax.swing.JPanel {
                 set.setCantidad(Integer.parseInt(TablaDetalles.getValueAt(i, 1).toString()));
                 set.setValorunitario(Double.parseDouble(TablaDetalles.getValueAt(i, 3).toString()));
                 set.setValortotal(Double.parseDouble(TablaDetalles.getValueAt(i, 4).toString()));
-                //comprobar los datosa k se estan tomando
-                System.out.println("Quiero vender esta mierd");
-                System.out.println(Integer.parseInt(lblnumfact.getText()));
-                System.out.println(TablaDetalles.getValueAt(i, 0).toString());
-                System.out.println(TablaDetalles.getValueAt(i, 1).toString());
-                System.out.println(TablaDetalles.getValueAt(i, 3).toString());
-                System.out.println(TablaDetalles.getValueAt(i, 4).toString());
-                //finaliza comprobacion de datos
                 
                 crud.registrarDetalleFactura(set);             
             }
@@ -712,7 +700,7 @@ public final class Factura extends javax.swing.JPanel {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         
         try {
-            BuscarProFactura factu = new BuscarProFactura();
+            BuscarProductoFactura factu = new BuscarProductoFactura();
             factu.setVisible(true);
         } catch (Exception ex) {
             Logger.getLogger(Factura.class.getName()).log(Level.SEVERE, null, ex);

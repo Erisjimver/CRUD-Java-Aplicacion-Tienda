@@ -3,21 +3,17 @@ package Vista;
 import Modelo.CRUD;
 import Modelo.Conexion;
 import static Vista.EntornoAdmin.LabelEstado;
-import static Vista.BuscarProFactura.r;
 import java.sql.*;
 import javax.swing.table.DefaultTableModel;
 
 public final class ProductosBuscar extends javax.swing.JPanel {
     
     //declarar variables
-    static Statement s;
     static ResultSet rs;
     int cantidadColumnas;
     
     //crear objetos de clase
-    Conexion f = new Conexion(); 
-    Connection c=f.conexion();
-    CRUD crud=new CRUD();
+    CRUD crud = new CRUD();
     
     //crear objetos de tabla
     DefaultTableModel modelo = new DefaultTableModel();
@@ -25,8 +21,7 @@ public final class ProductosBuscar extends javax.swing.JPanel {
     public ProductosBuscar() {
         initComponents();
         this.TablaProductos.setModel(modelo);
-        buscarColumnas();
-        f.conexion();   
+        buscarColumnas();  
     }
     
 
@@ -34,14 +29,14 @@ public final class ProductosBuscar extends javax.swing.JPanel {
    public void buscarColumnas()
     {      
         try{
-           rs = f.consultar("select IdProducto,NombreProducto,Marca,Precio,Stock,FechaIngreso from Producto order by IdProducto"); 
+            rs =crud.buscarTodosProducto();
             ResultSetMetaData rsd = rs.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(SQLException e)
+        catch(Exception e)
         {
            LabelEstado.setText("Error: "+e); 
         }
@@ -55,13 +50,37 @@ public final class ProductosBuscar extends javax.swing.JPanel {
               for (int i=0;i<cantidadColumnas;i++)
               fila[i] = rs.getObject(i+1);
                modelo.addRow(fila);
-               fila=null;
-            } 
-           // rs.close();//cerrar result-set 
+            }
         } 
           catch (SQLException ex) { 
            LabelEstado.setText("Error: "+ex); 
         }    
+    }
+    
+    public void busquedaProductos(){
+        try 
+        {
+            String nombre = TextBuscar.getText();
+       //     String nombre = TextBuscar.getText().toLowerCase();
+            modelo = (DefaultTableModel) TablaProductos.getModel();
+            rs = crud.buscarProducto(nombre);
+            while (TablaProductos.getRowCount() > 0) {
+                modelo.removeRow(0);
+            }
+            if (TextBuscar.getText().isEmpty()) {
+
+            } else {
+                while (rs.next()) {
+                    Object[] regi = {        
+                        rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4),
+                        rs.getDouble(5),rs.getDouble(6), rs.getInt(7), rs.getDate(8)
+                    };
+                    modelo.addRow(regi);
+                }
+            }
+        } 
+        catch (Exception e) {
+        }
     }
  
     @SuppressWarnings("unchecked")
@@ -186,27 +205,7 @@ public final class ProductosBuscar extends javax.swing.JPanel {
 
     private void TextBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextBuscarKeyTyped
         // TODO add your handling code here:
-                try {
-            String nombre = TextBuscar.getText();
-       //     String nombre = TextBuscar.getText().toLowerCase();
-            modelo = (DefaultTableModel) TablaProductos.getModel();
-            r = crud.buscarProducto(nombre);
-            while (TablaProductos.getRowCount() > 0) {
-                modelo.removeRow(0);
-            }
-            if (TextBuscar.getText().isEmpty()) {
-
-            } else {
-                while (r.next()) {
-                    Object[] regi = {        
-                        r.getInt(1), r.getInt(2), r.getString(3), r.getString(4),
-                        r.getDouble(5),r.getDouble(6), r.getInt(7), r.getDate(8)
-                    };
-                    modelo.addRow(regi);
-                }
-            }
-        } catch (Exception e) {
-        }
+        busquedaProductos();
     }//GEN-LAST:event_TextBuscarKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

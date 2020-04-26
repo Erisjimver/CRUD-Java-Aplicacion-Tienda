@@ -109,17 +109,17 @@
                           </Group>
                           <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="TextNF" pref="194" max="32767" attributes="0"/>
+                              <Component id="TextNumeroFactura" pref="194" max="32767" attributes="0"/>
                               <Component id="DateChooserFactura" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <Component id="RadioButtonTodo" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="62" max="32767" attributes="0"/>
-                  <Component id="BtnBuscar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                  <Component id="BtnLimpiar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="447" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="BtnBuscar" min="-2" pref="73" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <Component id="BtnLimpiar" min="-2" pref="72" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="498" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -128,11 +128,10 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="BtnBuscar" min="-2" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="RadioButtonNF" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="TextNF" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="TextNumeroFactura" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -142,10 +141,13 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="RadioButtonTodo" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="BtnLimpiar" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="BtnLimpiar" alignment="0" pref="75" max="32767" attributes="0"/>
+                          <Component id="BtnBuscar" alignment="0" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="321" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="332" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -185,7 +187,7 @@
         <Component class="javax.swing.JButton" name="BtnBuscar">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/#busqueda.png"/>
+              <Image iconType="3" name="/Vista/Imagenes/#busqueda.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
             <Property name="contentAreaFilled" type="boolean" value="false"/>
@@ -225,10 +227,10 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="RadioButtonFechaActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JTextField" name="TextNF">
+        <Component class="javax.swing.JTextField" name="TextNumeroFactura">
           <Events>
-            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="TextNFKeyReleased"/>
-            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="TextNFKeyTyped"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="TextNumeroFacturaKeyReleased"/>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="TextNumeroFacturaKeyTyped"/>
           </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="RadioButtonTodo">
@@ -246,7 +248,7 @@
         <Component class="javax.swing.JButton" name="BtnLimpiar">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/#Error.png"/>
+              <Image iconType="3" name="/Vista/Imagenes/#Error.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
             <Property name="contentAreaFilled" type="boolean" value="false"/>

@@ -8,6 +8,8 @@ import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -17,14 +19,13 @@ public final class Productos extends javax.swing.JPanel {
     private static Statement st;
     private static PreparedStatement ps;
     private String cod;
-    private int idprod=0;
     
     Conexion cn=new Conexion();  
     Connection c= cn.conexion();
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultComboBoxModel value = new DefaultComboBoxModel();
     SettersAndGetters pp=new SettersAndGetters();
-    CRUD mi=new CRUD();
+    CRUD crud=new CRUD();
     Funcionalidades fun = new Funcionalidades();
     
     int cantidadColumnas;
@@ -41,14 +42,15 @@ public final class Productos extends javax.swing.JPanel {
     
     public void buscarColumnas(){      
         try{ 
-            r = cn.consultar("select IdProducto,NombreProducto,Marca,Precio,Stock,FechaIngreso from Producto order by IdProducto"); 
+            //r = cn.consultar("select IdProducto,NombreProducto,Marca,Precio,Stock,FechaIngreso from Producto order by IdProducto"); 
+            r=crud.buscarTodosProducto();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(SQLException e)
+        catch(Exception e)
         {
            LabelEstado.setText("Error: "+e); 
         }
@@ -58,13 +60,12 @@ public final class Productos extends javax.swing.JPanel {
         limpiarTabla();
        try
        {
-            r = cn.consultar("select IdProducto,NombreProducto,Marca,Precio,Stock,FechaIngreso from Producto order by IdProducto");  
+            //r = cn.consultar("select IdProducto,NombreProducto,Marca,Precio,Stock,FechaIngreso from Producto order by IdProducto");  
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)
               fila[i] = r.getObject(i+1);
-               modelo.addRow(fila);
-
+              modelo.addRow(fila);
             } 
        }
        catch(SQLException e)
@@ -101,7 +102,7 @@ public final class Productos extends javax.swing.JPanel {
             pp.setCosto(Double.parseDouble(TextCosto.getText()));
             pp.setPrecio(Double.parseDouble(TextPrecio.getText()));
             pp.setStock(Integer.parseInt(TextStock.getText()));
-        mi.registrarProductos(pp);
+            crud.registrarProductos(pp);
             JOptionPane.showMessageDialog(null, "Registro del articulo correcto....");
     LIMPIAR();
     IdProductos();
@@ -111,65 +112,53 @@ public final class Productos extends javax.swing.JPanel {
             LabelEstado.setText("Asegurese de llenar todos los campos...."+e); 
     
         }
-    }
-       
-    public void eliminar(){
-    
-    int fila = TablaProductos.getSelectedRow();
-        try
-        {
-            PreparedStatement ps = c.prepareStatement("delete from Producto where IdProducto=?");
-            ps.setString(1, TablaProductos.getValueAt(fila, 0).toString());
-            int exito = ps.executeUpdate();
-            if(exito==1){
-                JOptionPane.showMessageDialog(rootPane, "Producto eliminado....");
-            }
-            buscarProductos();
-        }
-        catch(SQLException | HeadlessException ext)
-        {
-            LabelEstado.setText("Error: "+ext); 
-        }
-    }
-    
+    }  
+   
     public void actualizar(){
         
         try{
 
             int fila = TablaProductos.getSelectedRow();
-            ps = c.prepareCall("{call ActualizarProductos(?,?,?,?,?)}");
             
-            ps.setInt(1, Integer.parseInt(TablaProductos.getValueAt(fila, 0).toString()));
-            ps.setString(2, TablaProductos.getValueAt(fila, 1).toString());
-            ps.setString(3, TablaProductos.getValueAt(fila, 2).toString());
-            ps.setInt(4, Integer.parseInt(TablaProductos.getValueAt(fila, 3).toString()));
-            ps.setInt(5, Integer.parseInt(TablaProductos.getValueAt(fila, 4).toString()));
+            pp.setIdproducto(Integer.parseInt(TablaProductos.getValueAt(fila, 0).toString()));
+            pp.setNombreproducto(TablaProductos.getValueAt(fila, 2).toString());
+            pp.setMarca(TablaProductos.getValueAt(fila, 3).toString());
+            pp.setCosto(Double.parseDouble(TablaProductos.getValueAt(fila, 4).toString()));
+            pp.setPrecio(Double.parseDouble(TablaProductos.getValueAt(fila, 5).toString()));
+            pp.setStock(Integer.parseInt(TablaProductos.getValueAt(fila, 6).toString()));
  
-            int i=ps.executeUpdate();
-            if(i==1){
-                JOptionPane.showMessageDialog(rootPane, "Articulo actualizado........");
-
-            }
-        }catch(SQLException | NumberFormatException | HeadlessException ex)
+            crud.actualizaProductos(pp);
+            //JOptionPane.showMessageDialog(null, "Actualizacion correcta....");
+        }catch(Exception ex)
         {
             LabelEstado.setText("Error: "+ex);   
         }
        
     }
-    
-    public void IdProductos(){
-     try{
-        r = cn.consultar("select max(IdProducto)+1 from Producto");
-        if(r.next()){
-        idprod=r.getInt(1);
-        cod=String.valueOf(idprod);
-        TextCOP.setText(cod); 
+    //borrar productos
+    public void Delete()
+    {
+        try
+        {
+            int fila = TablaProductos.getSelectedRow();
+            int idproducto = Integer.parseInt(TablaProductos.getValueAt(fila, 0).toString());
+            crud.eliminarEmpleado(idproducto);
         }
-     }catch(SQLException e)
-     {
-       
-     }         
-}
+        catch(Exception e)
+        {
+            LabelEstado.setText("Error al eliminar: "+e); 
+        }   
+    }    
+    public void IdProductos(){
+        try{
+           cod = crud.obteneriIdProducto();
+           TextCOP.setText(cod);         
+        }
+        catch(Exception e)
+        {
+        LabelEstado.setText("Error: "+e);  
+        }        
+    }
 /*
     public void FillComboCate(){
 
@@ -193,7 +182,7 @@ public final class Productos extends javax.swing.JPanel {
     public void FillComboCate() throws Exception{
 
       try {         
-         r = cn.consultar("select IdCategoria, descripcion from Categoria");   
+         r = crud.consultar("select IdCategoria, descripcion from Categoria");   
         
          ComboCategoria.setModel(value);
          while (r.next()) 
@@ -605,7 +594,7 @@ public final class Productos extends javax.swing.JPanel {
 
     private void BtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEliminarActionPerformed
 
-        eliminar();
+        Delete();
         
     }//GEN-LAST:event_BtnEliminarActionPerformed
 

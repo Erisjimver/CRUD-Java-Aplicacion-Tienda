@@ -1,20 +1,12 @@
 package Vista;
 import Modelo.CRUD;
-import Modelo.Conexion;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
-import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Login extends javax.swing.JFrame {
 
-    static ResultSet r;
-    static Statement st;
-    private String usu,pass,nom;
+    private String usu,pass,nom,tipo_usuario;
 
-    Conexion cn=new Conexion();  
-    Connection c= cn.conexion();
     CRUD crud= new CRUD();
     
     public Login() {
@@ -23,18 +15,11 @@ public class Login extends javax.swing.JFrame {
     }
     void acceder(String usuario, String pas)
     {
-       String cap="";
-       String sql="select tp.Tipo_Usuario from Vendedor v inner join Tipo_Usuario tp on v.IdTipo_Usuario = tp.IdTipo_Usuario where v.cedula='"+usuario+"' and v.Contrasena='"+pas+"'";         
         try {
-            st = c.createStatement();
-            r = st.executeQuery(sql);
-            while(r.next())
-            {
-               cap=r.getString(1);
-               nom = crud.obtenerNombreUsuario(usuario);
-              
-            }
-            if(cap.equals("Administrador"))
+            tipo_usuario = crud.TipoUsuario(usuario, pas);
+            nom = crud.obtenerNombreUsuario(usuario);
+      
+            if(tipo_usuario.equals("Administrador"))
             {
                     this.setVisible(false);
                     EntornoAdmin ingreso = new EntornoAdmin();
@@ -45,7 +30,7 @@ public class Login extends javax.swing.JFrame {
                    // EntornoAdmin.lbluserad.setText(nom.toUpperCase());
                 
             }
-            if(cap.equals("Vendedor"))
+            if(tipo_usuario.equals("Vendedor"))
             {
             this.setVisible(false);
                     EntornoVendedor ingresos = new EntornoVendedor();
@@ -54,19 +39,15 @@ public class Login extends javax.swing.JFrame {
                     //EntornoVendedor.lblusuario.setText(nom.toUpperCase());
                     EntornoVendedor.lblusuario.setText(nom);
             }
-           if((cap.equals(""))&&(cap.equals("")))
+           if((tipo_usuario.equals(""))&&(tipo_usuario.equals("")))
             {
                 lblestado.setText("Usuario no registrado");  
             }
         }
-        catch(SQLException ex) 
-        {
-            Logger.getLogger(EntornoAdmin.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       
-        }
+         catch (Exception ex) {
+           lblestado.setText("Error de conexion"+ex);
+        }  
+    }
 
   
     public void conexion(){

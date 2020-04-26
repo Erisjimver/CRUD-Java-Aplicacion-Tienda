@@ -62,14 +62,14 @@ begin
 end ActualizarEmpleados;
 /
 --Delete User
---registro de empleados
+--Eliminar de empleados
 create or replace procedure EliminarEmpleado
 (
   id_empleado in number
 )
 as
 begin
-	delete from Vendedor where idvendedor= id_empleado;
+	delete from Vendedor where idvendedor = id_empleado;
 end EliminarEmpleado;
 /
 
@@ -126,7 +126,16 @@ begin
 insert into Producto values(secuencia_idproducto.nextval,IdCategoria,NombreProducto,Marca,Costo,Precio,Stock,sysdate);
 end RegistrarProductos;
 /
-
+--eliminar productos
+create or replace procedure EliminarProducto
+(
+  id_producto in number
+)
+as
+begin
+	delete from Producto where idproducto = id_producto;
+end EliminarProducto;
+/
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 --secuencia id clientes
@@ -191,7 +200,7 @@ end RegistrarDetalleV;
 /
 --EXEC RegistrarDetalleV(2,1,1,2,2);
 ----------------------------------------------------------------------------------------------------------------------
--------------------ACTUALIZA---------------------
+-------------------ACTUALIZA------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 ---actualizar productos
 create or replace procedure ActualizarProductos 
@@ -199,15 +208,18 @@ create or replace procedure ActualizarProductos
 pIdProducto in number,
 pNombreProducto in varchar2,
 pMarca in varchar2,
+pCosto in number,
 pPrecio in number,
 pStock in number
 ) 
 as 
 begin
-  update Producto set NombreProducto=pNombreProducto, Marca=pMarca, Precio=pPrecio, Stock=pStock 
+  update Producto set NombreProducto=pNombreProducto, Marca=pMarca, Costo=pCosto, Precio=pPrecio, Stock=pStock 
   where IdProducto=pIdProducto;
+  commit;
 end ActualizarProductos;
 /
+EXEC ActualizarProductos(1,'auriculares','sansung',2.5,5,10);
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 ---actualizar categorias
@@ -241,7 +253,9 @@ begin
 end ActualizarSucursal;
 /
 
-
+---------------------------------------------------------------------------------------------------------------------
+-----------------------------------------Procedimientos adicionales -------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
 
 --procedimiento para vender
 
