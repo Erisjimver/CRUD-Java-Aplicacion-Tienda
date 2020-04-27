@@ -1,7 +1,6 @@
 package Vista;
 
 import Modelo.CRUD;
-import Modelo.Conexion;
 import static Vista.EntornoAdmin.LabelEstado;
 import java.sql.*;
 import javax.swing.table.DefaultTableModel;

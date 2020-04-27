@@ -38,14 +38,14 @@ public final class BuscarProductoFactura extends javax.swing.JFrame {
     public void LlenarIndiceTablaProductos()
     {      
         try{
-            r = crud.consultar("select * from Producto");
+            r = crud.buscarTodosProducto();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
             model.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(SQLException e)
+        catch(Exception e)
         {
            System.out.println("Error: "+e); 
         }
@@ -53,9 +53,8 @@ public final class BuscarProductoFactura extends javax.swing.JFrame {
     
     public void FillComboCate() throws Exception{
 
-      try {         
-         r = crud.consultar("select IdCategoria, descripcion from Categoria");   
-        
+      try {   
+         r = crud.llenarComboCategoria();
          ComboCategoria.setModel(value);
          while (r.next()) 
          { 

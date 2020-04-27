@@ -1,36 +1,31 @@
 package Vista;
-import Modelo.Conexion;
 import Controlador.SettersAndGetters;
 import Controlador.Funcionalidades;
 import Modelo.CRUD;
 import static Vista.EntornoAdmin.LabelEstado;
-import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public final class Productos extends javax.swing.JPanel {
-    private static ResultSet r;
-    private static Statement st;
-    private static PreparedStatement ps;
-    private String cod;
     
-    Conexion cn=new Conexion();  
-    Connection c= cn.conexion();
+    //declaracion de variables
+    private static ResultSet r;
+    private String cod;
+    private int cantidadColumnas;
+    
+    //crear objetos de clases
+    Funcionalidades fun = new Funcionalidades();
+    SettersAndGetters set=new SettersAndGetters();
+    CRUD crud=new CRUD();   
+    
+    //declarar objetos de tabla y jcombobox
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultComboBoxModel value = new DefaultComboBoxModel();
-    SettersAndGetters pp=new SettersAndGetters();
-    CRUD crud=new CRUD();
-    Funcionalidades fun = new Funcionalidades();
-    
-    int cantidadColumnas;
-    private Component rootPane;
-    
+   
     public Productos() throws Exception {
         initComponents();     
         this.TablaProductos.setModel(modelo);
@@ -42,7 +37,6 @@ public final class Productos extends javax.swing.JPanel {
     
     public void buscarColumnas(){      
         try{ 
-            //r = cn.consultar("select IdProducto,NombreProducto,Marca,Precio,Stock,FechaIngreso from Producto order by IdProducto"); 
             r=crud.buscarTodosProducto();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
@@ -60,7 +54,7 @@ public final class Productos extends javax.swing.JPanel {
         limpiarTabla();
        try
        {
-            //r = cn.consultar("select IdProducto,NombreProducto,Marca,Precio,Stock,FechaIngreso from Producto order by IdProducto");  
+        r = crud.buscarTodosProducto();
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)
@@ -68,10 +62,10 @@ public final class Productos extends javax.swing.JPanel {
               modelo.addRow(fila);
             } 
        }
-       catch(SQLException e)
+       catch(Exception e)
        {
           LabelEstado.setText("Error: "+e);  
-       } 
+       }
     }
       
     public void limpiarTabla(){
@@ -94,18 +88,20 @@ public final class Productos extends javax.swing.JPanel {
     String clave= (String) ComboCategoria.getSelectedItem();      
         try
         {
+            limpiarTabla();
             int valor = fun.obtenerIdCategoria(clave);
     
-            pp.setIdcategorias(valor);
-            pp.setNombreproducto(TextNombreP.getText());
-            pp.setMarca(TextMarca.getText());
-            pp.setCosto(Double.parseDouble(TextCosto.getText()));
-            pp.setPrecio(Double.parseDouble(TextPrecio.getText()));
-            pp.setStock(Integer.parseInt(TextStock.getText()));
-            crud.registrarProductos(pp);
+            set.setIdcategorias(valor);
+            set.setNombreproducto(TextNombreP.getText());
+            set.setMarca(TextMarca.getText());
+            set.setCosto(Double.parseDouble(TextCosto.getText()));
+            set.setPrecio(Double.parseDouble(TextPrecio.getText()));
+            set.setStock(Integer.parseInt(TextStock.getText()));
+            crud.registrarProductos(set);
             JOptionPane.showMessageDialog(null, "Registro del articulo correcto....");
     LIMPIAR();
     IdProductos();
+    buscarProductos();
         }
         catch(Exception e)
         {
@@ -115,21 +111,23 @@ public final class Productos extends javax.swing.JPanel {
     }  
    
     public void actualizar(){
-        
+        //LIMPIAR();
+        //limpiarTabla();
         try{
 
             int fila = TablaProductos.getSelectedRow();
             
-            pp.setIdproducto(Integer.parseInt(TablaProductos.getValueAt(fila, 0).toString()));
-            pp.setNombreproducto(TablaProductos.getValueAt(fila, 2).toString());
-            pp.setMarca(TablaProductos.getValueAt(fila, 3).toString());
-            pp.setCosto(Double.parseDouble(TablaProductos.getValueAt(fila, 4).toString()));
-            pp.setPrecio(Double.parseDouble(TablaProductos.getValueAt(fila, 5).toString()));
-            pp.setStock(Integer.parseInt(TablaProductos.getValueAt(fila, 6).toString()));
+            set.setIdproducto(Integer.parseInt(TablaProductos.getValueAt(fila, 0).toString()));
+            set.setNombreproducto(TablaProductos.getValueAt(fila, 2).toString());
+            set.setMarca(TablaProductos.getValueAt(fila, 3).toString());
+            set.setCosto(Double.parseDouble(TablaProductos.getValueAt(fila, 4).toString()));
+            set.setPrecio(Double.parseDouble(TablaProductos.getValueAt(fila, 5).toString()));
+            set.setStock(Integer.parseInt(TablaProductos.getValueAt(fila, 6).toString()));
  
-            crud.actualizaProductos(pp);
-            //JOptionPane.showMessageDialog(null, "Actualizacion correcta....");
-        }catch(Exception ex)
+            crud.actualizaProductos(set);
+            JOptionPane.showMessageDialog(null, "Actualizacion correcta....");
+            buscarProductos();
+        }catch(HeadlessException | NumberFormatException ex)
         {
             LabelEstado.setText("Error: "+ex);   
         }
@@ -142,13 +140,15 @@ public final class Productos extends javax.swing.JPanel {
         {
             int fila = TablaProductos.getSelectedRow();
             int idproducto = Integer.parseInt(TablaProductos.getValueAt(fila, 0).toString());
-            crud.eliminarEmpleado(idproducto);
+            crud.eliminaProducto(idproducto);
+            buscarProductos();
         }
-        catch(Exception e)
+        catch(NumberFormatException e)
         {
             LabelEstado.setText("Error al eliminar: "+e); 
         }   
-    }    
+    }  
+    
     public void IdProductos(){
         try{
            cod = crud.obteneriIdProducto();
@@ -159,30 +159,11 @@ public final class Productos extends javax.swing.JPanel {
         LabelEstado.setText("Error: "+e);  
         }        
     }
-/*
-    public void FillComboCate(){
 
-      try {         
-         r = cn.consultar("select descripcion,IdCategoria from Categoria");   
-         value =new DefaultComboBoxModel();
-          System.out.println(value);
-         ComboCategoria.setModel(value);
-         while (r.next()) { 
-             System.out.println(r.getString(1));
-             System.out.println(r.getString(2));
-           value.addElement(new GuardIDCate(r.getString(1),r.getString(2)));
-         }
-         r.close();
-        } catch (SQLException ex) {
-          System.out.println("error"+ex);
-        }
-  
-    }
-   */ 
     public void FillComboCate() throws Exception{
 
       try {         
-         r = crud.consultar("select IdCategoria, descripcion from Categoria");   
+         r = crud.llenarComboCategoria();
         
          ComboCategoria.setModel(value);
          while (r.next()) 
@@ -191,9 +172,9 @@ public final class Productos extends javax.swing.JPanel {
              //r.getString(2) es la descripcion de la tabla categoria            
             int clave = r.getInt(1);
             String valor = r.getString(2);
-            pp.setIdCategoria(clave);
-            pp.setDescripcion(valor);
-            fun.DiccionarioCategoria(pp);
+            set.setIdCategoria(clave);
+            set.setDescripcion(valor);
+            fun.DiccionarioCategoria(set);
             value.addElement(valor);
             //value.addElement(new GuardIDCate(r.getString(2),r.getString(1)));
          }
@@ -583,13 +564,21 @@ public final class Productos extends javax.swing.JPanel {
     private void BtnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistrarActionPerformed
        
         registrar();
+        buscarProductos();
+        
         
     }//GEN-LAST:event_BtnRegistrarActionPerformed
 
     private void BtnBuscarCategoriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBuscarCategoriasActionPerformed
-    
-        buscarProductos();
         
+        try
+        {
+            buscarProductos();
+        }
+        catch(Exception e)
+        {
+           
+        }              
     }//GEN-LAST:event_BtnBuscarCategoriasActionPerformed
 
     private void BtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEliminarActionPerformed

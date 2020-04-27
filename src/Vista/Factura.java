@@ -1,9 +1,7 @@
 package Vista;
-import Modelo.Conexion;
 import Controlador.Funcionalidades;
 import Modelo.CRUD;
 import Controlador.SettersAndGetters;
-import static Vista.EntornoAdmin.LabelEstado;
 import static Vista.EntornoVendedor.LabelEstadoV;
 
 import static Vista.EntornoVendedor.lblusuario;
@@ -18,25 +16,24 @@ import javax.swing.table.DefaultTableModel;
 public final class Factura extends javax.swing.JPanel {
     
     //declarando variables
-    static ResultSet r;
-    static Statement st;
-    private static PreparedStatement ps;
-    private String nombree,ru,t,fact,cedula,cap;
-    int xx, xy,cantidad;
-    double importe = 0;
-    double igv, subtotal, total;    
+    private static ResultSet r;
+    private String nombree,ru,t,fact,cedula;
+    private int cantidad,idcliente;
+    private double importe = 0,igv, subtotal, total; 
+    private String nombre,telefono,direccion;
     DefaultTableModel model;
-    
-    //llamando clases necesarias 
-    Conexion cn=new Conexion();  
-    Connection c= cn.conexion();
+    //creando de clases
     Funcionalidades funcionalidad=new Funcionalidades();
     SettersAndGetters set =new SettersAndGetters();
     CRUD crud=new CRUD();
     
+    //creando objeto de tabla
+    //DefaultTableModel model = new DefaultTableModel();
+    
 
     public Factura() {
         initComponents();
+        //this.TablaDetalles.setModel(model);
         fecha();
         DatosEmpresa();
         codigofac();
@@ -49,41 +46,32 @@ public final class Factura extends javax.swing.JPanel {
     
     public void DatosEmpresa(){
      try{
-        st = c.createStatement();
-        r = st.executeQuery("select NombreEmpresa,Ruc,Telefono from Empresa");
-       // r = st.executeQuery("select IdUsuarios from Usuarios");
-         while (r.next()) {
+        r = crud.obtenerDatosEmpresa();
+        while (r.next()) {
            nombree=r.getString(1);
            ru=r.getString(2);
            t=r.getString(3);
            lblnombre.setText(nombree);
            lblruc.setText(ru);
-           lbltelefono.setText(t);  
-           
-         }
-         r.close();
+           lbltelefono.setText(t);
+           //falta direccion y nombre propietario en la tabla hacer el cambio del propiertario
+        }
+        r.close();
         
-     }catch(SQLException e)
+     }catch(Exception e)
      {
-        System.out.println("Error"+e);
-     }         
+        LabelEstadoV.setText("Error: "+e); 
+     }       
 }
  
     public void codigofac(){
-     try{
-        st = c.createStatement();
-        r = st.executeQuery("select max(IdFactura)+1 from Factura");
-         while (r.next()) {
-           fact=r.getString(1);
-           lblnumfact.setText(fact); 
-             System.out.println(fact);
-         }
-         r.close();
-        
-     }catch(SQLException e)
-     {
-        System.out.println("Error"+e);
-     }         
+        try{
+           fact=crud.obtenerCodigoFactura();
+           lblnumfact.setText(fact);       
+        }catch(Exception e)
+        {
+           LabelEstadoV.setText("Error: "+e); 
+        }       
 } 
    
     private void agregar(){
@@ -99,6 +87,7 @@ public final class Factura extends javax.swing.JPanel {
             
             for (int i = 0; i < filas; i++) 
             {
+                System.out.println(filas);
                 if (descripcion.equalsIgnoreCase(TablaDetalles.getValueAt(i, 2).toString())) 
                 {
                     JOptionPane.showMessageDialog(this, "Ud. ya Esta Utilizando este Producto");
@@ -115,14 +104,14 @@ public final class Factura extends javax.swing.JPanel {
                 model.addRow(registros);
                 calcularTotales();
             }
-            limpiarPM();
+            limpiarSeccionArticulo();
             
 
         } catch (NumberFormatException | HeadlessException e) 
         {
             JOptionPane.showMessageDialog(null,"acaso es este?"+ e);
         } catch (Exception ex) {
-            Logger.getLogger(Factura.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null,"Error al agregar los articulos...."+ ex);
         }
    }
    
@@ -137,47 +126,77 @@ public final class Factura extends javax.swing.JPanel {
         }
         catch (NumberFormatException e) 
         {
-            LabelEstadoV.setText("Error: "+e); 
+            LabelEstadoV.setText("Error es aqui: "+e); 
         }
    }
 
     private void vender(){
         try{
+            //datos universales dentro del metodo vender
+            cedula = TextCedula.getText();
             
-            set.setCedula(TextCedula.getText());
-            set.setNombre(TextNombre.getText());
-            set.setTelefono(TextTelefono.getText());
-            set.setDireccion(TextDireccion.getText());
-            crud.registrarCliente(set);
+            //primer consulta de verificacion de la existencia del cliente
+            idcliente=crud.obteneriIDclienteParametro(cedula);
             
-            String usuar =(lblusuario.getText());
-            String codEmpleado = crud.obteneriIDEmpleado(usuar); 
-            String codCliente = crud.obteneriIDcliente();
-            
-            set.setIdvendedor(Integer.parseInt(codEmpleado));
-            set.setIdcliente(Integer.parseInt(codCliente));
-
-            crud.registrarFactura(set);
-
-            int filas = TablaDetalles.getRowCount();
-            for (int i = 0; i < filas; i++) {
-
-                set.setIdfactura(Integer.parseInt(lblnumfact.getText()));
-                set.setIdproducto(Integer.parseInt(TablaDetalles.getValueAt(i, 0).toString()));
-                set.setCantidad(Integer.parseInt(TablaDetalles.getValueAt(i, 1).toString()));
-                set.setValorunitario(Double.parseDouble(TablaDetalles.getValueAt(i, 3).toString()));
-                set.setValortotal(Double.parseDouble(TablaDetalles.getValueAt(i, 4).toString()));
-                
-                crud.registrarDetalleFactura(set);             
+            //verificar si el cliente no existe en la base de datos / de ser asi lo registramos
+            //la verficiacion es: diferente de 0 no existe y diferente de 1 no es el consumidor final
+            //el descarte es que si no es ni 0 ni 1 es otro cliente que ya existe pero k no es el consumidor final
+            //de modo que se registra la id del cliente pero no se crea un nuevo registro en el cliente
+            if(idcliente!=0&&idcliente!=1){//se comprueba si el cliente es nuevo
+                RegistrarFacturaDetalle();
             }
-            codigofac();
-            limpiacontroles();
-            JOptionPane.showMessageDialog(null, "Venta registrada Correctamente ");                    
+            if(idcliente==0){//si el cliente
+                set.setCedula(cedula);
+                set.setNombre(TextNombre.getText());
+                set.setTelefono(TextTelefono.getText());
+                set.setDireccion(TextDireccion.getText());
+                crud.registrarCliente(set);  
+                RegistrarFacturaDetalle();
+            }
+            if(idcliente==1){
+
+                idcliente = 1;
+                RegistrarFacturaDetalle();
+            }
         }
         catch(Exception e)
         {
             JOptionPane.showMessageDialog(null,"Error: "+ e);
         }          
+    }
+    private void RegistrarFacturaDetalle(){
+        try
+        {
+            String usuar =(lblusuario.getText());
+            int codEmpleado = crud.obteneriIDEmpleado(usuar); 
+            idcliente = crud.obteneriIDclienteParametro(cedula);
+            System.out.println("Id cliente dentro del metodo llamado: "+idcliente);
+            set.setIdvendedor(codEmpleado);
+            set.setIdcliente(idcliente);
+
+            crud.registrarFactura(set);
+
+            int filas = TablaDetalles.getRowCount();
+                for (int i = 0; i < filas; i++) {
+
+                    set.setIdfactura(Integer.parseInt(lblnumfact.getText()));
+                    set.setIdproducto(Integer.parseInt(TablaDetalles.getValueAt(i, 0).toString()));
+                    set.setCantidad(Integer.parseInt(TablaDetalles.getValueAt(i, 1).toString()));
+                    set.setValorunitario(Double.parseDouble(TablaDetalles.getValueAt(i, 3).toString()));
+                    set.setValortotal(Double.parseDouble(TablaDetalles.getValueAt(i, 4).toString()));
+
+                    crud.registrarDetalleFactura(set);             
+                    }
+            codigofac();
+            limpiacontroles();
+            
+            JOptionPane.showMessageDialog(null, "Venta registrada Correctamente ");
+          
+        }catch(Exception e)
+        {
+            System.out.println("Lo que sea"+e);
+        }
+
     }
     
 
@@ -192,11 +211,54 @@ public final class Factura extends javax.swing.JPanel {
         }
         catch(HeadlessException ext)
         {
-            LabelEstado.setText("Error: "+ext); 
+            LabelEstadoV.setText("Error: "+ext); 
         }
     }
-    
-    
+
+    //metodo para verificar la existencia de un usuario
+    public void verificaUsuario(){
+        try{
+            cedula = TextCedula.getText().toLowerCase(); 
+            String cedu = crud.compruebaCliente(cedula);
+            //if usuario nuevo
+                if (cedula.equals(cedu)) 
+                {
+                    LabelEstadoV.setText("cedula correcta");
+                    r = crud.buscarClientes(cedula); 
+
+                    while (r.next()) {
+                    nombre=r.getString(3);
+                    telefono=r.getString(4);
+                    direccion=r.getString(5);
+                    TextNombre.setText(nombre);
+                    TextTelefono.setText(telefono);
+                    TextDireccion.setText(direccion);
+                    
+                    LabelEstadoV.setText("Cliente conocido....");
+                    DesabilitarTextoCliente();
+                    } 
+                }
+                if (!(cedula).equals(cedu)) {
+                    HabilitarTextoCliente();
+                    LimpiarDatosCliente();
+                    LabelEstadoV.setText("Cliente nuevo....");                    
+                }
+                if((cedula).equals("1111")){
+                    nombre="Consumidor Final";
+                    telefono="555555555";
+                    direccion="Sin Direccion";
+                    TextNombre.setText(nombre);
+                    TextTelefono.setText(telefono);
+                    TextDireccion.setText(direccion);  
+                    LabelEstadoV.setText("Consumidor Final....");
+                    DesabilitarTextoCliente();
+                }
+        }
+        catch(Exception e){
+            LabelEstadoV.setText("Error al comprobar existencia de cliente...."+e);
+        }
+         
+    }    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -246,6 +308,7 @@ public final class Factura extends javax.swing.JPanel {
         TextSubtotal = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         TextIva = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         PanelControles = new javax.swing.JPanel();
         btnBuscar = new javax.swing.JButton();
         btnAgregar = new javax.swing.JButton();
@@ -529,6 +592,13 @@ public final class Factura extends javax.swing.JPanel {
 
         TextIva.setEditable(false);
 
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout PanelFacturaLayout = new javax.swing.GroupLayout(PanelFactura);
         PanelFactura.setLayout(PanelFacturaLayout);
         PanelFacturaLayout.setHorizontalGroup(
@@ -542,6 +612,8 @@ public final class Factura extends javax.swing.JPanel {
                             .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addGroup(PanelFacturaLayout.createSequentialGroup()
                                     .addComponent(DatosEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(49, 49, 49)
+                                    .addComponent(jButton1)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(NumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(DatosCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 850, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -566,11 +638,17 @@ public final class Factura extends javax.swing.JPanel {
         PanelFacturaLayout.setVerticalGroup(
             PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelFacturaLayout.createSequentialGroup()
-                .addGap(9, 9, 9)
                 .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(DatosEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(NumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
+                    .addGroup(PanelFacturaLayout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(DatosEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(NumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelFacturaLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton1)
+                        .addGap(41, 41, 41)))
                 .addComponent(DatosCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -712,17 +790,17 @@ public final class Factura extends javax.swing.JPanel {
         try
         {
             cantidad();
-        if(evt.getKeyCode()==KeyEvent.VK_ENTER)
-        {
-         if(TextCantidad.getText().equals(""))
-         {
-             LabelEstadoV.setText("No existe producto alguno...."); 
-         }
-         else
-         {
-            agregar();            
-         }
-        }
+            if(evt.getKeyCode()==KeyEvent.VK_ENTER)
+            {
+                if(TextCantidad.getText().equals(""))
+                {
+                    LabelEstadoV.setText("No existe producto alguno...."); 
+                }
+            else
+            {
+                agregar();            
+            }
+            }
         }
         catch(Exception e)
         {
@@ -742,18 +820,18 @@ public final class Factura extends javax.swing.JPanel {
     private void TextCedulaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextCedulaKeyTyped
         try{
         
-           char c1=evt.getKeyChar();                    
-          if(Character.isLetter(c1)) {
+            char c1=evt.getKeyChar();                    
+            if(Character.isLetter(c1)) {
               getToolkit().beep();    
               evt.consume();             
-              JOptionPane.showMessageDialog(null,"Ingrese solo numeros");
-               
-          } 
+              JOptionPane.showMessageDialog(null,"Ingrese solo numeros");      
+            } 
           else if (TextCedula.getText().length() == 13) {
             JOptionPane.showMessageDialog(null, "Demaciados numeros");
             TextCedula.grabFocus();
             TextCedula.setText("");
-        }           
+        }
+          
         }catch(HeadlessException e){
             JOptionPane.showMessageDialog(null,e);
         }
@@ -780,52 +858,33 @@ public final class Factura extends javax.swing.JPanel {
     }//GEN-LAST:event_TextCantidadKeyTyped
 
     private void TextCedulaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextCedulaKeyReleased
-    cedula = TextCedula.getText().toLowerCase();           
-
-    try
-    {
+        
+        //En este metodo se aplica una logica distinta al de vender para verificar la existencia del usuario
+        // se comprueba si es igual a 1111 y si es falsa el numero de cedula
+        //luego se comprueba si el numero es  valido
+        //por ultimo se comprueba si el numero es invalido
+        cedula= TextCedula.getText();
+        
         if(evt.getKeyCode()==KeyEvent.VK_ENTER)
         {
-            
-            if (funcionalidad.validadorDeCedula(cedula)==(true)) 
+            if(cedula.equals(""))
             {
-            LabelEstadoV.setText("cedula correcta");
-              
-            String nombre,telefono,direccion;
+               JOptionPane.showMessageDialog(null, "No ha digitado cedula","Alerta",JOptionPane.WARNING_MESSAGE); 
+            }
+            else
+            {       
+                if((cedula.equals("1111")) && (funcionalidad.validadorDeCedula(cedula)==false)){
+                    verificaUsuario();
+                }
+                if(funcionalidad.validadorDeCedula(cedula)==true){
+                    verificaUsuario();
+                }
+                if((!cedula.equals("1111")) &&funcionalidad.validadorDeCedula(cedula)==false){
+                    JOptionPane.showMessageDialog(null,"La cedula es incorrecta");
+                }
+            }
 
-          
-            r = crud.buscarClientes(cedula); 
-            if(r.next()==false){
-                
-            }
-            else
-            {
-                while (r.next()) {
-                nombre=r.getString(3);
-                telefono=r.getString(4);
-                direccion=r.getString(5);
-                TextNombre.setText(nombre);
-                TextTelefono.setText(telefono);
-                TextDireccion.setText(direccion);
-                } 
-            }
-            }
-            else
-            {
-            JOptionPane.showMessageDialog(null,"La cedula es incorrecta"); 
-            }
         }
-    }
-    catch(HeadlessException e)
-    {
-       LabelEstadoV.setText("Error: "+e); 
-    }  
-    catch (Exception ex) 
-    {
-            Logger.getLogger(Factura.class.getName()).log(Level.SEVERE, null, ex);
-    }
-
-              
     }//GEN-LAST:event_TextCedulaKeyReleased
 
     private void TablaDetallesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TablaDetallesKeyReleased
@@ -835,6 +894,14 @@ public final class Factura extends javax.swing.JPanel {
         eliminar();
     }
     }//GEN-LAST:event_TablaDetallesKeyReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String cedu=TextCedula.getText();
+        if(funcionalidad.validadorDeCedula(cedula)==false){
+            System.out.println("Falso");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -861,6 +928,7 @@ public final class Factura extends javax.swing.JPanel {
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnQuitar;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -891,9 +959,18 @@ public final class Factura extends javax.swing.JPanel {
     private javax.swing.JLabel txtFecha;
     // End of variables declaration//GEN-END:variables
 
-    
+    private void HabilitarTextoCliente(){              
+        TextNombre.setEditable(true);
+        TextTelefono.setEditable(true);
+        TextDireccion.setEditable(true);
+    }
+    private void DesabilitarTextoCliente(){              
+        TextNombre.setEditable(false);
+        TextTelefono.setEditable(false);
+        TextDireccion.setEditable(false);
+    }
         
-    private void limpiarPM(){
+    private void limpiarSeccionArticulo(){
         TextNombrep.setText("");
         TextMarca.setText("");
         TextPrecio.setText("0.0");
@@ -901,8 +978,12 @@ public final class Factura extends javax.swing.JPanel {
         TextImporte.setText("");
         TextCodigop.setText("");
         TextPrecio.setText("");
-}
-    
+    }
+    private void LimpiarDatosCliente(){
+        TextNombre.setText("");
+        TextTelefono.setText("");
+        TextDireccion.setText("");        
+    }
     private void limpiacontroles() {
         
         TextCedula.setText("");

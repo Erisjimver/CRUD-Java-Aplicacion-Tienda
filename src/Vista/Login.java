@@ -41,11 +41,11 @@ public class Login extends javax.swing.JFrame {
             }
            if((tipo_usuario.equals(""))&&(tipo_usuario.equals("")))
             {
-                lblestado.setText("Usuario no registrado");  
+                lblestadoLogin.setText("Usuario no registrado");  
             }
         }
          catch (Exception ex) {
-           lblestado.setText("Error de conexion"+ex);
+           lblestadoLogin.setText("Error de conexion"+ex);
         }  
     }
 
@@ -56,14 +56,14 @@ public class Login extends javax.swing.JFrame {
             pass= new String(Password.getPassword());
             try{
                     if((usu.equals("Escriba su usuario")&&pass.equals("***************"))||(usu.equals("")&&pass.equals(""))){
-                      lblestado.setText("No ha ingresado los datos...");  
+                      lblestadoLogin.setText("No ha ingresado los datos...");  
                     }else
                     {
                        acceder(usu, pass); 
                     }
                         
             }catch(HeadlessException e){
-                lblestado.setText("Error:"+e);  
+                lblestadoLogin.setText("Error:"+e);  
             }
         }
         
@@ -84,7 +84,7 @@ public class Login extends javax.swing.JFrame {
         jSeparator6 = new javax.swing.JSeparator();
         jButton1 = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        lblestado = new javax.swing.JLabel();
+        lblestadoLogin = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
@@ -170,9 +170,9 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        lblestado.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        lblestado.setForeground(new java.awt.Color(255, 255, 255));
-        lblestado.setText("..............................................................................................................");
+        lblestadoLogin.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        lblestadoLogin.setForeground(new java.awt.Color(255, 255, 255));
+        lblestadoLogin.setText("..............................................................................................................");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -200,7 +200,7 @@ public class Login extends javax.swing.JFrame {
                                 .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(47, 47, 47)
-                        .addComponent(lblestado, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lblestadoLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -224,7 +224,7 @@ public class Login extends javax.swing.JFrame {
                 .addGap(55, 55, 55)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
-                .addComponent(lblestado)
+                .addComponent(lblestadoLogin)
                 .addContainerGap())
         );
 
@@ -342,6 +342,6 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator6;
-    private javax.swing.JLabel lblestado;
+    public static javax.swing.JLabel lblestadoLogin;
     // End of variables declaration//GEN-END:variables
 }

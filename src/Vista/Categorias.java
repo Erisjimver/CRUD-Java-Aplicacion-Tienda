@@ -1,9 +1,7 @@
 package Vista;
-import Modelo.Conexion;
 import Controlador.SettersAndGetters;
 import Modelo.CRUD;
 import static Vista.EntornoAdmin.LabelEstado;
-import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.*;
@@ -11,18 +9,18 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public final class Categorias extends javax.swing.JPanel {
+    
+    //declarar variables
     private static ResultSet r;
-    private static PreparedStatement ps;
-    private String codigo;
-    private int idcate=0;
-    
-    Conexion cn=new Conexion();  
-    Connection c= cn.conexion();
+    private String idCategoriaS;
+    private int idCategoriaN,cantidadColumnas;
 
+    //crear objeto de clases 
+    CRUD crud=new CRUD();
+    SettersAndGetters pp=new SettersAndGetters();
     
+    //creando objetos de la tabla
     DefaultTableModel modelo = new DefaultTableModel();
-    int cantidadColumnas;
-    private Component rootPane;
     
     public Categorias() {
         initComponents();     
@@ -34,14 +32,14 @@ public final class Categorias extends javax.swing.JPanel {
     
     public void buscarColumnas(){      
         try{ 
-            r = cn.consultar("select IdCategoria,Descripcion from Categoria"); 
+            r = crud.llenarComboCategoria();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(SQLException e)
+        catch(Exception e)
         {
            LabelEstado.setText("Error: "+e); 
         }
@@ -51,7 +49,8 @@ public final class Categorias extends javax.swing.JPanel {
         limpiarTabla();
        try
        {
-            r = cn.consultar("select IdCategoria,Descripcion from Categoria");  
+            //r = crud.llenarTablaCategoria();
+            r = crud.llenarComboCategoria();
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)
@@ -60,7 +59,7 @@ public final class Categorias extends javax.swing.JPanel {
 
             } 
        }
-       catch(SQLException e)
+       catch(Exception e)
        {
           LabelEstado.setText("Error: "+e);  
        } 
@@ -91,65 +90,73 @@ public final class Categorias extends javax.swing.JPanel {
             }
             else
             {
-                
-                SettersAndGetters pp=new SettersAndGetters();
-                CRUD mi=new CRUD();
                 pp.setDescripcion(TextDescripcion.getText());
-                mi.registrarCategorias(pp);
+                crud.registrarCategorias(pp);
             
-            JOptionPane.showMessageDialog(null, "Categoria registrada....");
-           
             limpiar();
             idCategoria();
+            buscar();
             
+            JOptionPane.showMessageDialog(null, "Categoria registrada....");
+              
             }
         }
-        catch(Exception e)
+        catch(HeadlessException e)
         {         
             LabelEstado.setText("Error: "+e); 
         }
     }
        
-    public void eliminar(){
-    
-    int fila = TablaCategorias.getSelectedRow();
+    //Eliminar categoria
+    public void eliminar()
+    {
         try
         {
-            ps = c.prepareStatement("delete from Categoria where IdCategoria=?");
-            ps.setString(1, TablaCategorias.getValueAt(fila, 0).toString());
-            int exito = ps.executeUpdate();
-            if(exito==1){
-                JOptionPane.showMessageDialog(rootPane, "Categoria eliminada");
-            }
+            int fila = TablaCategorias.getSelectedRow();
+            idCategoriaN = Integer.parseInt(TablaCategorias.getValueAt(fila, 0).toString());
+            crud.eliminaCategoria(idCategoriaN);
             buscar();
         }
-        catch(SQLException | HeadlessException ext)
+        catch(NumberFormatException e)
         {
-            LabelEstado.setText("Error: "+ext); 
+            LabelEstado.setText("Error: "+e); 
         }
-    }
+    }    
     
     public void actualizar(){
-        
+        limpiar();
         try{
-
             int fila = TablaCategorias.getSelectedRow();
-            ps = c.prepareCall("{call ActualizarCategorias(?,?)}");
-            ps.setInt(1, Integer.parseInt(TablaCategorias.getValueAt(fila, 0).toString()));
-            ps.setString(2, TablaCategorias.getValueAt(fila, 1).toString());
- 
-            int i=ps.executeUpdate();
-            if(i==1){
-                JOptionPane.showMessageDialog(rootPane, "Sucursal actualizada");
-               /// c.close();
+            pp.setIdCategoria(Integer.parseInt(TablaCategorias.getValueAt(fila, 0).toString()));
+            pp.setDescripcion(TablaCategorias.getValueAt(fila, 1).toString());
+            
+            crud.actualizarCategoria(pp);
+            buscar();
+                JOptionPane.showMessageDialog(null, "Categoria actualizada");        
 
-            }
-        }catch(SQLException | NumberFormatException | HeadlessException ex)
+        }catch(HeadlessException | NumberFormatException ex)
         {
+            JOptionPane.showMessageDialog(null, "Alerta","Error al actualizar la categoria",JOptionPane.WARNING_MESSAGE);
             LabelEstado.setText("Error: "+ex);   
-        }
-       
+        }      
     }
+    
+    public void limpiar(){
+    
+        TextID.setText("");
+        TextDescripcion.setText("");
+        
+    }
+
+    public void idCategoria(){
+     try{
+        idCategoriaS = crud.obteneriIdCategoria();
+        TextID.setText(idCategoriaS); 
+     }catch(Exception e)
+     {
+       LabelEstado.setText("Error: "+e); 
+     }         
+}
     
     
     @SuppressWarnings("unchecked")
@@ -451,26 +458,5 @@ public final class Categorias extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane5;
     // End of variables declaration//GEN-END:variables
-
-    public void limpiar(){
-    
-        TextID.setText("");
-        TextDescripcion.setText("");
-        
-    }
-
-    public void idCategoria(){
-     try{
-        r = cn.consultar("select max(IdCategoria)+1 from Categoria");
-        if(r.next()){
-        idcate=r.getInt(1);
-        codigo=String.valueOf(idcate);
-        TextID.setText(codigo); 
-        }
-     }catch(SQLException e)
-     {
-       LabelEstado.setText("Error: "+e); 
-     }         
-}
 
 }

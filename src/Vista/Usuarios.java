@@ -1,10 +1,8 @@
 package Vista;
 import Controlador.Funcionalidades;
-import Modelo.Conexion;
 import Controlador.SettersAndGetters;
 import Modelo.CRUD;
 import static Vista.EntornoAdmin.LabelEstado;
-import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.*;
@@ -16,27 +14,21 @@ import javax.swing.table.DefaultTableModel;
 
 public final class Usuarios extends javax.swing.JPanel {
 
-    //variables
+    //declarando variables
     private static ResultSet r;
-    private static Statement st;
-    private static PreparedStatement ps;
     private String contrasena,cedula,nombres,apellidos,telefono,direccion;
     int idsucur=0,cantidadColumnas,idv;
     
     //invocacion de clases   
-    Conexion cn=new Conexion();  
-    Connection c= cn.conexion();
-    CRUD crud=new CRUD();
     Funcionalidades fun = new Funcionalidades();
     SettersAndGetters set=new SettersAndGetters();
-    
+    CRUD crud=new CRUD();
+
     //creando objetos de la tabla, y los jComboBox
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultComboBoxModel comboUser = new DefaultComboBoxModel();
     DefaultComboBoxModel comboEmpresa = new DefaultComboBoxModel();
     
-
-    private Component rootPane;
     
     public Usuarios() throws Exception {
         initComponents();     
@@ -50,15 +42,14 @@ public final class Usuarios extends javax.swing.JPanel {
     
     public void buscarColumnas(){      
         try{ 
-            //r = cn.consultar("select IdVendedor,Cedula,Nombres,Apellidos,Telefono,Direccion from Vendedor");
-            r = cn.consultar("select * from Vendedor order by IdVendedor");  
+            r = crud.buscaTodosEmpleados();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(SQLException e)
+        catch(Exception e)
         {
            LabelEstado.setText("Error: "+e); 
         }
@@ -68,18 +59,15 @@ public final class Usuarios extends javax.swing.JPanel {
         limpiarTabla();
        try
        {
-           r = cn.consultar("select * from Vendedor order by IdVendedor");  
-            
-          //  r = cn.consultar("select IdVendedor,Cedula,Nombres,Apellidos,Telefono,Direccion from Vendedor order by IdVendedor");  
+           r=crud.buscaTodosEmpleados();
             while(r.next()){ 
-              Object [] fila = new Object[cantidadColumnas];
-              for (int i=0;i<cantidadColumnas;i++)
-              fila[i] = r.getObject(i+1);
-               modelo.addRow(fila);
-
+                Object [] fila = new Object[cantidadColumnas];
+                for (int i=0;i<cantidadColumnas;i++)
+                fila[i] = r.getObject(i+1);             
+                modelo.addRow(fila);
             } 
        }
-       catch(SQLException e)
+       catch(Exception e)
        {
           LabelEstado.setText("Error: "+e);  
        } 
@@ -134,7 +122,9 @@ public final class Usuarios extends javax.swing.JPanel {
             
             JOptionPane.showMessageDialog(null, "Vendedor registrado correctamente");
             limpiar();
+            limpiarTabla();
             mostrarIdVendedor();
+            buscarEmpleados();
         
         }
         catch(SQLException | NumberFormatException | HeadlessException ex)
@@ -151,6 +141,7 @@ public final class Usuarios extends javax.swing.JPanel {
             int fila = TablaEmpleados.getSelectedRow();
             int idempleado = Integer.parseInt(TablaEmpleados.getValueAt(fila, 0).toString());
             crud.eliminarEmpleado(idempleado);
+            buscarEmpleados();
         }
         catch(Exception e)
         {
@@ -159,27 +150,8 @@ public final class Usuarios extends javax.swing.JPanel {
         
     }
     
-    public void eliminaEmpleado(int idvendedor){
-    
-    int fila = TablaEmpleados.getSelectedRow();
-        try
-        {
-            ps = c.prepareStatement("delete from Vendedor where IdVendedor='"+idvendedor+"'");
-            ps.setString(1, TablaEmpleados.getValueAt(fila, 0).toString());
-            int exito = ps.executeUpdate();
-            if(exito==1){
-                JOptionPane.showMessageDialog(rootPane, "Sucursal eliminada...................");
-            }
-            buscarEmpleados();
-        }
-        catch(SQLException | HeadlessException ext)
-        {
-            LabelEstado.setText("Error: "+ext); 
-        }
-    }
-
     public void actualizar() throws Exception{
-        
+        //limpiar();
         try{
 
         int fila = TablaEmpleados.getSelectedRow();
@@ -195,6 +167,7 @@ public final class Usuarios extends javax.swing.JPanel {
         set.setDireccionV(TablaEmpleados.getValueAt(fila, 8).toString());
             
             crud.actualizaEmpleado(set);
+            buscarEmpleados();
             
         }
         
@@ -224,10 +197,11 @@ public final class Usuarios extends javax.swing.JPanel {
         }
     }
     
-    public void FillComboUsuario() throws Exception{
+    public void FillComboUsuario(){
 
       try {         
-         r = cn.consultar("select IdTipo_Usuario,Tipo_Usuario from Tipo_Usuario");   
+         //r = cn.consultar("select IdTipo_Usuario,Tipo_Usuario from Tipo_Usuario");   
+         r = crud.llenarComboTipoEmpleado();
          ComboUsuario.setModel(comboUser);
          while (r.next()) 
          {            
@@ -243,16 +217,17 @@ public final class Usuarios extends javax.swing.JPanel {
          }
          r.close();
         } 
-      catch (SQLException ex) 
+      catch (Exception ex) 
       {
         System.out.println("error"+ex);
       } 
     } 
     
-    public void FillComboEmpresa() throws Exception{
+    public void FillComboEmpresa(){
 
       try {         
-         r = cn.consultar("select IdEmpresa, NombreEmpresa from Empresa");   
+         //r = cn.consultar("select IdEmpresa, NombreEmpresa from Empresa");  
+         r = crud.llenarComboSucursal();
          ComboEmpresa.setModel(comboEmpresa);
          while (r.next()) 
          {            
@@ -268,7 +243,7 @@ public final class Usuarios extends javax.swing.JPanel {
          }
          r.close();
         } 
-      catch (SQLException ex) 
+      catch (Exception ex) 
       {
         System.out.println("error"+ex);
       } 

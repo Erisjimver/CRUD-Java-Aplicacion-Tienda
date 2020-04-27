@@ -103,6 +103,18 @@ create or replace procedure RegistrarCategorias
  insert into Categoria values(secuencia_idcategoria.nextval,Descripcion);
  end RegistrarCategorias;
  /
+
+ --Eliminar de empleados
+create or replace procedure EliminarCategoria
+(
+  id_categoria in number
+)
+as
+begin
+	delete from Categoria where IdCategoria = id_categoria;
+	commit;
+end EliminarCategoria;
+/
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
  --secuencia id productos
@@ -220,20 +232,20 @@ begin
 end ActualizarProductos;
 /
 EXEC ActualizarProductos(1,'auriculares','sansung',2.5,5,10);
+
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 ---actualizar categorias
-create or replace procedure ActualizarCategorias
+create or replace procedure ActualizarCategoria
 (
 pIdCategoria in number,
-pNombre in varchar2,
 pDescripcion in varchar2
 ) 
 as 
 begin
-  update Categoria set Nombre=pNombre, Descripcion=pDescripcion 
+  update Categoria set Descripcion=pDescripcion 
   where IdCategoria=pIdCategoria;
-end ActualizarCategorias;
+end ActualizarCategoria;
 /
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
@@ -251,6 +263,17 @@ begin
   update Empresa set Ruc=pRuc, NombreEmpresa=pNombreEmpresa, Telefono=pTelefono,Direccion=pDireccion 
   where IdEmpresa=pIdEmpresa;
 end ActualizarSucursal;
+/
+
+--eliminar productos
+create or replace procedure EliminarSucursal
+(
+  id_sucursal in number
+)
+as
+begin
+	delete from Empresa where IdEmpresa = id_sucursal;
+end EliminarSucursal;
 /
 
 ---------------------------------------------------------------------------------------------------------------------

@@ -1,6 +1,5 @@
 package Vista;
 import Modelo.CRUD;
-import Modelo.Conexion;
 import static Vista.EntornoAdmin.LabelEstado;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;

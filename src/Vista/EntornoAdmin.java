@@ -329,6 +329,7 @@ super.paintComponent(grafico);
     }//GEN-LAST:event_ManuUsuarioActionPerformed
 
     private void MenuSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuSalirActionPerformed
+        this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_MenuSalirActionPerformed
 

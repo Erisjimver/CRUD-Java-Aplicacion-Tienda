@@ -1,9 +1,7 @@
 package Vista;
-import Modelo.Conexion;
 import Controlador.SettersAndGetters;
 import Modelo.CRUD;
 import static Vista.EntornoAdmin.LabelEstado;
-import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.*;
@@ -11,17 +9,19 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public final class Sucursal extends javax.swing.JPanel {
+    
+    //declarando variables
     private static ResultSet r;
-    private static Statement st;
-    private static PreparedStatement ps;
-    private String cod,ruc,sucursal,telefono,direccion;
-    int idsucur=0,cantidadColumnas;
+    private String idsucur,ruc,sucursal,telefono,direccion;
+    private int cantidadColumnas, idsucursal;
 
-    Conexion cn=new Conexion();  
-    Connection c= cn.conexion();
+    //creando objeto de clases
+    SettersAndGetters set=new SettersAndGetters();
+    CRUD crud = new CRUD();
+    
+    //creando objeto de tabla
     DefaultTableModel modelo = new DefaultTableModel();
-
-    private Component rootPane;
+ 
     
     public Sucursal() {
         initComponents();     
@@ -33,14 +33,14 @@ public final class Sucursal extends javax.swing.JPanel {
     
     public void buscarColumnas(){      
         try{ 
-            r = cn.consultar("select IdEmpresa,Ruc,NombreEmpresa,Telefono,Direccion from Empresa order by IdEmpresa"); 
+            r = crud.buscaSucursales();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(SQLException e)
+        catch(Exception e)
         {
            LabelEstado.setText("Error: "+e); 
         }
@@ -50,7 +50,7 @@ public final class Sucursal extends javax.swing.JPanel {
         limpiarTabla();
        try
        {
-            r = cn.consultar("select IdEmpresa,Ruc,NombreEmpresa,Telefono,Direccion from Empresa order by IdEmpresa");  
+            r = crud.buscaSucursales();
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)
@@ -59,7 +59,7 @@ public final class Sucursal extends javax.swing.JPanel {
 
             } 
        }
-       catch(SQLException e)
+       catch(Exception e)
        {
           LabelEstado.setText("Error: "+e);  
        } 
@@ -94,22 +94,20 @@ public final class Sucursal extends javax.swing.JPanel {
               LabelEstado.setText("Existen datos no ingresados...");   
             }
             else
-            {
+            {    
+                set.setIdEmpresa(Integer.parseInt(idsucur));
+                set.setRuc(ruc);
+                set.setSucursal(sucursal);
+                set.setTelefonoEmpresa(Integer.parseInt(telefono));
+                set.setDireccionEmpresa(direccion);
                 
-                SettersAndGetters pp=new SettersAndGetters();
-                CRUD mi=new CRUD();
-                pp.setIdEmpresa(idsucur);
-                pp.setRuc(ruc);
-                pp.setSucursal(sucursal);
-                pp.setTelefonoEmpresa(Integer.parseInt(telefono));
-                pp.setDireccionEmpresa(direccion);
-                
-                mi.registrarSucursal(pp);
+                crud.registrarSucursal(set);
             
             JOptionPane.showMessageDialog(null, "Sucursal registrada....");
            
             limpiar();
             idSucursal();
+            buscarSucursales();
             
             }
         }
@@ -117,26 +115,24 @@ public final class Sucursal extends javax.swing.JPanel {
         {         
             LabelEstado.setText("Error: "+e); 
         }
-    }
-       
-    public void eliminar(){
-    
-    int fila = TablaSucursal.getSelectedRow();
+    }  
+
+    //borrar empresa / sucursal
+    public void eliminar()
+    {
         try
         {
-            ps = c.prepareStatement("delete from Empresa where IdEmpresa=?");
-            ps.setString(1, TablaSucursal.getValueAt(fila, 0).toString());
-            int exito = ps.executeUpdate();
-            if(exito==1){
-                JOptionPane.showMessageDialog(rootPane, "Sucursal eliminada...................");
-            }
+            int fila = TablaSucursal.getSelectedRow();
+            idsucursal = Integer.parseInt(TablaSucursal.getValueAt(fila, 0).toString());
+            crud.eliminarSucursal(idsucursal);
             buscarSucursales();
         }
-        catch(SQLException | HeadlessException ext)
+        catch(NumberFormatException e)
         {
-            LabelEstado.setText("Error: "+ext); 
-        }
+            LabelEstado.setText("Error al eliminar: "+e); 
+        }  
     }
+
     
     public void actualizar(){
         
@@ -144,24 +140,41 @@ public final class Sucursal extends javax.swing.JPanel {
 
         int fila = TablaSucursal.getSelectedRow();
 
-            ps = c.prepareCall("{call ActualizarSucursal(?,?,?,?,?)}");
-            ps.setInt(1, Integer.parseInt(TablaSucursal.getValueAt(fila, 0).toString()));
-            ps.setString(2, TablaSucursal.getValueAt(fila, 1).toString());
-            ps.setString(3, TablaSucursal.getValueAt(fila, 2).toString());
-            ps.setInt(4, Integer.parseInt(TablaSucursal.getValueAt(fila, 3).toString()));
-            ps.setString(5, TablaSucursal.getValueAt(fila, 4).toString());
-            int i=ps.executeUpdate();
-            if(i==1){
-                JOptionPane.showMessageDialog(rootPane, "Sucursal actualizada");
-                c.close();
-            }
+            set.setIdEmpresa(Integer.parseInt(TablaSucursal.getValueAt(fila, 0).toString()));
+            set.setRuc(TablaSucursal.getValueAt(fila, 1).toString());
+            set.setSucursal(TablaSucursal.getValueAt(fila, 2).toString());
+            set.setTelefonoEmpresa(Integer.parseInt(TablaSucursal.getValueAt(fila, 3).toString()));
+            set.setDireccionEmpresa(TablaSucursal.getValueAt(fila, 4).toString());
+            
+            crud.actualizarSucursal(set);
+                JOptionPane.showMessageDialog(null, "Sucursal actualizada");
         }
         
-        catch(SQLException | NumberFormatException | HeadlessException ex)
+        catch(NumberFormatException | HeadlessException ex)
         {
             LabelEstado.setText("Error: "+ex);   
         }
     } 
+    
+    public void limpiar(){
+            TextRUC.setText("");
+            TextSucursal.setText("");
+            TextTelefono.setText("");
+            TextDireccion.setText("");
+    }
+
+    public void idSucursal(){
+
+     try{
+
+        idsucur=crud.obteneriIdSucursal();
+        TextCOS.setText(idsucur); 
+        
+        }
+        catch(Exception e){
+            LabelEstado.setText("Error: "+e);
+        }
+      }
     
     
     @SuppressWarnings("unchecked")
@@ -551,27 +564,4 @@ public final class Sucursal extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane5;
     // End of variables declaration//GEN-END:variables
 
-    public void limpiar(){
-            TextRUC.setText("");
-            TextSucursal.setText("");
-            TextTelefono.setText("");
-            TextDireccion.setText("");
-    }
-
-    public void idSucursal(){
-
-     try{
-        st = c.createStatement();
-        r = st.executeQuery("select max(IdEmpresa)+1 from Empresa");
-       // r = st.executeQuery("select IdUsuarios from Usuarios");
-        if(r.next()){
-        idsucur=r.getInt(1);
-        cod=String.valueOf(idsucur);
-        TextCOS.setText(cod); 
-        }
-     }
-        catch(SQLException e){
-            LabelEstado.setText("Error: "+e);
-        }
-      }
 }
