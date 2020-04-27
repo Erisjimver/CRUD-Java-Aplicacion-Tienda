@@ -19,12 +19,18 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.view.JasperViewer;
 
 public class CRUD {
-static Statement s;
-static ResultSet rs;
-private static PreparedStatement ps;
-private static CallableStatement sc;
-Conexion cn=new Conexion(); 
-Connection c= cn.conexion();
+    
+//declarando variables
+    static Statement s;
+    static ResultSet rs;
+    private int bdcantidad=0,idClienteI=0, idEmpleadoI=0;
+    private String nombreEmpleado, idEmpleadoS,idClienteS, cedulaClienteS,idProductoS,idCategoriaS,idSucursalS,codigoFactura;
+    private static PreparedStatement ps;
+    private static CallableStatement sc;
+    
+//creando objeto de clases
+    Conexion cn=new Conexion(); 
+    Connection c= cn.conexion();
 
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////CRUD///////////////////////////////////////////////
@@ -409,7 +415,7 @@ Connection c= cn.conexion();
 //----------------------------------------------------------------------------//
 
 //consulta del tipo de usuario para el LOGIN    
-    public String TipoUsuario(String usuario, String contrasena) throws Exception {
+    public String TipoUsuario(String usuario, String contrasena){
         
         String sql="select tp.Tipo_Usuario from Vendedor v inner join Tipo_Usuario tp on v.IdTipo_Usuario = tp.IdTipo_Usuario where v.cedula='"+usuario+"' and v.Contrasena='"+contrasena+"'";         
         String tipo_usuario="";
@@ -420,26 +426,26 @@ Connection c= cn.conexion();
             tipo_usuario=rs.getString(1);
         
         }catch(SQLException e){
-            Login.lblestadoLogin.setText("");
+            Login.lblestadoLogin.setText(""+e);
         }
         return tipo_usuario;
     }   
                
-//Consulta todos los indices y facturas
-    public ResultSet buscaLlenarIndiceFactura() throws Exception {
-        String sql="select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto";            
+//consultar todas las facturas / indice
+    public ResultSet consultarFacturas() throws Exception {
+        String sql="select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto order by f.FechaEmision desc";            
         return consultar(sql);
     }
     
-//se buscan todas las facturas por ID
-    public ResultSet buscaLlenarIndiceFacturaID(int idfactura) throws Exception {
+//consultar todas las facturas por ID
+    public ResultSet consultarFacturasId(int idfactura) throws Exception {
         String sql= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.IdFactura='"+idfactura+"'";
         return consultar(sql);
     }
     
-//se buscan todas las facturas pode fecha
-    public ResultSet buscaLlenarIndiceFacturaFecha(String fecha) throws Exception {
-        String sql= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.FechaEmision='"+fecha+"'";  
+//consultar todas las facturas por fecha
+    public ResultSet consultarFacturasFecha(String fecha) throws Exception {
+        String sql= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.FechaEmision='"+fecha+"' order by f.FechaEmision desc";  
         return consultar(sql);
     }                          
 
@@ -457,140 +463,19 @@ Connection c= cn.conexion();
         rs = ps.executeQuery();
         return rs;
     }
+
 //Consulta de los productos por nombre usando like   
     public ResultSet buscarTodosProducto() throws Exception {
-        String sql = "select * from producto";
+        String sql = "select * from producto order by idproducto";
         return consultar(sql);
-    }    
-//consulta cantidad de productos
-    public int consultarCantidad(int idproducto) throws Exception {
-       int bdcantidad=0;
-        s = c.createStatement();
-        rs = s.executeQuery("select stock from Producto where IdProducto="+idproducto+"");
-        while(rs.next()){
-        bdcantidad=rs.getInt(1);
-        }
-        return bdcantidad;
-    }
-    
-//Consulta de los clientes    
-    public ResultSet buscarClientes(String cedula) throws Exception {
-        
-        ps = c.prepareStatement("SELECT * FROM Clientes where cedula= ?");
-        ps.setString(1, cedula);
-        rs = ps.executeQuery();
-        return rs;
-    }
-    
-//consulta id del cliente
-    public String obteneriIDcliente() throws Exception {
-    String idcliente="";
-        s = c.createStatement();
-        rs = s.executeQuery("select max(IdCliente) from Clientes");
-        if(rs.next()){
-        idcliente=rs.getString(1);
-        }
-        return idcliente;
-    }
-//consulta id del cliente por cedula
-    public int obteneriIDclienteParametro(String cedula) throws Exception {
-    int idcliente=0;
-        s = c.createStatement();
-        rs = s.executeQuery("select IdCliente from Clientes where cedula='"+cedula+"'");
-        if(rs.next()){
-        idcliente=rs.getInt(1);
-        }
-        return idcliente;
-    }
-//consulta booleano cliente por cedula
-    public String compruebaCliente(String cedula) throws Exception {
-    String cedula_cliente="";
-        s = c.createStatement();
-        rs = s.executeQuery("select cedula from Clientes where cedula='"+cedula+"'");
-        if(rs.next()){            
-            cedula_cliente=rs.getString(1);
-        }
-        return cedula_cliente;
-    }    
-//consulta id+1 del producto
-    public String obteneriIdProducto() throws Exception {
-        
-        String idproducto="";
-        s = c.createStatement();
-        rs = s.executeQuery("select max(IdProducto)+1 from Producto");
-        if(rs.next()){
-        idproducto=rs.getString(1);
-        }
-        return idproducto;
-    }
-//consulta id del cliente
-    public String obteneriIdCategoria() throws Exception {
-        
-        String idcategoria="";
-        s = c.createStatement();
-        rs = s.executeQuery("select max(IdCategoria)+1 from Categoria");
-        if(rs.next()){
-        idcategoria=rs.getString(1);
-        }
-        return idcategoria;
-    }  
-//consulta id del cliente
-    public String obteneriIdSucursal() throws Exception {
-        
-        String idsucursal="";
-        s = c.createStatement();
-        rs = s.executeQuery("select max(IdEmpresa)+1 from Empresa");
-        if(rs.next()){
-        idsucursal=rs.getString(1);
-        }
-        return idsucursal;
-    }
-//consulta id del empleado con parametro  
-    public int obteneriIDEmpleado(String usuario) throws Exception 
-    {
-    int idempleado=0;
-        s = c.createStatement();
-        rs = s.executeQuery("select IdVendedor from Vendedor where nombres='"+usuario+"'");
-        if(rs.next()){
-        idempleado=rs.getInt(1);
-        }
-        return idempleado;
-    }
-
-//consulta id del empleado con parametro  
-    public ResultSet obtenerDatosEmpresa() throws Exception 
-    {        
-        String sql= "select NombreEmpresa,Ruc,Telefono from Empresa";  
-        return consultar(sql);
-    }
-//consulta Codigo de la factura
-    public String obtenerCodigoFactura() throws Exception 
-    {
-    String codigofactura="";
-        s = c.createStatement();
-        rs = s.executeQuery("select max(IdFactura)+1 from Factura");
-        while(rs.next()){
-        codigofactura=rs.getString(1);
-        }
-        return codigofactura;
-    }     
-//consulta id del empleado sin parametro
-    public String obteneriIDEmpleadoNoParametro() throws Exception 
-    {
-    String idempleado="";
-        s = c.createStatement();
-        rs = s.executeQuery("select max(IdVendedor)+1 from Vendedor");
-        if(rs.next()){
-        idempleado=rs.getString(1);
-        }
-        return idempleado;
-    }  
+    }   
     
 //Consulta todos los datos del empleado
     public ResultSet buscaTodosEmpleados() throws Exception {
         String sql="select * from Vendedor order by IdVendedor";            
         return consultar(sql);
     } 
+
 //Consulta todos los datos del empleado
     public ResultSet buscaSucursales() throws Exception {
         String sql="select IdEmpresa,Ruc,NombreEmpresa,Telefono,Direccion from Empresa order by IdEmpresa ";            
@@ -600,32 +485,217 @@ Connection c= cn.conexion();
 //Consultar id_emopleado y Tipo Empleado de Empleado para el jcombobox de TipoEmpleado    
     public ResultSet llenarComboTipoEmpleado() throws Exception {
         String sql="select IdTipo_Usuario,Tipo_Usuario from Tipo_Usuario";             
-        return cn.consultar(sql);
+        return consultar(sql);
     }
     
 //Consultar id_empresa nombre empresa para el combo sucursal    
     public ResultSet llenarComboSucursal() throws Exception {
         String sql="select IdEmpresa, NombreEmpresa from Empresa";             
-        return cn.consultar(sql);
+        return consultar(sql);
     }
 
 //Consultar id_categoria y descripcion de la ca categoria para el jcombobox de productos    
     public ResultSet llenarComboCategoria() throws Exception {
         String sql="select IdCategoria, descripcion from Categoria order by idcategoria";             
-        return cn.consultar(sql);
+        return consultar(sql);
     }
-   
-//consulta el nombre de usuario
-    public String obtenerNombreUsuario(String cedula) throws Exception {
-    String nombre="";
-        s = c.createStatement();
-        rs = s.executeQuery("select nombres from vendedor where cedula='"+cedula+"'");
-        if(rs.next()){
-        nombre=rs.getString(1);
+ 
+//Consulta de los clientes    
+    public ResultSet buscarClientes(String cedula) throws Exception {
+        
+        ps = c.prepareStatement("SELECT * FROM Clientes where cedula= ?");
+        ps.setString(1, cedula);
+        rs = ps.executeQuery();
+        return rs;
+    }
+
+//consulta id del empleado con parametro  
+    public ResultSet obtenerDatosEmpresa() throws Exception{        
+        String sql= "select NombreEmpresa,Ruc,Telefono from Empresa";  
+        return consultar(sql);
+    }
+  
+//consulta cantidad de productos
+    public int consultarCantidad(int idproducto){
+       try
+       {
+        rs = consultar("select stock from Producto where IdProducto="+idproducto+"");
+            while(rs.next()){
+            bdcantidad=rs.getInt(1);
+            }           
+       }
+       catch(SQLException e){
+           System.out.println("Error en consultarCantidad(int idproducto): "+ e);
+       }
+        return bdcantidad;
+    }
+     
+//consulta id del cliente
+    public String obteneriIDcliente(){
+        try
+        {
+            rs = consultar("select max(IdCliente) from Clientes");
+                if(rs.next()){
+                    idClienteS=rs.getString(1);
+                }        
         }
-        c.close();
-        return nombre;
+        catch(SQLException e){
+            System.out.println("Error en obteneriIDcliente(): "+ e);
+        }
+        return idClienteS;
     }
+    
+//consulta id del cliente por cedula
+    public int obteneriIDclienteParametro(String cedula){
+        try
+        {
+        rs = consultar("select IdCliente from Clientes where cedula='"+cedula+"'");
+            if(rs.next()){
+                idClienteI=rs.getInt(1);
+            }            
+        }
+        catch(SQLException e){
+            System.out.println("Error en obteneriIDclienteParametro(String cedula): "+ e);
+        }
+        return idClienteI;
+    }
+  
+//consulta booleano cliente por cedula
+    public String compruebaCliente(String cedula){
+        try
+        {
+        rs = consultar("select cedula from Clientes where cedula='"+cedula+"'");
+            if(rs.next()){            
+                cedulaClienteS=rs.getString(1);
+            }             
+        }
+        catch(SQLException e){
+           System.out.println("Error en compruebaCLiente(): "+ e);
+        }
+        return cedulaClienteS;
+    }    
+
+//consulta id+1 del producto
+    public String obteneriIdProducto(){
+        try
+        {
+            rs = consultar("select max(IdProducto)+1 from Producto");
+            if(rs.next()){
+                idProductoS=rs.getString(1);
+            }             
+        }
+        catch(SQLException e){
+           System.out.println("Error en obteneriIdProducto(): "+ e);
+        }
+        return idProductoS;
+    }
+
+//consulta id del cliente
+    public String obteneriIdCategoria() {
+        try
+        {      
+        rs = consultar("select max(IdCategoria)+1 from Categoria");
+            if(rs.next()){
+                idCategoriaS=rs.getString(1);
+            }
+        }
+        catch(SQLException e){
+            System.out.println("Error en obteneriIdCategoria(): "+ e);
+        }
+        return idCategoriaS;
+    }  
+
+//consulta id del cliente
+    public String obteneriIdSucursal(){
+        try
+        {
+        rs = consultar("select max(IdEmpresa)+1 from Empresa");
+            if(rs.next()){
+                idSucursalS=rs.getString(1);
+            }            
+        }
+        catch(SQLException e){
+            System.out.println("Error en obteneriIdSucursal(): "+ e);
+        }
+        return idSucursalS;
+    }
+
+//consulta id del empleado con parametro  
+    public int obteneriIDEmpleado(String usuario){     
+        try
+        {
+        rs = consultar("select IdVendedor from Vendedor where nombres='"+usuario+"'");
+            if(rs.next()){
+                idEmpleadoI=rs.getInt(1);
+            }            
+        }
+        catch(SQLException e){
+            System.out.println("Error en obteneriIDEmpleado(String usuario): "+ e);
+        }
+        return idEmpleadoI;
+    }
+
+//consulta Codigo de la factura
+    public String obtenerCodigoFactura(){
+        try
+        {
+        rs = consultar("select max(IdFactura)+1 from Factura");
+            while(rs.next()){
+            codigoFactura=rs.getString(1);
+            }
+        }
+        catch(SQLException e){
+            System.out.println("Error en obteneriIDEmpleado(String usuario): "+ e);           
+        }
+        return codigoFactura;
+    }     
+
+//consulta id del empleado sin parametro
+    public String obteneriIDEmpleadoNoParametro(){           
+        try
+        {
+        rs = consultar("select max(IdVendedor)+1 from Vendedor");
+            if(rs.next()){
+                idEmpleadoS=rs.getString(1);
+            }        
+        }
+        catch(SQLException e){
+            System.out.println("Error en obteneriIDEmpleadoNoParametro(): "+ e);
+        }
+        return idEmpleadoS;
+    }  
+    
+//consulta el nombre de usuario
+    public String obtenerNombreUsuario(String cedula){
+        try
+        {   
+        rs = consultar("select nombres from vendedor where cedula='"+cedula+"'");
+            if(rs.next()){
+                nombreEmpleado=rs.getString(1);
+            }  
+        }
+        catch(SQLException e){
+            System.out.println("Error en obtenerNombreUsuario(String cedula): "+ e);
+        }
+        return nombreEmpleado;
+    }
+    
+////////////////////////////////////////////////////////////////////////////////
+///////////////////Metodo generico para consultas resul set ////////////////////
+////////////////////////////////////////////////////////////////////////////////
+    
+//metodo consultar usado por la mayoria de las consultas
+    public ResultSet consultar(String sql) { 
+            try
+            { 
+                s = c.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+                rs = s.executeQuery(sql); 
+
+            } catch (SQLException e) { 
+                return null; 
+            } 
+            return rs; 
+    }        
     
 //Busqueda de reportes  
     public void Reportes(String Cadena){
@@ -638,21 +708,6 @@ Connection c= cn.conexion();
           System.out.println("error"+e);   
         }
     }    
-////////////////////////////////////////////////////////////////////////////////
-///////////////////Metodo generico para consultas resul set ////////////////////
-////////////////////////////////////////////////////////////////////////////////
-    
-    public ResultSet consultar(String sql) { 
-            try 
-            { 
-                s = c.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-                rs = s.executeQuery(sql); 
 
-            } catch (SQLException e) { 
-                return null; 
-            } 
-            return rs; 
-    }        
-    
-    
+  
 }//fin de la clase

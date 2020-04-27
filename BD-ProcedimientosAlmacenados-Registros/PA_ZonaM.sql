@@ -167,6 +167,7 @@ create or replace procedure RegistrarClientes
 as
 begin
 insert into Clientes values(secuencia_idclientes.nextval,Cedula,Nombre,Telefono,Direccion);
+	commit;
 end RegistrarClientes;
 /
 
@@ -187,6 +188,7 @@ create or replace procedure RegistrarFactura
 as
 begin
 insert into Factura values(secuencia_idfactura.nextval,IdEmpleado,IdCliente,sysdate);
+	commit;
 end RegistrarFactura;
 /
 ----------------------------------------------------------------------------------------------------------------------
@@ -290,10 +292,12 @@ end EliminarSucursal;
    canti number:=null;
  begin
      update Producto set Stock=Stock-:new.Cantidad where IdProducto=:new.IdProducto; 
---	 commit;
+	 commit;
  end tr_insertar_venta;
  /
 
 --el commit me dio problemas no se porque luego lo averiguo
 
  --select p.NombreProducto,p.Marca,p.Precio,p.Stock,c.Nombre from Producto p inner join Categoria c on p.IdCategorias = c.IdCategorias where p.NombreProducto like 'A%' or c.Nombre like'M%';
+ --select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto;            
+

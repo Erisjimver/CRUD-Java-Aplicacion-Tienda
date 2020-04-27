@@ -34,7 +34,7 @@ public final class Facturas extends javax.swing.JPanel {
    public void llenarIndiceTabla()
     {      
         try{
-            rs=crud.buscaLlenarIndiceFactura();
+            rs=crud.consultarFacturas();
             ResultSetMetaData rsd = rs.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
@@ -47,64 +47,71 @@ public final class Facturas extends javax.swing.JPanel {
    
     public void BuscarProductosTotales()
     {
+        limpiarTabla();
         try{
             num=TextNumeroFactura.getText();
             
-            if(RadioButtonNF.isSelected()==false&&RadioButtonFecha.isSelected()==false&&RadioButtonTodo.isSelected()==false)
-            {
-               LabelEstado.setText("No ha selecionado ninguna opcion");//mensaje de alerta
-            }
-            else
-            {
-            
+                    //consulta si la opcion de buscar todo es seleecionado
                     if(RadioButtonTodo.isSelected())
                     {
-                        LabelEstado.setText("");//mensaje de alerta
-                        rs= crud.buscaLlenarIndiceFactura();
+                        rs= crud.consultarFacturas();
                         consultar();//se llama al metodo que realiza la crud
                     }
-            
-                  //  if(RadioButtonNF.isSelected()==true&&num.equals("")) 
+                    //consulta la opcion numero factura es seleecionado
                     if(RadioButtonNF.isSelected()==true) 
                     {
-                        LabelEstado.setText("");//mensaje de alerta
-                        if(num.equals(""))
-                        {
-                            LabelEstado.setText("Ingrese el numero de la factura"); 
-                        }
-                        else
-                        {
-                            rs = crud.buscaLlenarIndiceFacturaID(Integer.parseInt(num));
-                            consultar();//se llama al metodo que realiza la crud
-                        }
+                        rs = crud.consultarFacturasId(Integer.parseInt(num));
+                        consultar();//se llama al metodo que realiza la crud
                     }
-
+                    //consulta si la opcion buscar por fecha
                     if((RadioButtonFecha.isSelected()==true))
                     {
                         if(DateChooserFactura.getDate()==null)
                         {
-                        LabelEstado.setText("No ha seleccionado fecha alguna");//mensaje de alerta 
+                            JOptionPane.showMessageDialog(null, "No ha elegido fecha alguna","Alerta",JOptionPane.WARNING_MESSAGE); 
                         }
                         else
                         {
-                        java.util.Date fecha=DateChooserFactura.getDate();
-                        SimpleDateFormat formatofecha= new SimpleDateFormat("dd/MM/YYYY");
-                        String fec=formatofecha.format(fecha);
+                            java.util.Date fecha=DateChooserFactura.getDate();
+                            SimpleDateFormat formatofecha= new SimpleDateFormat("dd/MM/YYYY");
+                            String fec=formatofecha.format(fecha);
+                            System.out.println("fecha");
 
-                        rs=crud.buscaLlenarIndiceFacturaFecha(fec);
-                        consultar();//se llama al metodo que realiza la crud
+                            rs=crud.consultarFacturasFecha(fec);
+                            consultar();//se llama al metodo que realiza la crud    
                         }
                     }
-           
-            }
-  
         }
-        catch(HeadlessException e)
+        catch(Exception e)
         {
             LabelEstado.setText(e.toString());
-        } catch (Exception ex) {
-            Logger.getLogger(Facturas.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    //verifica si ha sido seleccionada una opcion
+    private void verificaSeleccion(){
+        
+        try 
+        {
+            if(RadioButtonNF.isSelected()==false&&RadioButtonFecha.isSelected()==false&&RadioButtonTodo.isSelected()==false)
+            {
+               //LabelEstado.setText("No ha selecionado ninguna opcion");//mensaje de alerta
+               JOptionPane.showMessageDialog(null, "No ha seleccionado ninguna opcion","Alerta",JOptionPane.WARNING_MESSAGE); 
+            }
+            else if(RadioButtonNF.isSelected()==true&&TextNumeroFactura.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "No ha digitado el codigo factura","Alerta",JOptionPane.WARNING_MESSAGE); 
+            }
+            else if((RadioButtonFecha.isSelected()==true)&&DateChooserFactura.getDate()==null){
+                JOptionPane.showMessageDialog(null, "No ha selecionado una fecha","Alerta",JOptionPane.WARNING_MESSAGE); 
+            }           
+            else{
+                BuscarProductosTotales();
+            }       
+           
+        }catch(HeadlessException e){
+                JOptionPane.showMessageDialog(null, "No ha selecionado una fecha","Alerta",JOptionPane.WARNING_MESSAGE);
+        }
+        
     }
     
     public void consultar(){
@@ -136,7 +143,7 @@ public final class Facturas extends javax.swing.JPanel {
                 DateChooserFactura.setEnabled(false); 
     
             }
-          catch(Exception e)
+        catch(Exception e)
             {
                 LabelEstado.setText("Error: "+e);
             }
@@ -152,9 +159,9 @@ public final class Facturas extends javax.swing.JPanel {
 
         }
         catch(Exception e)
-        {
-            LabelEstado.setText("Error: "+e);
-        }
+            {
+                LabelEstado.setText("Error: "+e);
+            }
         
     }
     
@@ -174,13 +181,14 @@ public final class Facturas extends javax.swing.JPanel {
         }
     }
     
-    public void borrarTabla(){
+    public void limpiarTabla(){
             int filas = TablaFactura.getRowCount();
             for (int i = 0; filas > i; i++) {
             modelo.removeRow(0);
         }
             
     }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -364,7 +372,9 @@ public final class Facturas extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBuscarActionPerformed
-        BuscarProductosTotales();
+       
+        verificaSeleccion();
+        
     }//GEN-LAST:event_BtnBuscarActionPerformed
 
     private void RadioButtonNFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RadioButtonNFActionPerformed
@@ -387,7 +397,7 @@ public final class Facturas extends javax.swing.JPanel {
 
     private void BtnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLimpiarActionPerformed
        
-        borrarTabla();
+        limpiarTabla();
 
     }//GEN-LAST:event_BtnLimpiarActionPerformed
 
@@ -402,12 +412,21 @@ public final class Facturas extends javax.swing.JPanel {
     }//GEN-LAST:event_TextNumeroFacturaKeyTyped
 
     private void TextNumeroFacturaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextNumeroFacturaKeyReleased
-        
-    if(evt.getKeyCode()==KeyEvent.VK_ENTER)
-    {
-           BuscarProductosTotales();
-    }
+    String numero = TextNumeroFactura.getText();
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
 
+            if(numero.equals(""))
+            {
+                 JOptionPane.showMessageDialog(null, "No ha digitado el codigo factura","Alerta",JOptionPane.WARNING_MESSAGE); 
+            }
+            if(RadioButtonTodo.isSelected()==false){
+                JOptionPane.showMessageDialog(null, "No ha seleecionado una opcion","Alerta",JOptionPane.WARNING_MESSAGE); 
+            }
+            else
+            {
+                BuscarProductosTotales();
+            }
+        }
     }//GEN-LAST:event_TextNumeroFacturaKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
