@@ -1,11 +1,9 @@
 package Modelo;
 
 import Controlador.SettersAndGetters;
-
 import static Vista.EntornoAdmin.LabelEstado;
 import Vista.Login;
 import java.awt.HeadlessException;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,9 +22,8 @@ public class CRUD {
     static Statement s;
     static ResultSet rs;
     private int bdcantidad=0,idClienteI=0, idEmpleadoI=0;
-    private String nombreEmpleado, idEmpleadoS,idClienteS, cedulaClienteS,idProductoS,idCategoriaS,idSucursalS,codigoFactura;
+    private String tipoUsuario,nombreEmpleado, idEmpleadoS, cedulaClienteS,idProductoS,idCategoriaS,idSucursalS,codigoFactura="0";
     private static PreparedStatement ps;
-    private static CallableStatement sc;
     
 //creando objeto de clases
     Conexion cn=new Conexion(); 
@@ -40,13 +37,14 @@ public class CRUD {
     public void registrarSucursal(SettersAndGetters to) throws Exception{
         try
         {
-            ps= c.prepareCall("CALL RegistrarEmpresa(?,?,?,?,?)");
+            ps= c.prepareCall("CALL RegistrarEmpresa(?,?,?,?,?,?)");
 
             ps.setInt(1, to.getIdEmpresa());  
             ps.setString(2, to.getRuc());   
-            ps.setString(3, to.getSucursal());  
-            ps.setInt(4, to.getTelefonoEmpresa());  
-            ps.setString(5, to.getDireccionEmpresa()); 
+            ps.setString(3, to.getNombreEmpresa());  
+            ps.setString(4, to.getTelefonoEmpresa());  
+            ps.setString(5, to.getDireccionEmpresa());
+            ps.setString(6, to.getEmailEmpresa());
 
             ps.execute();
             
@@ -65,16 +63,17 @@ public class CRUD {
         
         try
         {
-            ps = c.prepareCall("CALL RegistrarVendedor(?,?,?,?,?,?,?,?)");
+            ps = c.prepareCall("CALL RegistrarEmpleado(?,?,?,?,?,?,?,?,?)");
             
-            ps.setInt(1, to.getIdTipoUsuarioV());
-            ps.setInt(2, to.getIdEmpresaV());
-            ps.setString(3, to.getContrasenaV());      
-            ps.setString(4, to.getCedulaV());
-            ps.setString(5, to.getNombresV());
-            ps.setString(6, to.getApellidosV());
-            ps.setString(7, to.getTelefonoV());
-            ps.setString(8, to.getDireccionV());
+            ps.setInt(1, to.getIdTipoUsuario());
+            ps.setInt(2, to.getIdEmpresa());
+            ps.setString(3, to.getNombreUsuario());
+            ps.setString(4, to.getContrasena());      
+            ps.setString(5, to.getCedulaEmpleado());
+            ps.setString(6, to.getNombresEmpleado());
+            ps.setString(7, to.getApellidosEmpleado());
+            ps.setString(8, to.getTelefonoEmpleado());
+            ps.setString(9, to.getDireccionEmpleado());
 
             ps.execute();
             
@@ -91,7 +90,7 @@ public class CRUD {
     public void registrarCategorias(SettersAndGetters to){
         try
         {
-            ps= c.prepareCall("CALL RegistrarCategorias(?)");
+            ps= c.prepareCall("CALL RegistrarCategoria(?)");
             
             ps.setString(1, to.getDescripcion());  
             
@@ -102,7 +101,7 @@ public class CRUD {
         }
         catch(SQLException e)
         {
-            LabelEstado.setText("Error de registro de la categoria: "+e); 
+            LabelEstado.setText("Error en registrarCategorias: "+e); 
         }
 
     } 
@@ -112,13 +111,13 @@ public class CRUD {
  
         try
         { 
-            ps = c.prepareCall("CALL RegistrarProductos(?,?,?,?,?,?)");
+            ps = c.prepareCall("CALL RegistrarProducto(?,?,?,?,?,?)");
 
-            ps.setInt(1, to.getIdcategorias());
-            ps.setString(2, to.getNombreproducto());      
+            ps.setInt(1, to.getIdCategoria());
+            ps.setString(2, to.getNombreProducto());      
             ps.setString(3, to.getMarca());
             ps.setDouble(4, to.getCosto());
-            ps.setDouble(5, to.getPrecio());
+            ps.setDouble(5, to.getPrecioVenta());
             ps.setInt(6, to.getStock()); 
             
             ps.execute();
@@ -127,7 +126,7 @@ public class CRUD {
             
         }catch(SQLException e){
             
-            LabelEstado.setText("Error de registro del Producto: "+e);
+            LabelEstado.setText("Error en registrarProductos: "+e);
         }
     }
 
@@ -136,18 +135,19 @@ public class CRUD {
         
         try
         {
-            ps = c.prepareCall("CALL RegistrarClientes(?,?,?,?)");
+            ps = c.prepareCall("CALL RegistrarCliente(?,?,?,?,?)");
             
-            ps.setString(1, to.getCedula());
-            ps.setString(2, to.getNombre());
-            ps.setString(3, to.getTelefono());
-            ps.setString(4, to.getDireccion()); 
+            ps.setString(1, to.getCedulaCliente());
+            ps.setString(2, to.getNombreCliente());
+            ps.setString(3, to.getTelefonoCliente());
+            ps.setString(4, to.getDireccionCliente());
+            ps.setString(5, to.getEmailCliente());
             
             ps.execute();  
             
         }catch(SQLException e){
             
-            LabelEstado.setText("Error de registro del Cliente: "+e);
+            LabelEstado.setText("Error en registrarCliente(): "+e);
         }
         
     }
@@ -159,14 +159,14 @@ public class CRUD {
         {
             ps = c.prepareCall("CALL RegistrarFactura(?,?)");
             
-            ps.setInt(1, to.getIdvendedor());
-            ps.setInt(2, to.getIdcliente());
+            ps.setInt(1, to.getIdEmpleado());
+            ps.setInt(2, to.getIdCliente());
             
             ps.execute();
             
         }catch(SQLException e){
             
-            LabelEstado.setText("Error de registro de ka factura: "+e);
+            LabelEstado.setText("Error en registrarFactura: "+e);
         }
     }
     
@@ -177,16 +177,16 @@ public class CRUD {
         {
             ps = c.prepareCall("CALL RegistrarDetalleV(?,?,?,?,?)");
             
-            ps.setInt(1, to.getIdfactura());   
-            ps.setInt(2, to.getIdproducto()); 
+            ps.setInt(1, to.getIdFactura());   
+            ps.setInt(2, to.getIdProducto()); 
             ps.setInt(3, to.getCantidad());
-            ps.setDouble(4, to.getValorunitario());
-            ps.setDouble(5, to.getValortotal()); 
-
+            ps.setDouble(4, to.getValorUnitario());
+            ps.setDouble(5, to.getValorTotal()); 
+          
             ps.execute();
             
         }catch(SQLException e){
-            LabelEstado.setText("Error de registro del detalle de la venta y factura: "+e);
+            LabelEstado.setText("Error en registrarDetalleFactura: "+e);
         }
     }
    
@@ -202,8 +202,8 @@ public class CRUD {
             ps= c.prepareCall("CALL ActualizarSucursal(?,?,?,?,?)");
             ps.setInt(1, to.getIdEmpresa());
             ps.setString(2, to.getRuc());  
-            ps.setString(3, to.getSucursal()); 
-            ps.setInt(4, to.getTelefonoEmpresa());
+            ps.setString(3, to.getNombreEmpresa()); 
+            ps.setString(4, to.getTelefonoEmpresa());
             ps.setString(5, to.getDireccionEmpresa()); 
             
             ps.execute();
@@ -221,20 +221,20 @@ public class CRUD {
     } 
     
 //metodo para actualizar Empleado      
-    public void actualizaEmpleado(SettersAndGetters to) throws Exception{
+    public void actualizarEmpleado(SettersAndGetters to){
  
         try{
-            ps = c.prepareCall("CALL ActualizarEmpleados(?,?,?,?,?,?,?,?,?)");
-            ps.setInt(1, to.getIdvendedor());
-            ps.setInt(2, to.getIdTipoUsuarioV());
-            ps.setInt(3, to.getIdEmpresaV());
-            ps.setString(4, to.getContrasenaV()); 
-            //cs.setString(5, to.getCedulaV());
-            ps.setInt(5, Integer.parseInt(to.getCedulaV()));
-            ps.setString(6, to.getNombresV());
-            ps.setString(7, to.getApellidosV());
-            ps.setString(8, to.getTelefonoV());
-            ps.setString(9, to.getDireccionV());
+            ps = c.prepareCall("CALL ActualizarEmpleado(?,?,?,?,?,?,?,?,?)");
+            ps.setInt(1, to.getIdEmpleado());
+            ps.setInt(2, to.getIdTipoUsuario());
+            ps.setInt(3, to.getIdEmpresa());
+            ps.setString(4, to.getNombreUsuario()); 
+            ps.setString(5, to.getContrasena()); 
+            ps.setInt(6, Integer.parseInt(to.getCedulaEmpleado()));
+            ps.setString(7, to.getNombresEmpleado());
+            ps.setString(8, to.getApellidosEmpleado());
+            ps.setString(9, to.getTelefonoEmpleado());
+            ps.setString(10, to.getDireccionEmpleado());
         
             ps.execute();
             
@@ -271,17 +271,17 @@ public class CRUD {
     } 
     
 //metodos para actualizar productos
-    public void actualizaProductos(SettersAndGetters to){
+    public void actualizarProductos(SettersAndGetters to){
  
         try
         { 
-            ps = c.prepareCall("call ActualizarProductos(?,?,?,?,?,?)");
+            ps = c.prepareCall("call ActualizarProducto(?,?,?,?,?,?)");
 
-            ps.setInt(1, to.getIdproducto());
-            ps.setString(2, to.getNombreproducto());      
+            ps.setInt(1, to.getIdProducto());
+            ps.setString(2, to.getNombreProducto());      
             ps.setString(3, to.getMarca());
             ps.setDouble(4, to.getCosto());
-            ps.setDouble(5, to.getPrecio());
+            ps.setDouble(5, to.getPrecioVenta());
             ps.setInt(6, to.getStock());
             
             ps.execute();
@@ -296,16 +296,16 @@ public class CRUD {
     }
 
 //Metodo para actualizar Clientes
-    public void actualizarCliente(SettersAndGetters to) throws Exception {
+    public void actualizarCliente(SettersAndGetters to){
         
         try
         {
-            ps = c.prepareCall("CALL ActualizarClientes(?,?,?,?)");
+            ps = c.prepareCall("CALL ActualizarCliente(?,?,?,?)");
             
-            ps.setString(1, to.getCedula());
-            ps.setString(2, to.getNombre());
-            ps.setString(3, to.getTelefono());
-            ps.setString(4, to.getDireccion()); 
+            ps.setString(1, to.getCedulaCliente());
+            ps.setString(2, to.getNombreCliente());
+            ps.setString(3, to.getTelefonoCliente());
+            ps.setString(4, to.getDireccionCliente()); 
             
             ps.execute();
             
@@ -319,19 +319,18 @@ public class CRUD {
         
     }
 
-
-        
+       
 //----------------------------------------------------------------------------//   
 //------------------------------ Eliminar ------------------------------------//
 //----------------------------------------------------------------------------//
 
 //Eliminar Sucursal
-    public void eliminarSucursal(int idsucursal){
+    public void eliminarSucursal(int id_empresa){
  
         try
         {
-            ps = c.prepareCall("call EliminarSucursal(?)");
-            ps.setInt(1, idsucursal);
+            ps = c.prepareCall("call EliminarEmpresa(?)");
+            ps.setInt(1, id_empresa);
             ps.execute();
             
             if(ps.execute()==false){
@@ -415,108 +414,169 @@ public class CRUD {
 //----------------------------------------------------------------------------//
 
 //consulta del tipo de usuario para el LOGIN    
-    public String TipoUsuario(String usuario, String contrasena){
-        
-        String sql="select tp.Tipo_Usuario from Vendedor v inner join Tipo_Usuario tp on v.IdTipo_Usuario = tp.IdTipo_Usuario where v.cedula='"+usuario+"' and v.Contrasena='"+contrasena+"'";         
-        String tipo_usuario="";
+    public String consultarTipoUsuario(String usuario, String contrasena){        
+        String sql="select tp.Tipo_Usuario from Empleado v inner join Tipo_Usuario tp on v.IdTipo_Usuario = tp.IdTipo_Usuario where v.cedula_empleado='"+usuario+"' and v.Contrasena='"+contrasena+"'";         
         try{       
-            s = c.createStatement();
-            rs = s.executeQuery(sql);
+            rs = consultar(sql);
             rs.next();
-            tipo_usuario=rs.getString(1);
+            tipoUsuario=rs.getString(1);
         
         }catch(SQLException e){
-            Login.lblestadoLogin.setText(""+e);
+            Login.lblestadoLogin.setText(" error e tipo usuario"+e);
         }
-        return tipo_usuario;
+        return tipoUsuario;
     }   
                
 //consultar todas las facturas / indice
-    public ResultSet consultarFacturas() throws Exception {
-        String sql="select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto order by f.FechaEmision desc";            
-        return consultar(sql);
+    public ResultSet consultarFacturas(){    
+        String sql="select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total,f.Fecha_Emision as FECHA_COMPRA from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente order by f.Fecha_Emision desc";                    
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarFacturas(): "+ e);
+        }
+      return rs;
     }
     
 //consultar todas las facturas por ID
-    public ResultSet consultarFacturasId(int idfactura) throws Exception {
-        String sql= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.IdFactura='"+idfactura+"'";
-        return consultar(sql);
+    public ResultSet consultarFacturasId(int idfactura){
+        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total,f.Fecha_Emision as FECHA_COMPRA from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.IdFactura='"+idfactura+"'";
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarFacturasID(): "+ e);
+        }
+      return rs;        
     }
     
 //consultar todas las facturas por fecha
-    public ResultSet consultarFacturasFecha(String fecha) throws Exception {
-        String sql= "select f.IdFactura, dv.Cantidad, p.NombreProducto,dv.ValorTotal,f.FechaEmision from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto =  dv.IdProducto where f.FechaEmision='"+fecha+"' order by f.FechaEmision desc";  
-        return consultar(sql);
+    public ResultSet consultarFacturasFecha(String fecha){
+        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total,f.Fecha_Emision as FECHA_COMPRA from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') order by f.Fecha_Emision desc";  
+        //SELECT * FROM Factura WHERE fecha_emision > to_date('28/04/2020', 'DD/MM/YYYY') ;
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarFacturasFecha(String fecha): "+ e);
+        }
+      return rs;          
     }                          
 
 //se buscan todos los productos buscados para llenar indice de BuscarProductoFactura
-    public ResultSet LlenarIndiceBurcarProductoCategoria(String clave) throws Exception {
-        String sql= "select p.IdProducto,p.NombreProducto,p.Marca,p.Precio,p.Stock from Producto p inner join Categoria c on p.IdCategoria = c.IdCategoria where c.descripcion='"+clave+"'";  
-        return consultar(sql);
+    public ResultSet consultarProductoPorCategoria(String clave){
+        String sql= "select p.IdProducto,p.Nombre_Producto,p.Marca,p.Precio_Venta,p.Stock from Producto p inner join Categoria c on p.IdCategoria = c.IdCategoria where c.descripcion='"+clave+"'";  
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarProductoPorCategoria(String clave): "+ e);
+        }
+      return rs;         
     }  
     
 //Consulta de los productos por nombre usando like   
-    public ResultSet buscarProducto(String nombre) throws Exception {
-        nombre = '%' + nombre + '%';
-        ps = c.prepareStatement("SELECT * FROM producto where nombreproducto like ?");
-        ps.setString(1, nombre);
-        rs = ps.executeQuery();
-        return rs;
+    public ResultSet consultarProducto(String nombre){       
+        try{
+            nombre = '%' + nombre + '%';
+            ps = c.prepareStatement("SELECT * FROM producto where nombre_producto like ?");
+            ps.setString(1, nombre);
+            rs = ps.executeQuery();
+        }catch(SQLException e){
+            System.out.println("Error en consultarProducto(String nombre): "+ e);
+        }
+      return rs; 
     }
 
 //Consulta de los productos por nombre usando like   
-    public ResultSet buscarTodosProducto() throws Exception {
+    public ResultSet consultarTodosProducto(){
         String sql = "select * from producto order by idproducto";
-        return consultar(sql);
-    }   
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarTodosProducto(): "+ e);
+        }
+      return rs;         
+    } 
+    
+//Consultar id_emopleado y Tipo Empleado de Empleado para el jcombobox de TipoEmpleado    
+    public ResultSet consultarLlenarComboTipoEmpleado(){
+        String sql="select IdTipo_Usuario,Tipo_Usuario from Tipo_Usuario";             
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarLlenarComboTipoEmpleado(): "+ e);
+        }
+      return rs;         
+    }
     
 //Consulta todos los datos del empleado
-    public ResultSet buscaTodosEmpleados() throws Exception {
-        String sql="select * from Vendedor order by IdVendedor";            
-        return consultar(sql);
+    public ResultSet consultarTodosEmpleados(){
+        String sql="select * from Empleado order by IdEmpleado";            
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarTodosEmpleados() : "+ e);
+        }
+      return rs;          
     } 
 
-//Consulta todos los datos del empleado
-    public ResultSet buscaSucursales() throws Exception {
-        String sql="select IdEmpresa,Ruc,NombreEmpresa,Telefono,Direccion from Empresa order by IdEmpresa ";            
-        return consultar(sql);
-    }
-           
-//Consultar id_emopleado y Tipo Empleado de Empleado para el jcombobox de TipoEmpleado    
-    public ResultSet llenarComboTipoEmpleado() throws Exception {
-        String sql="select IdTipo_Usuario,Tipo_Usuario from Tipo_Usuario";             
-        return consultar(sql);
+//Consulta todos los datos de la empresa
+    public ResultSet consultarSucursales(){
+        String sql="select * from Empresa order by IdEmpresa ";            
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarSucursales(): "+ e);
+        }
+      return rs;         
     }
     
 //Consultar id_empresa nombre empresa para el combo sucursal    
-    public ResultSet llenarComboSucursal() throws Exception {
-        String sql="select IdEmpresa, NombreEmpresa from Empresa";             
-        return consultar(sql);
+    public ResultSet consultarLlenarComboSucursal(){
+        String sql="select IdEmpresa, Nombre_Empresa from Empresa";             
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarLlenarComboSucursal(): "+ e);
+        }
+      return rs;          
     }
 
 //Consultar id_categoria y descripcion de la ca categoria para el jcombobox de productos    
-    public ResultSet llenarComboCategoria() throws Exception {
+    public ResultSet consultarLlenarComboCategoria(){
         String sql="select IdCategoria, descripcion from Categoria order by idcategoria";             
-        return consultar(sql);
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarLlenarComboCategoria(): "+ e);
+        }
+      return rs;          
     }
  
 //Consulta de los clientes    
-    public ResultSet buscarClientes(String cedula) throws Exception {
-        
-        ps = c.prepareStatement("SELECT * FROM Clientes where cedula= ?");
-        ps.setString(1, cedula);
-        rs = ps.executeQuery();
-        return rs;
+    public ResultSet consultarClientes(String cedula){           
+        try{
+            ps = c.prepareStatement("SELECT * FROM Cliente where cedula_Cliente= ?");
+            ps.setString(1, cedula);
+            rs = ps.executeQuery();
+        }catch(SQLException e){
+            System.out.println("Error en consultarClientes(String cedula): "+ e);
+        }
+      return rs;   
     }
 
 //consulta id del empleado con parametro  
-    public ResultSet obtenerDatosEmpresa() throws Exception{        
-        String sql= "select NombreEmpresa,Ruc,Telefono from Empresa";  
-        return consultar(sql);
+    public ResultSet consultarDatosEmpresa(){        
+        //String sql= "select Nombre_Empresa,Ruc,Telefono_Empresa from Empresa"; 
+        String sql= "select * from Empresa";  
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarDatosEmpresa(): "+ e);
+        }
+      return rs;        
     }
   
 //consulta cantidad de productos
-    public int consultarCantidad(int idproducto){
+    public int consultarStock(int idproducto){
        try
        {
         rs = consultar("select stock from Producto where IdProducto="+idproducto+"");
@@ -529,27 +589,12 @@ public class CRUD {
        }
         return bdcantidad;
     }
-     
-//consulta id del cliente
-    public String obteneriIDcliente(){
-        try
-        {
-            rs = consultar("select max(IdCliente) from Clientes");
-                if(rs.next()){
-                    idClienteS=rs.getString(1);
-                }        
-        }
-        catch(SQLException e){
-            System.out.println("Error en obteneriIDcliente(): "+ e);
-        }
-        return idClienteS;
-    }
-    
+        
 //consulta id del cliente por cedula
-    public int obteneriIDclienteParametro(String cedula){
+    public int consultarIdClienteParametro(String cedula){
         try
         {
-        rs = consultar("select IdCliente from Clientes where cedula='"+cedula+"'");
+        rs = consultar("select IdCliente from Cliente where cedula_cliente='"+cedula+"'");
             if(rs.next()){
                 idClienteI=rs.getInt(1);
             }            
@@ -561,22 +606,26 @@ public class CRUD {
     }
   
 //consulta booleano cliente por cedula
-    public String compruebaCliente(String cedula){
+    public String consultarCompruebaCliente(String cedula){
         try
         {
-        rs = consultar("select cedula from Clientes where cedula='"+cedula+"'");
-            if(rs.next()){            
-                cedulaClienteS=rs.getString(1);
-            }             
-        }
+        rs = consultar("select cedula_cliente from Cliente where cedula_cliente='"+cedula+"'");
+
+            if(!rs.next()){
+                cedulaClienteS="Vacio";                 
+            }
+            else{
+                cedulaClienteS = rs.getString(1);
+            }        
+        }    
         catch(SQLException e){
-           System.out.println("Error en compruebaCLiente(): "+ e);
+           System.out.println("Error en consultarCompruebaCliente(String cedula): "+ e);
         }
         return cedulaClienteS;
     }    
 
 //consulta id+1 del producto
-    public String obteneriIdProducto(){
+    public String consultarIdProducto(){
         try
         {
             rs = consultar("select max(IdProducto)+1 from Producto");
@@ -590,8 +639,8 @@ public class CRUD {
         return idProductoS;
     }
 
-//consulta id del cliente
-    public String obteneriIdCategoria() {
+//consulta id de la categoria
+    public String consultarIdCategoria() {
         try
         {      
         rs = consultar("select max(IdCategoria)+1 from Categoria");
@@ -605,8 +654,8 @@ public class CRUD {
         return idCategoriaS;
     }  
 
-//consulta id del cliente
-    public String obteneriIdSucursal(){
+//consulta id de la Sucursal
+    public String consultarIdSucursal(){
         try
         {
         rs = consultar("select max(IdEmpresa)+1 from Empresa");
@@ -621,10 +670,10 @@ public class CRUD {
     }
 
 //consulta id del empleado con parametro  
-    public int obteneriIDEmpleado(String usuario){     
+    public int consultarIdEmpleado(String usuario){     
         try
         {
-        rs = consultar("select IdVendedor from Vendedor where nombres='"+usuario+"'");
+        rs = consultar("select IdEmpleado from Empleado where nombres='"+usuario+"'");
             if(rs.next()){
                 idEmpleadoI=rs.getInt(1);
             }            
@@ -635,8 +684,23 @@ public class CRUD {
         return idEmpleadoI;
     }
 
+//consulta id del empleado sin parametro
+    public String consultarIdEmpleadoNoParametro(){           
+        try
+        {
+        rs = consultar("select max(IdEmpleado)+1 from Empleado");
+            if(rs.next()){
+                idEmpleadoS=rs.getString(1);
+            }        
+        }
+        catch(SQLException e){
+            System.out.println("Error en obteneriIDEmpleadoNoParametro(): "+ e);
+        }
+        return idEmpleadoS;
+    }
+    
 //consulta Codigo de la factura
-    public String obtenerCodigoFactura(){
+    public String consultarCodigoFactura(){
         try
         {
         rs = consultar("select max(IdFactura)+1 from Factura");
@@ -649,27 +713,12 @@ public class CRUD {
         }
         return codigoFactura;
     }     
-
-//consulta id del empleado sin parametro
-    public String obteneriIDEmpleadoNoParametro(){           
-        try
-        {
-        rs = consultar("select max(IdVendedor)+1 from Vendedor");
-            if(rs.next()){
-                idEmpleadoS=rs.getString(1);
-            }        
-        }
-        catch(SQLException e){
-            System.out.println("Error en obteneriIDEmpleadoNoParametro(): "+ e);
-        }
-        return idEmpleadoS;
-    }  
-    
+     
 //consulta el nombre de usuario
-    public String obtenerNombreUsuario(String cedula){
+    public String consultarNombreUsuario(String cedula){
         try
         {   
-        rs = consultar("select nombres from vendedor where cedula='"+cedula+"'");
+        rs = consultar("select nombres from Empleado where cedula_empleado='"+cedula+"'");
             if(rs.next()){
                 nombreEmpleado=rs.getString(1);
             }  

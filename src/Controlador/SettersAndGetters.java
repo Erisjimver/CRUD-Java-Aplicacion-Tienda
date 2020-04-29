@@ -5,32 +5,31 @@ public class SettersAndGetters {
     
 ///////////////////////////    variables    ///////////////////////////////////
     
-    //producto
-    private String  nombreproducto, marca;   
-    private double costo,precio;
-    private int idcategorias,stock;
+    //Empresa
+    private String ruc, nombreEmpresa, direccionEmpresa, telefonoEmpresa, emailEmpresa;
+    private int idEmpresa;
+
+    //empleados
+    private int idTipoUsuario, idEmpleado;
+    private String tipoUsuario,nombreUsuario,contrasena,cedulaEmpleado,nombresEmpleado,apellidosEmpleado,telefonoEmpleado,direccionEmpleado; 
     
-    //sucursal
-    private String ruc,sucursal,direccionEmpresa;
-    private int idEmpresa,telefonoEmpresa;
-    
-    //clientes
-    private String nombre,direccion,telefono,cedula;
-    
-    //detalle factura
-    double valorunitario,valortotal;
-    int idfactura,idproducto,cantidad;
+    //cliente
+    private int idCliente;
+    private String cedulaCliente, nombreCliente, telefonoCliente, direccionCliente,emailCliente;
     
     //categoria
     private int idCategoria;
     private String descripcion;
     
-    //usuarios
-    private int idTipoUsuarioV,idEmpresaV;
-    private String tipoUsuario,contrasenaV,cedulaV,nombresV,apellidosV,telefonoV,direccionV;
+    //producto
+    private String  nombreProducto, marca;   
+    private double costo,precioVenta;
+    private int stock; 
     
-    //factura
-    private int idvendedor,idcliente;
+    
+    //detalle factura
+    private double valorUnitario,valorTotal;
+    private int idFactura,idProducto,cantidad;
     
  /////////////////////////////////////////////////////////////////////////////
  ////////////////////////////////////////////////////////////////////////////
@@ -38,74 +37,6 @@ public class SettersAndGetters {
     
 /////////////////////////////SETTERS AND GETTERS //////////////////////////////
     
-    //get y set de productos
-    public String getNombreproducto() {
-        return nombreproducto;
-    }
-    
-
-    public void setNombreproducto(String nombreproducto) {
-        this.nombreproducto = nombreproducto;
-    }
-
-    public String getMarca() {
-        return marca;
-    }
-
-    public void setMarca(String marca) {
-        this.marca = marca;
-    }
-
-    public double getCosto() {
-        return costo;
-    }
-
-    public void setCosto(double costo) {
-        this.costo = costo;
-    }
-
-    public double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(double precio) {
-        this.precio = precio;
-    }
-
-    public int getIdcategorias() {
-        return idcategorias;
-    }
-
-    public void setIdcategorias(int idcategorias) {
-        this.idcategorias = idcategorias;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-    
-
-    //get y set de categorias
-    public void setIdCategoria(int idCategoria) {
-        this.idCategoria = idCategoria;
-    }
-    
-    public int getIdCategoria() {
-        return idCategoria;    
-    } 
-    
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-
     //get y set sucursal_empresa
     public String getRuc() {
         return ruc;
@@ -115,12 +46,12 @@ public class SettersAndGetters {
         this.ruc = ruc;
     }
 
-    public String getSucursal() {
-        return sucursal;
+    public String getNombreEmpresa() {
+        return nombreEmpresa;
     }
 
-    public void setSucursal(String sucursal) {
-        this.sucursal = sucursal;
+    public void setNombreEmpresa(String nombreEmpresa) {
+        this.nombreEmpresa = nombreEmpresa;
     }
 
     public String getDireccionEmpresa() {
@@ -139,49 +70,244 @@ public class SettersAndGetters {
         this.idEmpresa = idEmpresa;
     }
 
-    public int getTelefonoEmpresa() {
+    public String getTelefonoEmpresa() {
         return telefonoEmpresa;
     }
 
-    public void setTelefonoEmpresa(int telefonoEmpresa) {
+    public void setTelefonoEmpresa(String telefonoEmpresa) {
         this.telefonoEmpresa = telefonoEmpresa;
     }
 
+    public String getEmailEmpresa() {
+        return emailEmpresa;
+    }
 
+    public void setEmailEmpresa(String emailEmpresa) {
+        this.emailEmpresa = emailEmpresa;
+    }
+    
+    
+ ////set y get de empleado///
+
+    public int getIdTipoUsuario() {
+        return idTipoUsuario;
+    }
+
+    public void setIdTipoUsuario(int idTipoUsuario) {
+        this.idTipoUsuario = idTipoUsuario;
+    }
+    
+    public int getIdEmpleado() {
+        return idEmpleado;
+    }
+
+    public void setIdEmpleado(int idEmpleado) {
+        this.idEmpleado = idEmpleado;
+    }
+    public String getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(String tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+       
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
+    }
+
+    public String getCedulaEmpleado() {
+        return cedulaEmpleado;
+    }
+
+    public void setCedulaEmpleado(String cedulaEmpleado) {
+        this.cedulaEmpleado = cedulaEmpleado;
+    }
+
+    public String getNombresEmpleado() {
+        return nombresEmpleado;
+    }
+
+    public void setNombresEmpleado(String nombresEmpleado) {
+        this.nombresEmpleado = nombresEmpleado;
+    }
+
+    public String getApellidosEmpleado() {
+        return apellidosEmpleado;
+    }
+
+    public void setApellidosEmpleado(String apellidosEmpleado) {
+        this.apellidosEmpleado = apellidosEmpleado;
+    }
+
+    public String getTelefonoEmpleado() {
+        return telefonoEmpleado;
+    }
+
+    public void setTelefonoEmpleado(String telefonoEmpleado) {
+        this.telefonoEmpleado = telefonoEmpleado;
+    }
+
+    public String getDireccionEmpleado() {
+        return direccionEmpleado;
+    }
+
+    public void setDireccionEmpleado(String direccionEmpleado) {
+        this.direccionEmpleado = direccionEmpleado;
+    }
+    
+    //get y set de categorias
+    public void setIdCategoria(int idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+    
+    public int getIdCategoria() {
+        return idCategoria;    
+    } 
+    
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+    public String getDescripcion() {
+        return descripcion;
+    } 
+    
+    
+    //get y set de productos
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+    
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public double getCosto() {
+        return costo;
+    }
+
+    public void setCosto(double costo) {
+        this.costo = costo;
+    }
+
+    public double getPrecioVenta() {
+        return precioVenta;
+    }
+
+    public void setPrecioVenta(double precioVenta) {
+        this.precioVenta = precioVenta;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+    
+    //set y get clientes
+    
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
+    }
+    public String getCedulaCliente() {
+        return cedulaCliente;
+    }
+
+    public void setCedulaCliente(String cedulaCliente) {
+        this.cedulaCliente = cedulaCliente;
+    }
+    
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+    
+    public String getTelefonoCliente() {
+        return telefonoCliente;
+    }
+
+    public void setTelefonoCliente(String telefonoCliente) {
+        this.telefonoCliente = telefonoCliente;
+    }
+    
+    public String getDireccionCliente() {
+        return direccionCliente;
+    }
+
+    public void setDireccionCliente(String direccionCliente) {
+        this.direccionCliente = direccionCliente;
+    }
+
+    public String getEmailCliente() {
+        return emailCliente;
+    }
+
+    public void setEmailCliente(String emailCliente) {
+        this.emailCliente = emailCliente;
+    }
+    
     
     //get y set detalle factura
     
-
-    public double getValorunitario() {
-        return valorunitario;
+    public double getValorUnitario() {
+        return valorUnitario;
     }
 
-    public void setValorunitario(double valorunitario) {
-        this.valorunitario = valorunitario;
+    public void setValorUnitario(double valorUnitario) {
+        this.valorUnitario = valorUnitario;
     }
 
-    public double getValortotal() {
-        return valortotal;
+    public double getValorTotal() {
+        return valorTotal;
     }
 
-    public void setValortotal(double valortotal) {
-        this.valortotal = valortotal;
+    public void setValorTotal(double valorTotal) {
+        this.valorTotal = valorTotal;
     }
 
-    public int getIdfactura() {
-        return idfactura;
+    public int getIdFactura() {
+        return idFactura;
     }
 
-    public void setIdfactura(int idfactura) {
-        this.idfactura = idfactura;
+    public void setIdFactura(int idFactura) {
+        this.idFactura = idFactura;
     }
 
-    public int getIdproducto() {
-        return idproducto;
+    public int getIdProducto() {
+        return idProducto;
     }
 
-    public void setIdproducto(int idproducto) {
-        this.idproducto = idproducto;
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
     public int getCantidad() {
@@ -191,132 +317,6 @@ public class SettersAndGetters {
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
-
     
-    //set y get clientes
-    
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
-    }
-
- ////set y get de vendedores///
-
-    public int getIdTipoUsuarioV() {
-        return idTipoUsuarioV;
-    }
-
-    public void setIdTipoUsuarioV(int idTipoUsuarioV) {
-        this.idTipoUsuarioV = idTipoUsuarioV;
-    }
-
-    public String getTipoUsuario() {
-        return tipoUsuario;
-    }
-
-    public void setTipoUsuario(String tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
-    }
-
-    public int getIdEmpresaV() {
-        return idEmpresaV;
-    }
-
-    public void setIdEmpresaV(int idEmpresaV) {
-        this.idEmpresaV = idEmpresaV;
-    }
-
-    public String getContrasenaV() {
-        return contrasenaV;
-    }
-
-    public void setContrasenaV(String contrasenaV) {
-        this.contrasenaV = contrasenaV;
-    }
-
-    public String getCedulaV() {
-        return cedulaV;
-    }
-
-    public void setCedulaV(String cedulaV) {
-        this.cedulaV = cedulaV;
-    }
-
-    public String getNombresV() {
-        return nombresV;
-    }
-
-    public void setNombresV(String nombresV) {
-        this.nombresV = nombresV;
-    }
-
-    public String getApellidosV() {
-        return apellidosV;
-    }
-
-    public void setApellidosV(String apellidosV) {
-        this.apellidosV = apellidosV;
-    }
-
-    public String getTelefonoV() {
-        return telefonoV;
-    }
-
-    public void setTelefonoV(String telefonoV) {
-        this.telefonoV = telefonoV;
-    }
-
-    public String getDireccionV() {
-        return direccionV;
-    }
-
-    public void setDireccionV(String direccionV) {
-        this.direccionV = direccionV;
-    }
-    
-    //set y get factura
-    public int getIdvendedor() {
-        return idvendedor;
-    }
-
-    public void setIdvendedor(int idvendedor) {
-        this.idvendedor = idvendedor;
-    }
-
-    public int getIdcliente() {
-        return idcliente;
-    }
-
-    public void setIdcliente(int idcliente) {
-        this.idcliente = idcliente;
-    }
-
     
 }

@@ -28,7 +28,7 @@ public final class ProductosBuscar extends javax.swing.JPanel {
    public void buscarColumnas()
     {      
         try{
-            rs =crud.buscarTodosProducto();
+            rs =crud.consultarTodosProducto();
             ResultSetMetaData rsd = rs.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
@@ -62,7 +62,7 @@ public final class ProductosBuscar extends javax.swing.JPanel {
             String nombre = TextBuscar.getText();
        //     String nombre = TextBuscar.getText().toLowerCase();
             modelo = (DefaultTableModel) TablaProductos.getModel();
-            rs = crud.buscarProducto(nombre);
+            rs = crud.consultarProducto(nombre);
             while (TablaProductos.getRowCount() > 0) {
                 modelo.removeRow(0);
             }

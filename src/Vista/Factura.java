@@ -17,11 +17,10 @@ public final class Factura extends javax.swing.JPanel {
     
     //declarando variables
     private static ResultSet r;
-    private String nombree,ru,t,fact,cedula;
+    private String nombreLabel,rucLabel,telefonoLabel, direccionLabel,emailLabel,facturLabel,cedula;
     private final String vacio_label="-------------------------------------------------------";
-    private int cantidad,idcliente;
+    private int cantidad,idcliente,totalTablas;
     private double importe = 0,igv, subtotal, total; 
-    private String nombre,telefono,direccion;
     DefaultTableModel model;
     
     //creando pbjetos de clases
@@ -48,19 +47,24 @@ public final class Factura extends javax.swing.JPanel {
     
     public void DatosEmpresa(){
      try{
-        r = crud.obtenerDatosEmpresa();
+        r = crud.consultarDatosEmpresa();
         while (r.next()) {
-           nombree=r.getString(1);
-           ru=r.getString(2);
-           t=r.getString(3);
-           lblnombre.setText(nombree);
-           lblruc.setText(ru);
-           lbltelefono.setText(t);
-           //falta direccion y nombre propietario en la tabla hacer el cambio del propiertario
+           rucLabel = r.getString(2);
+           nombreLabel = r.getString(3);
+           telefonoLabel = r.getString(4);
+           direccionLabel = r.getString(5);
+           emailLabel = r.getString(6);
+           
+           lblruc.setText(rucLabel);
+           lblbpropietario.setText(nombreLabel);
+           lbltelefono.setText(telefonoLabel);
+           lblbdireccionEmpresa.setText(direccionLabel);           
+           lblEmail.setText(emailLabel);
+           
         }
         r.close();
         
-     }catch(Exception e)
+     }catch(SQLException e)
      {
         LabelEstadoV.setText("Error: "+e); 
      }       
@@ -68,8 +72,8 @@ public final class Factura extends javax.swing.JPanel {
  
     public void codigofac(){
         try{
-           fact=crud.obtenerCodigoFactura();
-           lblnumfact.setText(fact);       
+           facturLabel=crud.consultarCodigoFactura();
+           lblnumfact.setText(facturLabel);       
         }catch(Exception e)
         {
            LabelEstadoV.setText("Error: "+e); 
@@ -85,7 +89,7 @@ public final class Factura extends javax.swing.JPanel {
             int filas = TablaDetalles.getRowCount();
 
             int idpro=Integer.parseInt(TextCodigop.getText());           
-            int cantbd=crud.consultarCantidad(idpro);
+            int cantbd=crud.consultarStock(idpro);
             
             for (int i = 0; i < filas; i++) 
             {
@@ -107,7 +111,7 @@ public final class Factura extends javax.swing.JPanel {
             }
             limpiarSeccionArticulo(); 
             LabelEstadoV.setText(vacio_label); 
-        }catch (Exception ex) {
+        }catch (HeadlessException | NumberFormatException ex) {
             Logger.getLogger(Factura.class.getName()).log(Level.SEVERE, null, ex);
         }
    }
@@ -130,69 +134,75 @@ public final class Factura extends javax.swing.JPanel {
 
     private void vender(){
         try{
-            //datos universales dentro del metodo vender
-            cedula = TextCedula.getText();
-            
-            //primer consulta de verificacion de la existencia del cliente
-            idcliente=crud.obteneriIDclienteParametro(cedula);
-            
-            //verificar si el cliente no existe en la base de datos / de ser asi lo registramos
-            //la verficiacion es: diferente de 0 no existe y diferente de 1 no es el consumidor final
-            //el descarte es que si no es ni 0 ni 1 es otro cliente que ya existe pero k no es el consumidor final
-            //de modo que se registra la id del cliente pero no se crea un nuevo registro en el cliente
-            if(idcliente!=0&&idcliente!=1){//se comprueba si el cliente es nuevo
-                RegistrarFacturaDetalle();
-            }
-            if(idcliente==0){//si el cliente
-                set.setCedula(cedula);
-                set.setNombre(TextNombre.getText());
-                set.setTelefono(TextTelefono.getText());
-                set.setDireccion(TextDireccion.getText());
-                crud.registrarCliente(set);  
-                RegistrarFacturaDetalle();
-            }
-            if(idcliente==1){
+           //datos universales dentro del metodo vender
+            cedula = TextCedula.getText().toLowerCase(); 
+            String cedu = crud.consultarCompruebaCliente(cedula);       
+               
+            //Comprueba si el cliente es conocido
+                if (cedula.equals(cedu)) 
+                {  
+                    RegistrarFacturaDetalle();
+                     
+                }
+            //comprueba si el cliente es nuevo
+                if (!(cedula).equals(cedu)) {
 
-                idcliente = 1;
-                RegistrarFacturaDetalle();
-            }
+                    //r = crud.consultarClientes(cedula); 
+                    set.setCedulaCliente(cedula);
+                    set.setNombreCliente(TextNombre.getText());
+                    set.setTelefonoCliente(TextTelefono.getText());
+                    set.setDireccionCliente(TextDireccion.getText());
+                    set.setEmailCliente(TextEmail.getText());
+                    
+                    crud.registrarCliente(set);
+
+                    RegistrarFacturaDetalle();
+                       
+                }
+            
+            //comprueba si el cliente es el consumidor final
+                if((cedula).equals("1111")){
+                    
+                    RegistrarFacturaDetalle();
+                }                    
         }
         catch(Exception e)
         {
-            JOptionPane.showMessageDialog(null,"Error: "+ e);
+            JOptionPane.showMessageDialog(null,"Error en vender();"+ e);
         }          
     }
+    
     private void RegistrarFacturaDetalle(){
         try
         {
             String usuar =(lblusuario.getText());
-            int codEmpleado = crud.obteneriIDEmpleado(usuar); 
-            idcliente = crud.obteneriIDclienteParametro(cedula);
+            int codEmpleado = crud.consultarIdEmpleado(usuar); 
+            idcliente = crud.consultarIdClienteParametro(cedula);
             
-            set.setIdvendedor(codEmpleado);
-            set.setIdcliente(idcliente);
+            set.setIdEmpleado(codEmpleado);
+            set.setIdCliente(idcliente);
 
             crud.registrarFactura(set);
 
             int filas = TablaDetalles.getRowCount();
                 for (int i = 0; i < filas; i++) {
 
-                    set.setIdfactura(Integer.parseInt(lblnumfact.getText()));
-                    set.setIdproducto(Integer.parseInt(TablaDetalles.getValueAt(i, 0).toString()));
+                    set.setIdFactura(Integer.parseInt(lblnumfact.getText()));
+                    set.setIdProducto(Integer.parseInt(TablaDetalles.getValueAt(i, 0).toString()));
                     set.setCantidad(Integer.parseInt(TablaDetalles.getValueAt(i, 1).toString()));
-                    set.setValorunitario(Double.parseDouble(TablaDetalles.getValueAt(i, 3).toString()));
-                    set.setValortotal(Double.parseDouble(TablaDetalles.getValueAt(i, 4).toString()));
+                    set.setValorUnitario(Double.parseDouble(TablaDetalles.getValueAt(i, 3).toString()));
+                    set.setValorTotal(Double.parseDouble(TablaDetalles.getValueAt(i, 4).toString()));
 
-                    crud.registrarDetalleFactura(set);             
+                    crud.registrarDetalleFactura(set);
                     }
             codigofac();
             limpiacontroles();
-            
             JOptionPane.showMessageDialog(null, "Venta registrada Correctamente ");
-            LabelEstadoV.setText(vacio_label); 
+            
+            LabelEstadoV.setText(vacio_label);
         }catch(Exception e)
         {
-            LabelEstadoV.setText("Error: "+e); 
+            LabelEstadoV.setText("Error en RegistrarFacturaDetalle(): "+e); 
         }
 
     }
@@ -218,21 +228,24 @@ public final class Factura extends javax.swing.JPanel {
     public void verificaUsuario(){
         try{
             cedula = TextCedula.getText().toLowerCase(); 
-            String cedu = crud.compruebaCliente(cedula);
+            String cedu = crud.consultarCompruebaCliente(cedula);
             //if usuario nuevo
                 if (cedula.equals(cedu)) 
                 {
                     LabelEstadoV.setText("cedula correcta");
-                    r = crud.buscarClientes(cedula); 
+                    r = crud.consultarClientes(cedula); 
 
                     while (r.next()) {
-                    nombre=r.getString(3);
-                    telefono=r.getString(4);
-                    direccion=r.getString(5);
-                    TextNombre.setText(nombre);
-                    TextTelefono.setText(telefono);
-                    TextDireccion.setText(direccion);
+                    nombreLabel = r.getString(3);
+                    telefonoLabel = r.getString(4);
+                    direccionLabel = r.getString(5);
+                    emailLabel= r.getString(6);
                     
+                    TextNombre.setText(nombreLabel);
+                    TextTelefono.setText(telefonoLabel);
+                    TextDireccion.setText(direccionLabel);
+                    TextEmail.setText(emailLabel);
+                                        
                     LabelEstadoV.setText("Cliente conocido....");
                     DesabilitarTextoCliente();
                     } 
@@ -243,17 +256,21 @@ public final class Factura extends javax.swing.JPanel {
                     LabelEstadoV.setText("Cliente nuevo....");                    
                 }
                 if((cedula).equals("1111")){
-                    nombre="Consumidor Final";
-                    telefono="555555555";
-                    direccion="Sin Direccion";
-                    TextNombre.setText(nombre);
-                    TextTelefono.setText(telefono);
-                    TextDireccion.setText(direccion);  
+                    nombreLabel="Consumidor Final";
+                    telefonoLabel="s/n";
+                    direccionLabel="s/d";
+                    emailLabel="s/e";
+                    
+                    TextNombre.setText(nombreLabel);
+                    TextTelefono.setText(telefonoLabel);
+                    TextDireccion.setText(direccionLabel); 
+                    TextEmail.setText(emailLabel);
+                    
                     LabelEstadoV.setText("Consumidor Final....");
                     DesabilitarTextoCliente();
                 }
         }
-        catch(Exception e){
+        catch(SQLException e){
             LabelEstadoV.setText("Error al comprobar existencia de cliente...."+e);
         }
          
@@ -270,8 +287,12 @@ public final class Factura extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         lblruc = new javax.swing.JLabel();
-        lbltelefono = new javax.swing.JLabel();
+        lblEmail = new javax.swing.JLabel();
         lblbpropietario = new javax.swing.JLabel();
+        lblbdireccionEmpresa = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        lbltelefono = new javax.swing.JLabel();
         NumeroFactura = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -285,6 +306,8 @@ public final class Factura extends javax.swing.JPanel {
         TextNombre = new javax.swing.JTextField();
         TextCedula = new javax.swing.JTextField();
         TextDireccion = new javax.swing.JTextField();
+        TextEmail = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
         TextTelefono = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         TablaDetalles = new javax.swing.JTable();
@@ -330,61 +353,88 @@ public final class Factura extends javax.swing.JPanel {
 
         jLabel3.setText("RUC:");
 
-        jLabel4.setText("TELEFONO:");
+        jLabel4.setText("EMAIL:");
 
         jLabel5.setText("PROPIETARIO:");
 
         lblruc.setText("numero");
 
-        lbltelefono.setText("telefono");
+        lblEmail.setText("email");
 
         lblbpropietario.setText("nombre propietario");
+
+        lblbdireccionEmpresa.setText("direccion empresa");
+
+        jLabel10.setText("DIRECCION:");
+
+        jLabel21.setText("TELEFONO:");
+
+        lbltelefono.setText("telefono");
 
         javax.swing.GroupLayout DatosEmpresaLayout = new javax.swing.GroupLayout(DatosEmpresa);
         DatosEmpresa.setLayout(DatosEmpresaLayout);
         DatosEmpresaLayout.setHorizontalGroup(
             DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DatosEmpresaLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
+            .addGroup(DatosEmpresaLayout.createSequentialGroup()
+                .addGap(9, 9, 9)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(DatosEmpresaLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblbpropietario, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbltelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblruc, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(49, 49, 49)
+                        .addComponent(lblnombre))
                     .addGroup(DatosEmpresaLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(lblnombre))))
+                        .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblbpropietario, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblbdireccionEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(DatosEmpresaLayout.createSequentialGroup()
+                        .addComponent(lblruc, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel21)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbltelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30))
         );
         DatosEmpresaLayout.setVerticalGroup(
             DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(DatosEmpresaLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(19, 19, 19)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(DatosEmpresaLayout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addComponent(lblnombre)
+                .addGap(6, 6, 6)
                 .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblruc, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3))
                     .addGroup(DatosEmpresaLayout.createSequentialGroup()
-                        .addComponent(lblnombre)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(6, 6, 6)
                         .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(lblruc, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(lbltelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblbpropietario, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(jLabel21)
+                            .addComponent(lbltelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(3, 3, 3)
+                .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblbpropietario, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(4, 4, 4)
+                .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblbdireccionEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)))
+            .addGroup(DatosEmpresaLayout.createSequentialGroup()
+                .addGap(75, 75, 75)
+                .addGroup(DatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)))
         );
 
         NumeroFactura.setBackground(new java.awt.Color(255, 255, 255));
@@ -426,20 +476,14 @@ public final class Factura extends javax.swing.JPanel {
 
         DatosCliente.setBackground(new java.awt.Color(255, 255, 255));
         DatosCliente.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        DatosCliente.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel7.setText("Nombre:");
-        DatosCliente.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 50, -1));
 
         jLabel8.setText("Direccion:");
-        DatosCliente.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 40, -1, -1));
 
         jLabel9.setText("Cedula:");
-        DatosCliente.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
-        jLabel11.setText("Telefono:");
-        DatosCliente.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 10, -1, -1));
-        DatosCliente.add(TextNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, 228, -1));
+        jLabel11.setText("Email:");
 
         TextCedula.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -449,15 +493,72 @@ public final class Factura extends javax.swing.JPanel {
                 TextCedulaKeyTyped(evt);
             }
         });
-        DatosCliente.add(TextCedula, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 10, 227, -1));
-        DatosCliente.add(TextDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 40, 320, -1));
+
+        jLabel22.setText("Telefono:");
 
         TextTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 TextTelefonoKeyTyped(evt);
             }
         });
-        DatosCliente.add(TextTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 10, 320, -1));
+
+        javax.swing.GroupLayout DatosClienteLayout = new javax.swing.GroupLayout(DatosCliente);
+        DatosCliente.setLayout(DatosClienteLayout);
+        DatosClienteLayout.setHorizontalGroup(
+            DatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DatosClienteLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(DatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(DatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(DatosClienteLayout.createSequentialGroup()
+                        .addComponent(TextCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel22))
+                    .addGroup(DatosClienteLayout.createSequentialGroup()
+                        .addComponent(TextNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel8)))
+                .addGap(25, 25, 25)
+                .addGroup(DatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(DatosClienteLayout.createSequentialGroup()
+                        .addComponent(TextTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45)
+                        .addComponent(jLabel11)
+                        .addGap(27, 27, 27)
+                        .addComponent(TextEmail))
+                    .addComponent(TextDireccion))
+                .addContainerGap())
+        );
+        DatosClienteLayout.setVerticalGroup(
+            DatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DatosClienteLayout.createSequentialGroup()
+                .addGap(9, 9, 9)
+                .addGroup(DatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(DatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(TextCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel9))
+                    .addComponent(TextTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TextEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(DatosClienteLayout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addGroup(DatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel22)
+                            .addComponent(jLabel11))))
+                .addGroup(DatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(DatosClienteLayout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addComponent(TextDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(DatosClienteLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(DatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(TextNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8))))
+                .addGap(2, 2, 2))
+        );
 
         TablaDetalles.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -553,7 +654,7 @@ public final class Factura extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(TextCantidad)
                     .addComponent(TextImporte, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
-                .addContainerGap(105, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -594,59 +695,59 @@ public final class Factura extends javax.swing.JPanel {
         PanelFactura.setLayout(PanelFacturaLayout);
         PanelFacturaLayout.setHorizontalGroup(
             PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelFacturaLayout.createSequentialGroup()
-                .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelFacturaLayout.createSequentialGroup()
+                .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(PanelFacturaLayout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(PanelFacturaLayout.createSequentialGroup()
-                                    .addComponent(DatosEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(NumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(DatosCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 850, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(PanelFacturaLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(DatosCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PanelFacturaLayout.createSequentialGroup()
                         .addGap(105, 105, 105)
                         .addComponent(jLabel12)
                         .addGap(18, 18, 18)
                         .addComponent(TextIva, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(58, 58, 58)
+                        .addGap(42, 42, 42)
                         .addComponent(jLabel20)
-                        .addGap(28, 28, 28)
+                        .addGap(27, 27, 27)
                         .addComponent(TextSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(49, 49, 49)
                         .addComponent(jLabel19)
-                        .addGap(28, 28, 28)
-                        .addComponent(TextTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PanelFacturaLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 850, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(TextTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PanelFacturaLayout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(DatosEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 562, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(NumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PanelFacturaLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1))))
+                .addContainerGap())
         );
         PanelFacturaLayout.setVerticalGroup(
             PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelFacturaLayout.createSequentialGroup()
                 .addGap(9, 9, 9)
-                .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(DatosEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(NumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(NumeroFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(DatosEmpresa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(10, 10, 10)
-                .addComponent(DatosCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(DatosCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11)
-                .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(TextSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel19)
-                        .addComponent(TextTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                .addGroup(PanelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(TextIva, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel20)
+                    .addComponent(TextSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TextTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel19))
+                .addGap(20, 20, 20))
         );
 
         PanelControles.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Controles", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
@@ -726,36 +827,46 @@ public final class Factura extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(PanelFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 95, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(txtFecha))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(PanelControles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(Vender, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(txtFecha)
+                        .addGap(71, 71, 71))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(PanelControles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Vender, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(69, 69, 69))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(txtFecha)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(17, 17, 17)
                 .addComponent(PanelControles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addGap(18, 18, 18)
                 .addComponent(Vender, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(82, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addComponent(PanelFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(PanelFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        agregar();
+        
+        if(TextCantidad.getText().equals(""))
+        {
+            LabelEstadoV.setText("No existe producto alguno para agregar al carrito....");
+            JOptionPane.showMessageDialog(null,"No existe producto alguno para agregar al carrito....","ERROR",JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+            agregar();
+        }
+               
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
@@ -788,7 +899,7 @@ public final class Factura extends javax.swing.JPanel {
             {
                 if(TextCantidad.getText().equals(""))
                 {
-                    LabelEstadoV.setText("No existe producto alguno...."); 
+                    LabelEstadoV.setText("No existe producto alguno para agregar al carrito...."); 
                 }
             else
             {
@@ -809,7 +920,19 @@ public final class Factura extends javax.swing.JPanel {
     }//GEN-LAST:event_btnQuitarActionPerformed
 
     private void VenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VenderActionPerformed
-        vender();
+      //  if(TextCedula.getText().equals("")&&(TablaDetalles.getModel().getRowCount())!=null){
+            
+      //  }
+       totalTablas = TablaDetalles.getRowCount();
+       cedula = TextCedula.getText();
+        if(cedula.equals("")&&(totalTablas==0))
+        {
+            JOptionPane.showMessageDialog(null, "No puede vender sin cliente ni producto","ERROR",JOptionPane.ERROR_MESSAGE);
+        }
+        else{
+           vender();           
+        }
+        
     }//GEN-LAST:event_VenderActionPerformed
 
     private void TextCedulaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextCedulaKeyTyped
@@ -833,16 +956,6 @@ public final class Factura extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null,e);
         }
     }//GEN-LAST:event_TextCedulaKeyTyped
-
-    private void TextTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextTelefonoKeyTyped
-          char c2=evt.getKeyChar();                    
-          if(Character.isLetter(c2)) {
-              getToolkit().beep();    
-              evt.consume();             
-              JOptionPane.showMessageDialog(null,"Ingrese solo numeros");
-               
-          } 
-    }//GEN-LAST:event_TextTelefonoKeyTyped
 
     private void TextCantidadKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextCantidadKeyTyped
           char c3=evt.getKeyChar();                    
@@ -893,6 +1006,10 @@ public final class Factura extends javax.swing.JPanel {
     }
     }//GEN-LAST:event_TablaDetallesKeyReleased
 
+    private void TextTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextTelefonoKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TextTelefonoKeyTyped
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel DatosCliente;
@@ -905,6 +1022,7 @@ public final class Factura extends javax.swing.JPanel {
     private javax.swing.JTextField TextCedula;
     public static javax.swing.JTextField TextCodigop;
     private javax.swing.JTextField TextDireccion;
+    private javax.swing.JTextField TextEmail;
     private javax.swing.JTextField TextImporte;
     private javax.swing.JTextField TextIva;
     public static javax.swing.JTextField TextMarca;
@@ -919,6 +1037,7 @@ public final class Factura extends javax.swing.JPanel {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnQuitar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -930,6 +1049,8 @@ public final class Factura extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -940,6 +1061,8 @@ public final class Factura extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblEmail;
+    private javax.swing.JLabel lblbdireccionEmpresa;
     private javax.swing.JLabel lblbpropietario;
     private javax.swing.JLabel lblnombre;
     private javax.swing.JLabel lblnumfact;
@@ -952,11 +1075,13 @@ public final class Factura extends javax.swing.JPanel {
         TextNombre.setEditable(true);
         TextTelefono.setEditable(true);
         TextDireccion.setEditable(true);
+        TextEmail.setEditable(true);
     }
     private void DesabilitarTextoCliente(){              
         TextNombre.setEditable(false);
         TextTelefono.setEditable(false);
         TextDireccion.setEditable(false);
+        TextEmail.setEditable(false);
     }
         
     private void limpiarSeccionArticulo(){
@@ -971,7 +1096,8 @@ public final class Factura extends javax.swing.JPanel {
     private void LimpiarDatosCliente(){
         TextNombre.setText("");
         TextTelefono.setText("");
-        TextDireccion.setText("");        
+        TextDireccion.setText(""); 
+        TextEmail.setText("");
     }
     private void limpiacontroles() {
         
@@ -979,10 +1105,11 @@ public final class Factura extends javax.swing.JPanel {
         TextNombre.setText("");
         TextTelefono.setText("");
         TextDireccion.setText("");
+        TextEmail.setText("");
         TextIva.setText("");
         TextSubtotal.setText("");
         TextTotal.setText("");     
-
+        LabelEstadoV.setText(vacio_label);
         int filas = TablaDetalles.getRowCount();
         for (int i = 0; filas > i; i++) {
             model.removeRow(0);

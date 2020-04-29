@@ -8,25 +8,27 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
-public class EntornoAdmin extends javax.swing.JFrame {
+    public class EntornoAdmin extends javax.swing.JFrame {
 
     CRUD crud=new CRUD();
     
 
-public class IEntornoAdmin extends javax.swing.JPanel {
+    public class IEntornoAdmin extends javax.swing.JPanel {
  
-public IEntornoAdmin() {
-this.setSize(1195,575);
-} 
-@Override
-public void paint(Graphics grafico) {
-Dimension height = getSize();
-ImageIcon Img = new ImageIcon(getClass().getResource("/Vista/Imagenes/2. FondoPantalla.jpg"));  
-grafico.drawImage(Img.getImage(), 0, 0, height.width, height.height,null);
-setOpaque(false);
-super.paintComponent(grafico);
+        public IEntornoAdmin() {
+        this.setSize(1195,575);
+        } 
+            @Override
+            public void paint(Graphics grafico) {
+            Dimension height = getSize();
+            ImageIcon Img = new ImageIcon(getClass().getResource("/Vista/Imagenes/2. FondoPantalla.jpg"));  
+            grafico.drawImage(Img.getImage(), 0, 0, height.width, height.height,null);
+            setOpaque(false);
+            
+            super.paintComponent(grafico);
+            }
 }
-}
+    
     public EntornoAdmin() {
         initComponents();
         this.setLocationRelativeTo(null);

@@ -38,7 +38,7 @@ public final class BuscarProductoFactura extends javax.swing.JFrame {
     public void LlenarIndiceTablaProductos()
     {      
         try{
-            r = crud.buscarTodosProducto();
+            r = crud.consultarTodosProducto();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
@@ -54,7 +54,7 @@ public final class BuscarProductoFactura extends javax.swing.JFrame {
     public void FillComboCate() throws Exception{
 
       try {   
-         r = crud.llenarComboCategoria();
+         r = crud.consultarLlenarComboCategoria();
          ComboCategoria.setModel(value);
          while (r.next()) 
          { 
@@ -208,7 +208,7 @@ public final class BuscarProductoFactura extends javax.swing.JFrame {
             String nombre = TextBuscar.getText();
        //     String nombre = TextBuscar.getText().toLowerCase();
             model = (DefaultTableModel) tblRegistro.getModel();
-            r = crud.buscarProducto(nombre);
+            r = crud.consultarProducto(nombre);
             while (tblRegistro.getRowCount() > 0) {
                 model.removeRow(0);
             }
@@ -232,7 +232,7 @@ public final class BuscarProductoFactura extends javax.swing.JFrame {
         
         try{
             String clave= (String) ComboCategoria.getSelectedItem(); //toma la clave para eldiccionario Map
-            r = crud.LlenarIndiceBurcarProductoCategoria(clave);
+            r = crud.consultarProductoPorCategoria(clave);
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)

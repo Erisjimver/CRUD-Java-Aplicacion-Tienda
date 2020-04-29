@@ -106,7 +106,7 @@ public class Funcionalidades {
     //Diccionario de las ID de las categorias de las sucursales
     public void DiccionarioSucursal(SettersAndGetters to) throws Exception{       
        
-        sucursales.put(to.getSucursal(),to.getIdEmpresa());
+        sucursales.put(to.getNombreEmpresa(),to.getIdEmpresa());
         //System.out.println(categorias.keySet());
         //System.out.println(categorias.get("Accesorios"));
     }
@@ -122,7 +122,7 @@ public class Funcionalidades {
     //Diccionario de las ID de las categorias de los empleados
     public void DiccionarioEmpleado(SettersAndGetters to) throws Exception{       
        
-        empleados.put(to.getTipoUsuario(),to.getIdTipoUsuarioV());
+        empleados.put(to.getTipoUsuario(),to.getIdTipoUsuario());
         //System.out.println(categorias.keySet());
         //System.out.println(categorias.get("Accesorios"));
     }

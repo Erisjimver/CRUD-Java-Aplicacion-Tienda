@@ -40,54 +40,12 @@ public final class Facturas extends javax.swing.JPanel {
             for (int i = 1; i <= cantidadColumnas; i++) {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             LabelEstado.setText("No existe indice: "+ex);
         }
     } 
    
-    public void BuscarProductosTotales()
-    {
-        limpiarTabla();
-        try{
-            num=TextNumeroFactura.getText();
-            
-                    //consulta si la opcion de buscar todo es seleecionado
-                    if(RadioButtonTodo.isSelected())
-                    {
-                        rs= crud.consultarFacturas();
-                        consultar();//se llama al metodo que realiza la crud
-                    }
-                    //consulta la opcion numero factura es seleecionado
-                    if(RadioButtonNF.isSelected()==true) 
-                    {
-                        rs = crud.consultarFacturasId(Integer.parseInt(num));
-                        consultar();//se llama al metodo que realiza la crud
-                    }
-                    //consulta si la opcion buscar por fecha
-                    if((RadioButtonFecha.isSelected()==true))
-                    {
-                        if(DateChooserFactura.getDate()==null)
-                        {
-                            JOptionPane.showMessageDialog(null, "No ha elegido fecha alguna","Alerta",JOptionPane.WARNING_MESSAGE); 
-                        }
-                        else
-                        {
-                            java.util.Date fecha=DateChooserFactura.getDate();
-                            SimpleDateFormat formatofecha= new SimpleDateFormat("dd/MM/YYYY");
-                            String fec=formatofecha.format(fecha);
-                            System.out.println("fecha");
 
-                            rs=crud.consultarFacturasFecha(fec);
-                            consultar();//se llama al metodo que realiza la crud    
-                        }
-                    }
-        }
-        catch(Exception e)
-        {
-            LabelEstado.setText(e.toString());
-        }
-    }
-    
     //verifica si ha sido seleccionada una opcion
     private void verificaSeleccion(){
         
@@ -98,21 +56,38 @@ public final class Facturas extends javax.swing.JPanel {
                //LabelEstado.setText("No ha selecionado ninguna opcion");//mensaje de alerta
                JOptionPane.showMessageDialog(null, "No ha seleccionado ninguna opcion","Alerta",JOptionPane.WARNING_MESSAGE); 
             }
-            else if(RadioButtonNF.isSelected()==true&&TextNumeroFactura.getText().equals("")){
-                JOptionPane.showMessageDialog(null, "No ha digitado el codigo factura","Alerta",JOptionPane.WARNING_MESSAGE); 
+            else
+            {
+                if(RadioButtonTodo.isSelected()==true){
+                        rs= crud.consultarFacturas();
+                        consultar();//se llama al metodo que realiza la crud
+                }
+                if(RadioButtonNF.isSelected()==true&&TextNumeroFactura.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "No ha digitado el codigo factura","Alerta",JOptionPane.WARNING_MESSAGE); 
+                }
+                if((RadioButtonNF.isSelected()==true&&!TextNumeroFactura.getText().equals(""))){
+                        num=TextNumeroFactura.getText();
+                        rs = crud.consultarFacturasId(Integer.parseInt(num));
+                        consultar();//se llama al metodo que realiza la crud
+                }
+                if((RadioButtonFecha.isSelected()==true)&&DateChooserFactura.getDate()==null){
+                    JOptionPane.showMessageDialog(null, "No ha selecionado una fecha","Alerta",JOptionPane.WARNING_MESSAGE); 
+                }
+                if((RadioButtonFecha.isSelected()==true)&&DateChooserFactura.getDate()!=null){
+                        java.util.Date fecha=DateChooserFactura.getDate();
+                        SimpleDateFormat formatofecha= new SimpleDateFormat("dd/MM/YYYY");
+                        String fec=formatofecha.format(fecha);
+                        System.out.println("fecha");
+
+                        rs=crud.consultarFacturasFecha(fec);
+                        consultar();//se llama al metodo que realiza la crud
+                }
             }
-            else if((RadioButtonFecha.isSelected()==true)&&DateChooserFactura.getDate()==null){
-                JOptionPane.showMessageDialog(null, "No ha selecionado una fecha","Alerta",JOptionPane.WARNING_MESSAGE); 
-            }           
-            else{
-                BuscarProductosTotales();
-            }       
-           
         }catch(HeadlessException e){
-                JOptionPane.showMessageDialog(null, "No ha selecionado una fecha","Alerta",JOptionPane.WARNING_MESSAGE);
-        }
-        
+                JOptionPane.showMessageDialog(null, "Error en verificaSeleccion(): "+e,"Alerta",JOptionPane.WARNING_MESSAGE);
+        }        
     }
+    
     
     public void consultar(){
  
@@ -129,15 +104,14 @@ public final class Facturas extends javax.swing.JPanel {
            catch (SQLException ex) 
         {
             Logger.getLogger(EntornoAdmin.class.getName()).log(Level.SEVERE, null, ex);
-            LabelEstado.setText(ex.toString());
+            LabelEstado.setText("El error es en consultar(): "+ex.toString());
         }  
     }
     
     public void radioButtoNumeroFactura(){
         
         try{
-            
-                TextNumeroFactura.setEnabled(true);
+                TextNumeroFactura.setEditable(true);
                 TextNumeroFactura.requestFocus();
                 DateChooserFactura.setDate(null);
                 DateChooserFactura.setEnabled(false); 
@@ -154,7 +128,7 @@ public final class Facturas extends javax.swing.JPanel {
         try{        
           
                 DateChooserFactura.setEnabled(true);
-                TextNumeroFactura.setEnabled(false);
+                TextNumeroFactura.setEditable(false);
                 TextNumeroFactura.setText("");
 
         }
@@ -172,7 +146,7 @@ public final class Facturas extends javax.swing.JPanel {
             DateChooserFactura.setEnabled(false);
             DateChooserFactura.setDate(null);
             TextNumeroFactura.setText("");
-            TextNumeroFactura.setEnabled(false);     
+            TextNumeroFactura.setEditable(false);     
             
         }
         catch(Exception e)
@@ -207,6 +181,7 @@ public final class Facturas extends javax.swing.JPanel {
         RadioButtonTodo = new javax.swing.JRadioButton();
         BtnLimpiar = new javax.swing.JButton();
         DateChooserFactura = new com.toedter.calendar.JDateChooser();
+        jButton1 = new javax.swing.JButton();
 
         jToolBar1.setRollover(true);
 
@@ -223,16 +198,16 @@ public final class Facturas extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(518, 518, 518)
+                .addGap(528, 528, 528)
                 .addComponent(jLabel2)
-                .addContainerGap(554, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(39, 39, 39)
                 .addComponent(jLabel2)
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -278,6 +253,7 @@ public final class Facturas extends javax.swing.JPanel {
             }
         });
 
+        TextNumeroFactura.setEditable(false);
         TextNumeroFactura.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 TextNumeroFacturaKeyReleased(evt);
@@ -310,6 +286,15 @@ public final class Facturas extends javax.swing.JPanel {
             }
         });
 
+        DateChooserFactura.setEnabled(false);
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -327,30 +312,37 @@ public final class Facturas extends javax.swing.JPanel {
                             .addComponent(TextNumeroFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                             .addComponent(DateChooserFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(RadioButtonTodo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
                 .addComponent(BtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(BtnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(498, 498, 498))
+                .addGap(46, 46, 46)
+                .addComponent(jButton1)
+                .addGap(379, 379, 379))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(RadioButtonNF)
-                            .addComponent(TextNumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(14, 14, 14)
+                        .addGap(17, 17, 17)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(RadioButtonFecha)
-                            .addComponent(DateChooserFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(RadioButtonTodo))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(BtnLimpiar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
-                        .addComponent(BtnBuscar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(RadioButtonNF)
+                                    .addComponent(TextNumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(14, 14, 14)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(RadioButtonFecha)
+                                    .addComponent(DateChooserFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(RadioButtonTodo))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(BtnLimpiar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                                .addComponent(BtnBuscar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jButton1)))
                 .addGap(23, 23, 23)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
         );
@@ -372,8 +364,15 @@ public final class Facturas extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBuscarActionPerformed
-       
-        verificaSeleccion();
+    //        if(RadioButtonNF.isSelected()==false&&RadioButtonFecha.isSelected()==false&&RadioButtonTodo.isSelected()==false)
+   //         {
+               //LabelEstado.setText("No ha selecionado ninguna opcion");//mensaje de alerta
+     //          JOptionPane.showMessageDialog(null, "No ha seleccionado ninguna opcion","Alerta",JOptionPane.WARNING_MESSAGE); 
+      //      }else{
+                limpiarTabla();
+                verificaSeleccion();
+     //       }       
+        
         
     }//GEN-LAST:event_BtnBuscarActionPerformed
 
@@ -419,15 +418,23 @@ public final class Facturas extends javax.swing.JPanel {
             {
                  JOptionPane.showMessageDialog(null, "No ha digitado el codigo factura","Alerta",JOptionPane.WARNING_MESSAGE); 
             }
-            if(RadioButtonTodo.isSelected()==false){
-                JOptionPane.showMessageDialog(null, "No ha seleecionado una opcion","Alerta",JOptionPane.WARNING_MESSAGE); 
-            }
             else
             {
-                BuscarProductosTotales();
+                limpiarTabla();      
+                num=TextNumeroFactura.getText();
+                rs = crud.consultarFacturasId(Integer.parseInt(num));
+                consultar();//se llama al metodo que realiza la crud
             }
         }
     }//GEN-LAST:event_TextNumeroFacturaKeyReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+            java.util.Date fecha=DateChooserFactura.getDate();
+            SimpleDateFormat formatofecha= new SimpleDateFormat("dd/MM/YYYY");
+            String fec=formatofecha.format(fecha);
+            System.out.println(fec);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnBuscar;
@@ -439,6 +446,7 @@ public final class Facturas extends javax.swing.JPanel {
     private javax.swing.JRadioButton RadioButtonTodo;
     private javax.swing.JTable TablaFactura;
     private javax.swing.JTextField TextNumeroFactura;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

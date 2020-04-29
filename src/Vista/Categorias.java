@@ -32,14 +32,14 @@ public final class Categorias extends javax.swing.JPanel {
     
     public void buscarColumnas(){      
         try{ 
-            r = crud.llenarComboCategoria();
+            r = crud.consultarLlenarComboCategoria();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(Exception e)
+        catch(SQLException e)
         {
            LabelEstado.setText("Error: "+e); 
         }
@@ -50,7 +50,7 @@ public final class Categorias extends javax.swing.JPanel {
        try
        {
             //r = crud.llenarTablaCategoria();
-            r = crud.llenarComboCategoria();
+            r = crud.consultarLlenarComboCategoria();
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)
@@ -59,7 +59,7 @@ public final class Categorias extends javax.swing.JPanel {
 
             } 
        }
-       catch(Exception e)
+       catch(SQLException e)
        {
           LabelEstado.setText("Error: "+e);  
        } 
@@ -150,7 +150,7 @@ public final class Categorias extends javax.swing.JPanel {
 
     public void idCategoria(){
      try{
-        idCategoriaS = crud.obteneriIdCategoria();
+        idCategoriaS = crud.consultarIdCategoria();
         TextID.setText(idCategoriaS); 
      }catch(Exception e)
      {

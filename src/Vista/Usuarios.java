@@ -42,14 +42,14 @@ public final class Usuarios extends javax.swing.JPanel {
     
     public void buscarColumnas(){      
         try{ 
-            r = crud.buscaTodosEmpleados();
+            r = crud.consultarTodosEmpleados();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(Exception e)
+        catch(SQLException e)
         {
            LabelEstado.setText("Error: "+e); 
         }
@@ -59,7 +59,7 @@ public final class Usuarios extends javax.swing.JPanel {
         limpiarTabla();
        try
        {
-           r=crud.buscaTodosEmpleados();
+           r=crud.consultarTodosEmpleados();
             while(r.next()){ 
                 Object [] fila = new Object[cantidadColumnas];
                 for (int i=0;i<cantidadColumnas;i++)
@@ -67,7 +67,7 @@ public final class Usuarios extends javax.swing.JPanel {
                 modelo.addRow(fila);
             } 
        }
-       catch(Exception e)
+       catch(SQLException e)
        {
           LabelEstado.setText("Error: "+e);  
        } 
@@ -109,14 +109,14 @@ public final class Usuarios extends javax.swing.JPanel {
             int id = fun.obtenerIdEmpleado(clave);
             int ide = fun.obtenerIdSucursal(claveE);                    
                 
-                set.setIdTipoUsuarioV(id);   
-                set.setIdEmpresaV(ide);
-                set.setContrasenaV(contrasena);
-                set.setCedulaV(cedula);
-                set.setNombresV(nombres);
-                set.setApellidosV(apellidos);
-                set.setTelefonoV(telefono);
-                set.setDireccionV(direccion);
+                set.setIdTipoUsuario(id);   
+                set.setIdEmpresa(ide);
+                set.setContrasena(contrasena);
+                set.setCedulaEmpleado(cedula);
+                set.setNombresEmpleado(nombres);
+                set.setApellidosEmpleado(apellidos);
+                set.setTelefonoEmpleado(telefono);
+                set.setDireccionEmpleado(direccion);
                 
             crud.registrarEmpleado(set);
             
@@ -143,7 +143,7 @@ public final class Usuarios extends javax.swing.JPanel {
             crud.eliminarEmpleado(idempleado);
             buscarEmpleados();
         }
-        catch(Exception e)
+        catch(NumberFormatException e)
         {
             LabelEstado.setText("Error al eliminar: "+e); 
         }
@@ -156,22 +156,22 @@ public final class Usuarios extends javax.swing.JPanel {
 
         int fila = TablaEmpleados.getSelectedRow();
             
-        set.setIdvendedor(Integer.parseInt(TablaEmpleados.getValueAt(fila, 0).toString()));
-        set.setIdTipoUsuarioV(Integer.parseInt(TablaEmpleados.getValueAt(fila, 1).toString()));
-        set.setIdEmpresaV(Integer.parseInt(TablaEmpleados.getValueAt(fila, 2).toString()));
-        set.setContrasenaV(TablaEmpleados.getValueAt(fila, 3).toString());
-        set.setCedulaV(TablaEmpleados.getValueAt(fila, 4).toString());
-        set.setNombresV(TablaEmpleados.getValueAt(fila, 5).toString());
-        set.setApellidosV(TablaEmpleados.getValueAt(fila, 6).toString());
-        set.setTelefonoV(TablaEmpleados.getValueAt(fila, 7).toString());
-        set.setDireccionV(TablaEmpleados.getValueAt(fila, 8).toString());
+        set.setIdEmpleado(Integer.parseInt(TablaEmpleados.getValueAt(fila, 0).toString()));
+        set.setIdTipoUsuario(Integer.parseInt(TablaEmpleados.getValueAt(fila, 1).toString()));
+        set.setIdEmpresa(Integer.parseInt(TablaEmpleados.getValueAt(fila, 2).toString()));
+        set.setContrasena(TablaEmpleados.getValueAt(fila, 3).toString());
+        set.setCedulaEmpleado(TablaEmpleados.getValueAt(fila, 4).toString());
+        set.setNombresEmpleado(TablaEmpleados.getValueAt(fila, 5).toString());
+        set.setApellidosEmpleado(TablaEmpleados.getValueAt(fila, 6).toString());
+        set.setTelefonoEmpleado(TablaEmpleados.getValueAt(fila, 7).toString());
+        set.setDireccionEmpleado(TablaEmpleados.getValueAt(fila, 8).toString());
             
-            crud.actualizaEmpleado(set);
+            crud.actualizarEmpleado(set);
             buscarEmpleados();
             
         }
         
-        catch(Exception ex)
+        catch(NumberFormatException ex)
         {
             LabelEstado.setText("Error: "+ex);   
         }
@@ -186,29 +186,23 @@ public final class Usuarios extends javax.swing.JPanel {
         TextCedula.setText("");
     }
     
-    public void mostrarIdVendedor() throws Exception{
-        
-        try{       
-            String idEmpleado= crud.obteneriIDEmpleadoNoParametro();
-            TextIdVendedor.setText(idEmpleado); 
-        }
-        catch(SQLException e){
-        LabelEstado.setText("Error: "+e);
-        }
+    public void mostrarIdVendedor(){    
+        String idEmpleado= crud.consultarIdEmpleadoNoParametro();
+        TextIdVendedor.setText(idEmpleado);
     }
     
     public void FillComboUsuario(){
 
       try {         
          //r = cn.consultar("select IdTipo_Usuario,Tipo_Usuario from Tipo_Usuario");   
-         r = crud.llenarComboTipoEmpleado();
+         r = crud.consultarLlenarComboTipoEmpleado();
          ComboUsuario.setModel(comboUser);
          while (r.next()) 
          {            
             String clave = r.getString(2);//Nombre de la sucursal
             int valor = r.getInt(1);//id de la sucursal
             set.setTipoUsuario(clave);
-            set.setIdTipoUsuarioV(valor);
+            set.setIdTipoUsuario(valor);
             
             fun.DiccionarioEmpleado(set);
             ComboUsuario.addItem(clave);
@@ -227,13 +221,13 @@ public final class Usuarios extends javax.swing.JPanel {
 
       try {         
          //r = cn.consultar("select IdEmpresa, NombreEmpresa from Empresa");  
-         r = crud.llenarComboSucursal();
+         r = crud.consultarLlenarComboSucursal();
          ComboEmpresa.setModel(comboEmpresa);
          while (r.next()) 
          {            
             String clave = r.getString(2);//Nombre de la sucursal
             int valor = r.getInt(1);//id de la sucursal
-            set.setSucursal(clave);
+            set.setNombreEmpresa(clave);
             set.setIdEmpresa(valor);
             
             fun.DiccionarioSucursal(set);
@@ -349,11 +343,6 @@ public final class Usuarios extends javax.swing.JPanel {
         jLabel11.setText("TIPO DE USUARIO:");
 
         ComboUsuario.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        ComboUsuario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ComboUsuarioActionPerformed(evt);
-            }
-        });
 
         jLabel12.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(204, 204, 204));
@@ -757,10 +746,6 @@ public final class Usuarios extends javax.swing.JPanel {
     private void TextDireccionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TextDireccionMouseClicked
         TextDireccion.setText("");
     }//GEN-LAST:event_TextDireccionMouseClicked
-
-    private void ComboUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboUsuarioActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ComboUsuarioActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

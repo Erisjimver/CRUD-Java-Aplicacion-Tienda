@@ -37,14 +37,14 @@ public final class Productos extends javax.swing.JPanel {
     
     public void buscarColumnas(){      
         try{ 
-            r=crud.buscarTodosProducto();
+            r=crud.consultarTodosProducto();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(Exception e)
+        catch(SQLException e)
         {
            LabelEstado.setText("Error: "+e); 
         }
@@ -54,7 +54,7 @@ public final class Productos extends javax.swing.JPanel {
         limpiarTabla();
        try
        {
-        r = crud.buscarTodosProducto();
+        r = crud.consultarTodosProducto();
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)
@@ -62,7 +62,7 @@ public final class Productos extends javax.swing.JPanel {
               modelo.addRow(fila);
             } 
        }
-       catch(Exception e)
+       catch(SQLException e)
        {
           LabelEstado.setText("Error: "+e);  
        }
@@ -91,11 +91,11 @@ public final class Productos extends javax.swing.JPanel {
             limpiarTabla();
             int valor = fun.obtenerIdCategoria(clave);
     
-            set.setIdcategorias(valor);
-            set.setNombreproducto(TextNombreP.getText());
+            set.setIdCategoria(valor);
+            set.setNombreProducto(TextNombreP.getText());
             set.setMarca(TextMarca.getText());
             set.setCosto(Double.parseDouble(TextCosto.getText()));
-            set.setPrecio(Double.parseDouble(TextPrecio.getText()));
+            set.setPrecioVenta(Double.parseDouble(TextPrecio.getText()));
             set.setStock(Integer.parseInt(TextStock.getText()));
             crud.registrarProductos(set);
             JOptionPane.showMessageDialog(null, "Registro del articulo correcto....");
@@ -117,14 +117,14 @@ public final class Productos extends javax.swing.JPanel {
 
             int fila = TablaProductos.getSelectedRow();
             
-            set.setIdproducto(Integer.parseInt(TablaProductos.getValueAt(fila, 0).toString()));
-            set.setNombreproducto(TablaProductos.getValueAt(fila, 2).toString());
+            set.setIdProducto(Integer.parseInt(TablaProductos.getValueAt(fila, 0).toString()));
+            set.setNombreProducto(TablaProductos.getValueAt(fila, 2).toString());
             set.setMarca(TablaProductos.getValueAt(fila, 3).toString());
             set.setCosto(Double.parseDouble(TablaProductos.getValueAt(fila, 4).toString()));
-            set.setPrecio(Double.parseDouble(TablaProductos.getValueAt(fila, 5).toString()));
+            set.setPrecioVenta(Double.parseDouble(TablaProductos.getValueAt(fila, 5).toString()));
             set.setStock(Integer.parseInt(TablaProductos.getValueAt(fila, 6).toString()));
  
-            crud.actualizaProductos(set);
+            crud.actualizarProductos(set);
             JOptionPane.showMessageDialog(null, "Actualizacion correcta....");
             buscarProductos();
         }catch(HeadlessException | NumberFormatException ex)
@@ -151,7 +151,7 @@ public final class Productos extends javax.swing.JPanel {
     
     public void IdProductos(){
         try{
-           cod = crud.obteneriIdProducto();
+           cod = crud.consultarIdProducto();
            TextCOP.setText(cod);         
         }
         catch(Exception e)
@@ -163,7 +163,7 @@ public final class Productos extends javax.swing.JPanel {
     public void FillComboCate() throws Exception{
 
       try {         
-         r = crud.llenarComboCategoria();
+         r = crud.consultarLlenarComboCategoria();
         
          ComboCategoria.setModel(value);
          while (r.next()) 

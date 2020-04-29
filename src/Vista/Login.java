@@ -16,8 +16,8 @@ public class Login extends javax.swing.JFrame {
     void acceder(String usuario, String pas)
     {
         try {
-            tipo_usuario = crud.TipoUsuario(usuario, pas);
-            nom = crud.obtenerNombreUsuario(usuario);
+            tipo_usuario = crud.consultarTipoUsuario(usuario, pas);
+            nom = crud.consultarNombreUsuario(usuario);
       
             if(tipo_usuario.equals("Administrador"))
             {

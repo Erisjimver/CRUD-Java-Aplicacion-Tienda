@@ -12,7 +12,7 @@ public final class Sucursal extends javax.swing.JPanel {
     
     //declarando variables
     private static ResultSet r;
-    private String idsucur,ruc,sucursal,telefono,direccion;
+    private String idsucur,ruc,sucursal,telefono,direccion, email;
     private int cantidadColumnas, idsucursal;
 
     //creando objeto de clases
@@ -33,7 +33,7 @@ public final class Sucursal extends javax.swing.JPanel {
     
     public void buscarColumnas(){      
         try{ 
-            r = crud.buscaSucursales();
+            r = crud.consultarSucursales();
             ResultSetMetaData rsd = r.getMetaData();
             cantidadColumnas = rsd.getColumnCount();
             for (int i = 1; i <= cantidadColumnas; i++) {
@@ -50,7 +50,7 @@ public final class Sucursal extends javax.swing.JPanel {
         limpiarTabla();
        try
        {
-            r = crud.buscaSucursales();
+            r = crud.consultarSucursales();
             while(r.next()){ 
               Object [] fila = new Object[cantidadColumnas];
               for (int i=0;i<cantidadColumnas;i++)
@@ -85,11 +85,12 @@ public final class Sucursal extends javax.swing.JPanel {
         try
         {
             ruc = TextRUC.getText();
-            sucursal=TextSucursal.getText();
-            telefono=TextTelefono.getText();
-            direccion=TextDireccion.getText();
+            sucursal = TextSucursal.getText();
+            telefono = TextTelefono.getText();
+            direccion = TextDireccion.getText();
+            email = TextEmail.getText();
                           
-            if(ruc.equals("")||sucursal.equals("")||telefono.equals("")||direccion.equals(""))
+            if(ruc.equals("")||sucursal.equals("")||telefono.equals("")||direccion.equals("")||email.equals(""))
             {
               LabelEstado.setText("Existen datos no ingresados...");   
             }
@@ -97,9 +98,10 @@ public final class Sucursal extends javax.swing.JPanel {
             {    
                 set.setIdEmpresa(Integer.parseInt(idsucur));
                 set.setRuc(ruc);
-                set.setSucursal(sucursal);
-                set.setTelefonoEmpresa(Integer.parseInt(telefono));
+                set.setNombreEmpresa(sucursal);
+                set.setTelefonoEmpresa((telefono));
                 set.setDireccionEmpresa(direccion);
+                set.setEmailEmpresa(email);
                 
                 crud.registrarSucursal(set);
             
@@ -142,8 +144,8 @@ public final class Sucursal extends javax.swing.JPanel {
 
             set.setIdEmpresa(Integer.parseInt(TablaSucursal.getValueAt(fila, 0).toString()));
             set.setRuc(TablaSucursal.getValueAt(fila, 1).toString());
-            set.setSucursal(TablaSucursal.getValueAt(fila, 2).toString());
-            set.setTelefonoEmpresa(Integer.parseInt(TablaSucursal.getValueAt(fila, 3).toString()));
+            set.setNombreEmpresa(TablaSucursal.getValueAt(fila, 2).toString());
+            set.setTelefonoEmpresa(TablaSucursal.getValueAt(fila, 3).toString());
             set.setDireccionEmpresa(TablaSucursal.getValueAt(fila, 4).toString());
             
             crud.actualizarSucursal(set);
@@ -161,13 +163,14 @@ public final class Sucursal extends javax.swing.JPanel {
             TextSucursal.setText("");
             TextTelefono.setText("");
             TextDireccion.setText("");
+            TextEmail.setText("");
     }
 
     public void idSucursal(){
 
      try{
 
-        idsucur=crud.obteneriIdSucursal();
+        idsucur=crud.consultarIdSucursal();
         TextCOS.setText(idsucur); 
         
         }
@@ -200,6 +203,8 @@ public final class Sucursal extends javax.swing.JPanel {
         BtnRegistrar = new javax.swing.JButton();
         BtnBuscarCategorias = new javax.swing.JButton();
         BtnEliminar = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        TextEmail = new javax.swing.JTextField();
         Buscar = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         TablaSucursal = new javax.swing.JTable();
@@ -359,6 +364,19 @@ public final class Sucursal extends javax.swing.JPanel {
             }
         });
 
+        jLabel14.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel14.setText("EMAIL:");
+
+        TextEmail.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        TextEmail.setBorder(null);
+        TextEmail.setDisabledTextColor(new java.awt.Color(204, 204, 204));
+        TextEmail.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TextEmailMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout CrearLayout = new javax.swing.GroupLayout(Crear);
         Crear.setLayout(CrearLayout);
         CrearLayout.setHorizontalGroup(
@@ -383,17 +401,19 @@ public final class Sucursal extends javax.swing.JPanel {
                             .addGroup(CrearLayout.createSequentialGroup()
                                 .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel11)
-                                    .addComponent(jLabel12))
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel14))
                                 .addGap(111, 111, 111)
                                 .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(TextTelefono)
-                                    .addComponent(TextDireccion)))))
+                                    .addComponent(TextDireccion)
+                                    .addComponent(TextEmail)))))
                     .addGroup(CrearLayout.createSequentialGroup()
-                        .addGap(44, 44, 44)
+                        .addGap(64, 64, 64)
                         .addComponent(BtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(56, 56, 56)
+                        .addGap(47, 47, 47)
                         .addComponent(BtnBuscarCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)
+                        .addGap(47, 47, 47)
                         .addComponent(BtnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -421,15 +441,23 @@ public final class Sucursal extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(TextDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel12))
-                .addGap(61, 61, 61)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BtnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(CrearLayout.createSequentialGroup()
-                        .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(BtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BtnBuscarCategorias))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(77, 77, 77))
+                        .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(CrearLayout.createSequentialGroup()
+                                .addGap(0, 87, Short.MAX_VALUE)
+                                .addComponent(BtnBuscarCategorias))
+                            .addComponent(BtnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(48, 48, 48))
+                    .addGroup(CrearLayout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addGroup(CrearLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(TextEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel14))
+                        .addGap(46, 46, 46)
+                        .addComponent(BtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
 
         Buscar.setBackground(new java.awt.Color(36, 47, 65));
@@ -490,7 +518,7 @@ public final class Sucursal extends javax.swing.JPanel {
                 .addComponent(Crear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addGap(0, 134, Short.MAX_VALUE)
+                    .addGap(0, 135, Short.MAX_VALUE)
                     .addComponent(Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -514,12 +542,11 @@ public final class Sucursal extends javax.swing.JPanel {
     }//GEN-LAST:event_BtnEliminarActionPerformed
 
     private void TablaSucursalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TablaSucursalKeyReleased
-        
-        
+       
     if(evt.getKeyCode()==KeyEvent.VK_ENTER){
         actualizar();
-
     }
+    
     }//GEN-LAST:event_TablaSucursalKeyReleased
 
     private void TextRUCMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TextRUCMouseClicked
@@ -538,6 +565,10 @@ public final class Sucursal extends javax.swing.JPanel {
        TextTelefono.setText("");
     }//GEN-LAST:event_TextTelefonoMouseClicked
 
+    private void TextEmailMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TextEmailMouseClicked
+       TextEmail.setText("");
+    }//GEN-LAST:event_TextEmailMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnBuscarCategorias;
@@ -548,6 +579,7 @@ public final class Sucursal extends javax.swing.JPanel {
     private javax.swing.JTable TablaSucursal;
     private javax.swing.JTextField TextCOS;
     private javax.swing.JTextField TextDireccion;
+    private javax.swing.JTextField TextEmail;
     private javax.swing.JTextField TextRUC;
     private javax.swing.JTextField TextSucursal;
     private javax.swing.JTextField TextTelefono;
@@ -557,6 +589,7 @@ public final class Sucursal extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
