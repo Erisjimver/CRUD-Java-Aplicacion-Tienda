@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -300,23 +301,24 @@ public class CRUD {
         
         try
         {
-            ps = c.prepareCall("CALL ActualizarCliente(?,?,?,?)");
+            ps = c.prepareCall("CALL ActualizarCliente(?,?,?,?,?)");
             
-            ps.setString(1, to.getCedulaCliente());
+            ps.setInt(1, to.getIdCliente());
             ps.setString(2, to.getNombreCliente());
             ps.setString(3, to.getTelefonoCliente());
-            ps.setString(4, to.getDireccionCliente()); 
+            ps.setString(4, to.getDireccionCliente());
+            ps.setString(5, to.getEmailCliente());
             
             ps.execute();
             
             if(ps.execute()==false){
-            LabelEstado.setText("Actualizacion del cliente se realizo con exito");     
+                JOptionPane.showMessageDialog(null, "Actualizacion del cliente se realizo con exito..","MENSAJE",JOptionPane.INFORMATION_MESSAGE);
+            //LabelEstado.setText("Actualizacion del cliente se realizo con exito");     
             }
             
         }catch(SQLException e){
             LabelEstado.setText("Error al actualizar el cliente: "+e);
-        }
-        
+        }   
     }
 
        
@@ -427,6 +429,10 @@ public class CRUD {
         return tipoUsuario;
     }   
                
+   
+//----------------------------------------------------------------------------//
+//-------------------------- INICIA CONSULTAS FACTURA ------------------------//
+//----------------------------------------------------------------------------//
 //consultar todas las facturas / indice
     public ResultSet consultarFacturas(){    
         String sql="select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total,f.Fecha_Emision as FECHA_COMPRA from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente order by f.Fecha_Emision desc";                    
@@ -454,13 +460,67 @@ public class CRUD {
         String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total,f.Fecha_Emision as FECHA_COMPRA from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') order by f.Fecha_Emision desc";  
         //SELECT * FROM Factura WHERE fecha_emision > to_date('28/04/2020', 'DD/MM/YYYY') ;
         try{
+                rs = consultar(sql);  
+                                
+        }catch(Exception e){
+            System.out.println("Error en consultarFacturasFecha(String fecha): "+ e);
+        }
+
+      return rs;          
+    } 
+    
+//consultar todas las facturas y sus detalles por fecha 
+    public ResultSet consultarFacturasDetalleTodo(){
+        String sql= "select f.IdFactura as ID, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as PRODUCTO,dv.valor_unitario as V_UNITARIO,dv.Valor_Total as TOTAL from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente order by f.Fecha_Emision desc";  
+        //SELECT * FROM Factura WHERE fecha_emision > to_date('28/04/2020', 'DD/MM/YYYY') ;
+        try{
             rs = consultar(sql);
         }catch(Exception e){
             System.out.println("Error en consultarFacturasFecha(String fecha): "+ e);
         }
       return rs;          
-    }                          
+    } 
 
+//consultar todas las facturas y sus detalles por fecha 
+    public ResultSet consultarFacturasDetalleDia(String fecha){
+        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') and f.Fecha_Emision < to_date('"+fecha+"','DD/MM/YYYY')+1 order by f.Fecha_Emision desc";  
+
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarFacturasFecha(String fecha): "+ e);
+        }
+      return rs;          
+    } 
+    
+//consultar todas las facturas y sus detalles por fecha 
+    public ResultSet consultarFacturasDetalleMes(String fecha){
+        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') order by f.Fecha_Emision desc";  
+        //SELECT * FROM Factura WHERE fecha_emision > to_date('28/04/2020', 'DD/MM/YYYY') ;
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarFacturasFecha(String fecha): "+ e);
+        }
+      return rs;          
+    }
+    
+//consultar todas las facturas y sus detalles por fecha 
+    public ResultSet consultarFacturasDetalleAño(String fecha){
+        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') order by f.Fecha_Emision desc";  
+        //SELECT * FROM Factura WHERE fecha_emision > to_date('28/04/2020', 'DD/MM/YYYY') ;
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarFacturasFecha(String fecha): "+ e);
+        }
+      return rs;          
+    }
+
+//----------------------------------------------------------------------------//
+//-------------------------- TERMINA CONSULTAS CAJA --------------------------//
+//----------------------------------------------------------------------------//
+    
 //se buscan todos los productos buscados para llenar indice de BuscarProductoFactura
     public ResultSet consultarProductoPorCategoria(String clave){
         String sql= "select p.IdProducto,p.Nombre_Producto,p.Marca,p.Precio_Venta,p.Stock from Producto p inner join Categoria c on p.IdCategoria = c.IdCategoria where c.descripcion='"+clave+"'";  
@@ -551,7 +611,7 @@ public class CRUD {
       return rs;          
     }
  
-//Consulta de los clientes    
+//Consulta de los clientes por cedula  
     public ResultSet consultarClientes(String cedula){           
         try{
             ps = c.prepareStatement("SELECT * FROM Cliente where cedula_Cliente= ?");
@@ -562,7 +622,18 @@ public class CRUD {
         }
       return rs;   
     }
-
+    
+//Consulta de los clientes por cedula   
+    public ResultSet consultarTodosClientes(){           
+        String sql= "select * from Cliente";  
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarTodosClientes(): "+ e);
+        }
+      return rs;     
+    }
+    
 //consulta id del empleado con parametro  
     public ResultSet consultarDatosEmpresa(){        
         //String sql= "select Nombre_Empresa,Ruc,Telefono_Empresa from Empresa"; 

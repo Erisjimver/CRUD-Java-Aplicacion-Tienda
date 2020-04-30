@@ -996,6 +996,7 @@ public final class Factura extends javax.swing.JPanel {
             }
 
         }
+        
     }//GEN-LAST:event_TextCedulaKeyReleased
 
     private void TablaDetallesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TablaDetallesKeyReleased

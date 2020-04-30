@@ -77,7 +77,6 @@ public final class Facturas extends javax.swing.JPanel {
                         java.util.Date fecha=DateChooserFactura.getDate();
                         SimpleDateFormat formatofecha= new SimpleDateFormat("dd/MM/YYYY");
                         String fec=formatofecha.format(fecha);
-                        System.out.println("fecha");
 
                         rs=crud.consultarFacturasFecha(fec);
                         consultar();//se llama al metodo que realiza la crud
@@ -104,7 +103,7 @@ public final class Facturas extends javax.swing.JPanel {
            catch (SQLException ex) 
         {
             Logger.getLogger(EntornoAdmin.class.getName()).log(Level.SEVERE, null, ex);
-            LabelEstado.setText("El error es en consultar(): "+ex.toString());
+           // LabelEstado.setText("El error es en consultar(): "+ex.toString());
         }  
     }
     
@@ -181,7 +180,6 @@ public final class Facturas extends javax.swing.JPanel {
         RadioButtonTodo = new javax.swing.JRadioButton();
         BtnLimpiar = new javax.swing.JButton();
         DateChooserFactura = new com.toedter.calendar.JDateChooser();
-        jButton1 = new javax.swing.JButton();
 
         jToolBar1.setRollover(true);
 
@@ -288,13 +286,6 @@ public final class Facturas extends javax.swing.JPanel {
 
         DateChooserFactura.setEnabled(false);
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -316,33 +307,26 @@ public final class Facturas extends javax.swing.JPanel {
                 .addComponent(BtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(BtnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
-                .addComponent(jButton1)
-                .addGap(379, 379, 379))
+                .addGap(498, 498, 498))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(RadioButtonNF)
+                            .addComponent(TextNumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(14, 14, 14)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(RadioButtonNF)
-                                    .addComponent(TextNumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(14, 14, 14)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(RadioButtonFecha)
-                                    .addComponent(DateChooserFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(RadioButtonTodo))
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(BtnLimpiar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
-                                .addComponent(BtnBuscar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(jButton1)))
+                            .addComponent(RadioButtonFecha)
+                            .addComponent(DateChooserFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(RadioButtonTodo))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(BtnLimpiar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                        .addComponent(BtnBuscar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(23, 23, 23)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
         );
@@ -428,14 +412,6 @@ public final class Facturas extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_TextNumeroFacturaKeyReleased
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-            java.util.Date fecha=DateChooserFactura.getDate();
-            SimpleDateFormat formatofecha= new SimpleDateFormat("dd/MM/YYYY");
-            String fec=formatofecha.format(fecha);
-            System.out.println(fec);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnBuscar;
     private javax.swing.JButton BtnLimpiar;
@@ -446,7 +422,6 @@ public final class Facturas extends javax.swing.JPanel {
     private javax.swing.JRadioButton RadioButtonTodo;
     private javax.swing.JTable TablaFactura;
     private javax.swing.JTextField TextNumeroFactura;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

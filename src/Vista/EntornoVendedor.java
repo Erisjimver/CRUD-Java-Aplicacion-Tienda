@@ -3,6 +3,8 @@ package Vista;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 public class EntornoVendedor extends javax.swing.JFrame {
@@ -184,6 +186,11 @@ super.paintComponent(grafico);
 
         jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. efectivo.png"))); // NOI18N
         jMenuItem6.setText("Consultar Caja");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu5.add(jMenuItem6);
 
         jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. facturas.png"))); // NOI18N
@@ -197,6 +204,11 @@ super.paintComponent(grafico);
 
         jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. cerrar sesion.png"))); // NOI18N
         jMenuItem8.setText("Consultar Cientes");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu5.add(jMenuItem8);
 
         jMenuBar1.add(jMenu5);
@@ -274,6 +286,34 @@ super.paintComponent(grafico);
         PanelPrincipal.revalidate();
         PanelPrincipal.repaint();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+    try {
+        Clientes clientes = new Clientes();
+        clientes.setSize(1195,578);
+        clientes.setLocation(2,2);  
+        PanelPrincipal.removeAll();
+        PanelPrincipal.add(clientes,BorderLayout.CENTER);
+        PanelPrincipal.revalidate();
+        PanelPrincipal.repaint();
+    } catch (Exception ex) {
+        Logger.getLogger(EntornoVendedor.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+    try {
+        Caja caja = new Caja();
+        caja.setSize(1195,578);
+        caja.setLocation(2,2);  
+        PanelPrincipal.removeAll();
+        PanelPrincipal.add(caja,BorderLayout.CENTER);
+        PanelPrincipal.revalidate();
+        PanelPrincipal.repaint();
+    } catch (Exception ex) {
+        Logger.getLogger(EntornoVendedor.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments
