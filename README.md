@@ -17,7 +17,7 @@ The process to follow for the execution of the application is:
 - Registration (Category, articles, employees, branches, clients)
 - consults: (sales, customers, items x category or all)
 - generates a sale: when looking for an item and add it to the invoice and follow the procedure.
-                  - when generating the sale, the article's stock is reduced.
-                  - In addition, the items sold in another table are registered.
+   - (when generating the sale), the article's stock is reduced.
+   - (In addition), the items sold in another table are registered.
 - exists a validation of numbers between them: verification of a correct ID or ID card.
 - The generation of reports is another of the features or functionalities implemented.
