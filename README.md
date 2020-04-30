@@ -9,9 +9,9 @@ The process to follow for the execution of the application is:
   - iReport-5.5.0
   - $ {distro.zipfilename.extensions}
   - jasperreports-components-plugin-5.5.0
-  - jasperserver-plugin-5.5.
-    -(These are the ones used in the project).
-    -(A folder with the libraries will be attached, see a tutorial on how to do it if necessary the plugin listed above)
+  - jasperserver-plugin-5.5
+    -These are the ones used in the project
+    -A folder with the libraries will be attached, see a tutorial on how to do it if necessary the plugin listed above
 
 ### The operations performed by this software are:
 - Registration (Category, articles, employees, branches, clients)
