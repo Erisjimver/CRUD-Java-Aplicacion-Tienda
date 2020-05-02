@@ -68,4 +68,18 @@ extract(year from fechanacimiento)
 
 
 
-select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('29/04/2020','DD/MM/YYYY')-1 and f.Fecha_Emision < to_date('40/04/2020','DD/MM/YYYY')+1 order by f.Fecha_Emision desc;
+select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('28/04/2020','DD/MM/YYYY') and f.Fecha_Emision < to_date('28/04/2020','DD/MM/YYYY')+1 order by f.Fecha_Emision desc;
+
+select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') and f.Fecha_Emision < to_date('"+fecha+"','DD/MM/YYYY')+1 order by f.Fecha_Emision desc
+
+select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('28/04/2020','DD/MM/YYYY') and f.Fecha_Emision < to_date('28/05/2020','DD/MM/YYYY')+1 order by f.Fecha_Emision desc
+
+select * from factura where fecha_emision > to_date('04','mm') and fecha_emision < to_date('04','mm')+1;
+select * from factura where fecha_emision > to_date('04','mm')-1 and fecha_emision < to_date('04','mm')+1;
+select * from factura where fecha_emision >= to_date('04','mm');
+
+select * from factura where fecha_emision > to_char(sysdate,'mm');
+
+
+
+select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('04','MM') order by f.Fecha_Emision desc;

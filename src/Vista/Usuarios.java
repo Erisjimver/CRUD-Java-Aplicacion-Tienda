@@ -35,12 +35,12 @@ public final class Usuarios extends javax.swing.JPanel {
         this.TablaEmpleados.setModel(modelo);
         buscarColumnas();
         mostrarIdVendedor();
-        FillComboUsuario();
-        FillComboEmpresa();
+        fillComboUsuario();
+        fillComboEmpresa();
     }
     
     
-    public void buscarColumnas(){      
+    private void buscarColumnas(){      
         try{ 
             r = crud.consultarTodosEmpleados();
             ResultSetMetaData rsd = r.getMetaData();
@@ -51,11 +51,11 @@ public final class Usuarios extends javax.swing.JPanel {
         }
         catch(SQLException e)
         {
-           LabelEstado.setText("Error: "+e); 
+           LabelEstado.setText("Error en Usuarios/buscarColumnas(): "+e); 
         }
     }
 
-    public void buscarEmpleados(){
+    private void buscarEmpleados(){
         limpiarTabla();
        try
        {
@@ -69,7 +69,7 @@ public final class Usuarios extends javax.swing.JPanel {
        }
        catch(SQLException e)
        {
-          LabelEstado.setText("Error: "+e);  
+          LabelEstado.setText("Error en usuarios/buscarEmpleados(): "+e);  
        } 
     }
      
@@ -84,11 +84,11 @@ public final class Usuarios extends javax.swing.JPanel {
             }
  
           }catch(Exception e){
-             LabelEstado.setText("Error: "+e); 
+             LabelEstado.setText("Error en Usuarios/limpiarTabla()(): "+e); 
           }
       }
     
-    public void registrar() throws Exception{
+    private void registrar(){
     
         contrasena = Password.getText();
         cedula= TextCedula.getText();
@@ -127,14 +127,14 @@ public final class Usuarios extends javax.swing.JPanel {
             buscarEmpleados();
         
         }
-        catch(SQLException | NumberFormatException | HeadlessException ex)
+        catch(Exception e)
         {
-            LabelEstado.setText("Error: "+ex); 
+            LabelEstado.setText("Error en Usuarios/registrar(): "+e); 
         }
         }
     }
 
-    public void Delete()
+    private void Delete()
     {
         try
         {
@@ -145,12 +145,12 @@ public final class Usuarios extends javax.swing.JPanel {
         }
         catch(NumberFormatException e)
         {
-            LabelEstado.setText("Error al eliminar: "+e); 
+            LabelEstado.setText("Error en Usuarios/Delete(): "+e); 
         }
         
     }
     
-    public void actualizar() throws Exception{
+    private void actualizar(){
         //limpiar();
         try{
 
@@ -173,11 +173,11 @@ public final class Usuarios extends javax.swing.JPanel {
         
         catch(NumberFormatException ex)
         {
-            LabelEstado.setText("Error: "+ex);   
+            LabelEstado.setText("Error en Usuarios/actualizar(): "+ex);   
         }
     } 
     
-    public void limpiar(){
+    private void limpiar(){
 
         TextNombres.setText("");
         TextApellidos.setText("");
@@ -186,12 +186,12 @@ public final class Usuarios extends javax.swing.JPanel {
         TextCedula.setText("");
     }
     
-    public void mostrarIdVendedor(){    
+    private void mostrarIdVendedor(){    
         String idEmpleado= crud.consultarIdEmpleadoNoParametro();
         TextIdVendedor.setText(idEmpleado);
     }
     
-    public void FillComboUsuario(){
+    private void fillComboUsuario(){
 
       try {         
          //r = cn.consultar("select IdTipo_Usuario,Tipo_Usuario from Tipo_Usuario");   
@@ -211,13 +211,13 @@ public final class Usuarios extends javax.swing.JPanel {
          }
          r.close();
         } 
-      catch (Exception ex) 
+      catch (Exception e) 
       {
-        System.out.println("error"+ex);
+        System.out.println("Error en Usuarios/fillComboUsuario(): "+e);
       } 
     } 
     
-    public void FillComboEmpresa(){
+    private void fillComboEmpresa(){
 
       try {         
          //r = cn.consultar("select IdEmpresa, NombreEmpresa from Empresa");  
@@ -232,14 +232,13 @@ public final class Usuarios extends javax.swing.JPanel {
             
             fun.DiccionarioSucursal(set);
             ComboEmpresa.addItem(clave);
-            //value.addElement(clave);
- 
+            //value.addElement(clave); 
          }
          r.close();
         } 
-      catch (Exception ex) 
+      catch (Exception e) 
       {
-        System.out.println("error"+ex);
+        System.out.println("Error en Usuarios/fillComboEmpresa(): "+e);
       } 
     } 
     

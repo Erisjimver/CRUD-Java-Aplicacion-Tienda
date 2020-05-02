@@ -13,7 +13,7 @@ public class Login extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
     }
-    void acceder(String usuario, String pas)
+    private void acceder(String usuario, String pas)
     {
         try {
             tipo_usuario = crud.consultarTipoUsuario(usuario, pas);
@@ -50,7 +50,7 @@ public class Login extends javax.swing.JFrame {
     }
 
   
-    public void conexion(){
+    private void conexion(){
                 
             usu= TextUsuario.getText();
             pass= new String(Password.getPassword());

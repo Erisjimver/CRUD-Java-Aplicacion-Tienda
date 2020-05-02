@@ -4,25 +4,19 @@ import Controlador.SettersAndGetters;
 import Modelo.CRUD;
 import static Vista.EntornoAdmin.LabelEstado;
 import static Vista.EntornoVendedor.LabelEstadoV;
-import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public final class Caja extends javax.swing.JPanel {
 
     //declarando variables
     private static ResultSet r;
-    private String cedula,fecha;
     int idsucur=0,cantidadColumnas,idv;
     
     //invocacion de clases   
@@ -39,14 +33,14 @@ public final class Caja extends javax.swing.JPanel {
         initComponents();     
         this.TablaClientes.setModel(modelo);
         buscarColumnas();
-        //agregarOyente2();
-        agregarOyente2();
+        agregarOyenteDia();
+        agregarOyenteMes();
+        agregarOyenteAnio();
         agregarOyenteCalendario();
-        //agregarOyentePrueba() ;
     }
     
     
-    public void buscarColumnas(){      
+    private void buscarColumnas(){      
         try{ 
             r = crud.consultarFacturasDetalleTodo();
             ResultSetMetaData rsd = r.getMetaData();
@@ -57,33 +51,43 @@ public final class Caja extends javax.swing.JPanel {
         }
         catch(SQLException e)
         {
-           LabelEstado.setText("Error en buscarColumnas(): "+e); 
+           LabelEstado.setText("Error en Caja/buscarColumnas(): "+e); 
         }
     }
-
-    public void buscarFacturasDetalles(){
-        limpiarTabla();
-       try
-       {
-           r=crud.consultarFacturasDetalleTodo();
-            while(r.next()){ 
-                Object [] fila = new Object[cantidadColumnas];
-                for (int i=0;i<cantidadColumnas;i++)
-                fila[i] = r.getObject(i+1);             
-                modelo.addRow(fila);
-            } 
-       }
-       catch(SQLException e)
-       {
-          LabelEstado.setText("Error en buscarClientes(): "+e);  
-       } 
+ 
+    private void buscarFacturasDetallesDia(String dia){
+        try{
+            limpiarTabla();
+            r=crud.consultarFacturasDetalleDia(dia);
+            llenaTabla();
+        }catch(Exception e){
+            LabelEstadoV.setText("Error en Caja/buscarFacturasDetallesDia1(): "+e);
+        }
+    } 
+    
+    private void buscarFacturasDetallesMes(String mes){
+        try{
+            limpiarTabla();
+            r=crud.consultarFacturasDetalleMes(mes);
+            llenaTabla();
+        }catch(Exception e){
+            LabelEstadoV.setText("Error en Caja/buscarFacturasDetallesMes1(): "+e);
+        }
     }
-
-    public void buscarFacturasDetallesDia(String fec){
-        limpiarTabla();
-       try
+    
+    private void buscarFacturasDetallesAnio(int anio){
+        try{
+            limpiarTabla();
+            r=crud.consultarFacturasDetalleAnio(anio);
+            llenaTabla();
+        }catch(Exception e){
+            LabelEstadoV.setText("Error en Caja/buscarFacturasDetallesMes1(): "+e);
+        }
+    }
+    
+    private void llenaTabla(){
+        try
        {
-        r=crud.consultarFacturasDetalleDia(fec);
             while(r.next()){
                 Object [] fila = new Object[cantidadColumnas];
                     for (int i=0;i<cantidadColumnas;i++)
@@ -93,27 +97,7 @@ public final class Caja extends javax.swing.JPanel {
        }
        catch(SQLException e)
        {
-          LabelEstadoV.setText("Error en buscarClientes(): "+e);  
-       } 
-    }
-    public void buscarFacturasDetallesDia1(String fec){
-        limpiarTabla();
-       try
-       {
-         //  cedula = TextCedula.getText();
-           r=crud.consultarFacturasFecha(fec);
-            if(!r.next())
-            
-            { 
-                System.out.println("no hay nada");
-            } 
-            else{
-                System.out.println("se fue alm");
-            }
-       }
-       catch(SQLException e)
-       {
-          LabelEstado.setText("Error en buscarClientes(): "+e);  
+          LabelEstadoV.setText("Error en Caja/llenaTabla(): "+e);  
        } 
     }
     
@@ -124,32 +108,50 @@ public final class Caja extends javax.swing.JPanel {
                 modelo.removeRow(i );
             } 
           }catch(Exception e){
-             LabelEstado.setText("Error en limpiarTabla(): "+e); 
+             LabelEstado.setText("Error en Caja/limpiarTabla(): "+e); 
           }
-      }
-    
+      }   
    
-    private void agregarOyente2(){
+    private void agregarOyenteDia(){
         DateChooserFactura.getDateEditor().addPropertyChangeListener((java.beans.PropertyChangeEvent evt) -> {
             if (evt.getPropertyName().compareTo("day") == 0) {
-                System.out.println("su estado no cambia");
+                    //que no haga nada caso contrario si genera una consulta sin generar datos saldra error
+                    //asi se envita arruinar el programa
             }
             else{
                 if(DateChooserFactura.getDate()==null){
-                    System.out.println("si es nulo");
+
                 }else{
                     java.util.Date fecha=DateChooserFactura.getDate();
                     SimpleDateFormat formatoDeFecha = new SimpleDateFormat("dd/MM/yyyy");
                     String fec=formatoDeFecha.format(fecha);
-                    System.out.println("no es nulo");
-                    System.out.println(fec);
                     LabelEstadoV.setText(fec);
                     buscarFacturasDetallesDia(fec);
-                    System.out.println("Consultando");
                 }
             }
         });
-    }    
+    } 
+    
+    private void agregarOyenteMes(){
+        MonthChooser.addPropertyChangeListener((java.beans.PropertyChangeEvent evt) -> {
+            if (evt.getPropertyName().compareTo("month") == 0) {
+                int mes = (MonthChooser.getMonth());
+                buscarFacturasDetallesMes(concatena(mes));
+            }            
+        });
+    }   
+    
+    private void agregarOyenteAnio(){
+        YearChooser.addPropertyChangeListener((java.beans.PropertyChangeEvent evt) -> {
+            if (evt.getPropertyName().compareTo("year") == 0) {
+                int year = (YearChooser.getYear());
+                System.out.println(year);
+               // buscarFacturasDetallesMes1(concatena(mes));
+               buscarFacturasDetallesAnio(year);
+            }            
+        });
+    }
+    
     private void agregarOyenteCalendario() {
 
         Calendario.getDayChooser().addPropertyChangeListener((java.beans.PropertyChangeEvent evt) -> {
@@ -160,8 +162,24 @@ public final class Caja extends javax.swing.JPanel {
             }
         });
     }
-  
-    public void mousePressed(MouseEvent ev) 
+    
+    //convierte el mes en una cifra de dos digitos
+    private String concatena(int m){
+        int me = m+1;
+        System.out.println("M + 1: "+me);
+        String m2= String.valueOf(me);
+        String mes = "";
+        
+            if(m2.length()==1){
+                mes = "0"+me;
+            }
+            else{
+                mes=m2;
+            }
+        return mes;
+    }
+    
+    private void mousePressed(MouseEvent ev) 
     {
         System.out.println("holas");
     } 
@@ -188,8 +206,8 @@ public final class Caja extends javax.swing.JPanel {
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel8 = new javax.swing.JLabel();
-        jMonthChooser1 = new com.toedter.calendar.JMonthChooser();
-        jYearChooser1 = new com.toedter.calendar.JYearChooser();
+        MonthChooser = new com.toedter.calendar.JMonthChooser();
+        YearChooser = new com.toedter.calendar.JYearChooser();
         Calendario = new com.toedter.calendar.JCalendar();
         DateChooserFactura = new com.toedter.calendar.JDateChooser();
 
@@ -303,8 +321,8 @@ public final class Caja extends javax.swing.JPanel {
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel8.setText("TOTAL:");
         Buscar.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 480, -1, -1));
-        Buscar.add(jMonthChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, -1, -1));
-        Buscar.add(jYearChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        Buscar.add(MonthChooser, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, -1, -1));
+        Buscar.add(YearChooser, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
         Buscar.add(Calendario, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 170, -1, -1));
         Buscar.add(DateChooserFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 0, 300, -1));
 
@@ -342,7 +360,9 @@ public final class Caja extends javax.swing.JPanel {
     private com.toedter.calendar.JCalendar Calendario;
     private com.toedter.calendar.JDateChooser DateChooserFactura;
     private javax.swing.JLabel Empleados;
+    private com.toedter.calendar.JMonthChooser MonthChooser;
     private javax.swing.JTable TablaClientes;
+    private com.toedter.calendar.JYearChooser YearChooser;
     private javax.swing.JPanel header;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
@@ -354,12 +374,10 @@ public final class Caja extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private com.toedter.calendar.JMonthChooser jMonthChooser1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private com.toedter.calendar.JYearChooser jYearChooser1;
     // End of variables declaration//GEN-END:variables
 
 

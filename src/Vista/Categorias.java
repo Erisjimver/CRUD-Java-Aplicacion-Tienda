@@ -30,7 +30,7 @@ public final class Categorias extends javax.swing.JPanel {
     }
     
     
-    public void buscarColumnas(){      
+    private void buscarColumnas(){      
         try{ 
             r = crud.consultarLlenarComboCategoria();
             ResultSetMetaData rsd = r.getMetaData();
@@ -45,7 +45,7 @@ public final class Categorias extends javax.swing.JPanel {
         }
     }
 
-    public void buscar(){
+    private void buscarCategoria(){
         limpiarTabla();
        try
        {
@@ -65,7 +65,7 @@ public final class Categorias extends javax.swing.JPanel {
        } 
     }
       
-    public void limpiarTabla(){
+    private void limpiarTabla(){
           
           try{
           
@@ -80,7 +80,7 @@ public final class Categorias extends javax.swing.JPanel {
           }
       }
     
-    public void registrar(){
+    private void registrar(){
         
         try
         {
@@ -95,7 +95,7 @@ public final class Categorias extends javax.swing.JPanel {
             
             limpiar();
             idCategoria();
-            buscar();
+            buscarCategoria();
             
             JOptionPane.showMessageDialog(null, "Categoria registrada....");
               
@@ -108,14 +108,14 @@ public final class Categorias extends javax.swing.JPanel {
     }
        
     //Eliminar categoria
-    public void eliminar()
+    private void eliminar()
     {
         try
         {
             int fila = TablaCategorias.getSelectedRow();
             idCategoriaN = Integer.parseInt(TablaCategorias.getValueAt(fila, 0).toString());
             crud.eliminaCategoria(idCategoriaN);
-            buscar();
+            buscarCategoria();
         }
         catch(NumberFormatException e)
         {
@@ -123,7 +123,7 @@ public final class Categorias extends javax.swing.JPanel {
         }
     }    
     
-    public void actualizar(){
+    private void actualizar(){
         limpiar();
         try{
             int fila = TablaCategorias.getSelectedRow();
@@ -131,7 +131,7 @@ public final class Categorias extends javax.swing.JPanel {
             pp.setDescripcion(TablaCategorias.getValueAt(fila, 1).toString());
             
             crud.actualizarCategoria(pp);
-            buscar();
+            buscarCategoria();
                 JOptionPane.showMessageDialog(null, "Categoria actualizada");        
 
         }catch(HeadlessException | NumberFormatException ex)
@@ -141,14 +141,14 @@ public final class Categorias extends javax.swing.JPanel {
         }      
     }
     
-    public void limpiar(){
+    private void limpiar(){
     
         TextID.setText("");
         TextDescripcion.setText("");
         
     }
 
-    public void idCategoria(){
+    private void idCategoria(){
      try{
         idCategoriaS = crud.consultarIdCategoria();
         TextID.setText(idCategoriaS); 
@@ -416,7 +416,7 @@ public final class Categorias extends javax.swing.JPanel {
 
     private void BtnBuscarCategoriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBuscarCategoriasActionPerformed
     
-        buscar();
+        buscarCategoria();
         
     }//GEN-LAST:event_BtnBuscarCategoriasActionPerformed
 

@@ -40,9 +40,9 @@ public final class Sucursal extends javax.swing.JPanel {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(Exception e)
+        catch(SQLException e)
         {
-           LabelEstado.setText("Error: "+e); 
+           LabelEstado.setText("Error en Sucursal/buscarColumnas(): "+e); 
         }
     }
 
@@ -59,9 +59,9 @@ public final class Sucursal extends javax.swing.JPanel {
 
             } 
        }
-       catch(Exception e)
+       catch(SQLException e)
        {
-          LabelEstado.setText("Error: "+e);  
+          LabelEstado.setText("Error en Sucursal/buscarSucursales(): "+e);  
        } 
     }
      
@@ -76,7 +76,7 @@ public final class Sucursal extends javax.swing.JPanel {
             }
  
           }catch(Exception e){
-             LabelEstado.setText("Error: "+e); 
+             LabelEstado.setText("Error en Sucursal/limpiarTabla(): "+e); 
           }
       }
     
@@ -115,7 +115,7 @@ public final class Sucursal extends javax.swing.JPanel {
         }
         catch(Exception e)
         {         
-            LabelEstado.setText("Error: "+e); 
+            LabelEstado.setText("Erroren en Sucursal/registrar(): "+e); 
         }
     }  
 
@@ -131,7 +131,7 @@ public final class Sucursal extends javax.swing.JPanel {
         }
         catch(NumberFormatException e)
         {
-            LabelEstado.setText("Error al eliminar: "+e); 
+            LabelEstado.setText("Error en Sucursal/eliminar(): "+e); 
         }  
     }
 
@@ -154,7 +154,7 @@ public final class Sucursal extends javax.swing.JPanel {
         
         catch(NumberFormatException | HeadlessException ex)
         {
-            LabelEstado.setText("Error: "+ex);   
+            LabelEstado.setText("Error en Sucursal/actualizar(): "+ex);   
         }
     } 
     
@@ -175,7 +175,7 @@ public final class Sucursal extends javax.swing.JPanel {
         
         }
         catch(Exception e){
-            LabelEstado.setText("Error: "+e);
+            LabelEstado.setText("Error en Sucursal/idSucursal():  "+e);
         }
       }
     

@@ -145,7 +145,8 @@ public final class Facturas extends javax.swing.JPanel {
             DateChooserFactura.setEnabled(false);
             DateChooserFactura.setDate(null);
             TextNumeroFactura.setText("");
-            TextNumeroFactura.setEditable(false);     
+            TextNumeroFactura.setEditable(false);
+            consultar();
             
         }
         catch(Exception e)

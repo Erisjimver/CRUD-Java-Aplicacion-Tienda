@@ -320,14 +320,14 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="com.toedter.calendar.JMonthChooser" name="jMonthChooser1">
+        <Component class="com.toedter.calendar.JMonthChooser" name="MonthChooser">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="50" y="0" width="-1" height="-1"/>
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="com.toedter.calendar.JYearChooser" name="jYearChooser1">
+        <Component class="com.toedter.calendar.JYearChooser" name="YearChooser">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="0" y="0" width="-1" height="-1"/>

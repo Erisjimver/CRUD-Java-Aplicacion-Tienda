@@ -3,6 +3,7 @@ package Vista;
 import Modelo.CRUD;
 import static Vista.EntornoAdmin.LabelEstado;
 import java.sql.*;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public final class ProductosBuscar extends javax.swing.JPanel {
@@ -25,7 +26,7 @@ public final class ProductosBuscar extends javax.swing.JPanel {
     
 
     
-   public void buscarColumnas()
+   private void buscarColumnas()
     {      
         try{
             rs =crud.consultarTodosProducto();
@@ -41,7 +42,7 @@ public final class ProductosBuscar extends javax.swing.JPanel {
         }
     }
    
-    public void buscarProductos(){
+    private void buscarProductos(){
         
            try { 
             while(rs.next()){ 
@@ -51,12 +52,13 @@ public final class ProductosBuscar extends javax.swing.JPanel {
                modelo.addRow(fila);
             }
         } 
-          catch (SQLException ex) { 
-           LabelEstado.setText("Error: "+ex); 
+          catch (SQLException e) { 
+           //LabelEstado.setText("Error: "+ex); 
+           JOptionPane.showMessageDialog(null, "Error en buscarProductos(): "+e,"Alerta",JOptionPane.WARNING_MESSAGE); 
         }    
     }
     
-    public void busquedaProductos(){
+    private void busquedaProductos(){
         try 
         {
             String nombre = TextBuscar.getText();
@@ -78,7 +80,8 @@ public final class ProductosBuscar extends javax.swing.JPanel {
                 }
             }
         } 
-        catch (Exception e) {
+        catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error en busquedaProductos()"+e,"Alerta",JOptionPane.WARNING_MESSAGE); 
         }
     }
  

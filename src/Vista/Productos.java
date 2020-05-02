@@ -35,7 +35,7 @@ public final class Productos extends javax.swing.JPanel {
     }
     
     
-    public void buscarColumnas(){      
+    private void buscarColumnas(){      
         try{ 
             r=crud.consultarTodosProducto();
             ResultSetMetaData rsd = r.getMetaData();
@@ -50,7 +50,7 @@ public final class Productos extends javax.swing.JPanel {
         }
     }
 
-    public void buscarProductos(){
+    private void buscarProductos(){
         limpiarTabla();
        try
        {
@@ -68,7 +68,7 @@ public final class Productos extends javax.swing.JPanel {
        }
     }
       
-    public void limpiarTabla(){
+    private void limpiarTabla(){
           
           try{
           
@@ -83,7 +83,7 @@ public final class Productos extends javax.swing.JPanel {
           }
       }
     
-    public void registrar(){
+    private void registrar(){
     
     String clave= (String) ComboCategoria.getSelectedItem();      
         try
@@ -99,7 +99,7 @@ public final class Productos extends javax.swing.JPanel {
             set.setStock(Integer.parseInt(TextStock.getText()));
             crud.registrarProductos(set);
             JOptionPane.showMessageDialog(null, "Registro del articulo correcto....");
-    LIMPIAR();
+    limpiarCajasTexto();
     IdProductos();
     buscarProductos();
         }
@@ -110,7 +110,7 @@ public final class Productos extends javax.swing.JPanel {
         }
     }  
    
-    public void actualizar(){
+    private void actualizar(){
         //LIMPIAR();
         //limpiarTabla();
         try{
@@ -134,7 +134,7 @@ public final class Productos extends javax.swing.JPanel {
        
     }
     //borrar productos
-    public void Delete()
+    private void Delete()
     {
         try
         {
@@ -149,7 +149,7 @@ public final class Productos extends javax.swing.JPanel {
         }   
     }  
     
-    public void IdProductos(){
+    private void IdProductos(){
         try{
            cod = crud.consultarIdProducto();
            TextCOP.setText(cod);         
@@ -160,7 +160,7 @@ public final class Productos extends javax.swing.JPanel {
         }        
     }
 
-    public void FillComboCate() throws Exception{
+    private void FillComboCate() throws Exception{
 
       try {         
          r = crud.consultarLlenarComboCategoria();
@@ -186,7 +186,7 @@ public final class Productos extends javax.swing.JPanel {
       }
   
     }
-    public void LIMPIAR(){
+    private void limpiarCajasTexto(){
     //PARA LIMPIAR LOS CAMPOS DE TEXTOS
     TextNombreP.setText("");
     TextMarca.setText("");
@@ -577,7 +577,7 @@ public final class Productos extends javax.swing.JPanel {
         }
         catch(Exception e)
         {
-           
+            System.out.println("Error en el boton BuscarCategorias");
         }              
     }//GEN-LAST:event_BtnBuscarCategoriasActionPerformed
 

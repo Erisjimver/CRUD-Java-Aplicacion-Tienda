@@ -36,7 +36,7 @@ public final class Clientes extends javax.swing.JPanel {
     }
     
     
-    public void buscarColumnas(){      
+    private void buscarColumnas(){      
         try{ 
             r = crud.consultarTodosClientes();
             ResultSetMetaData rsd = r.getMetaData();
@@ -51,7 +51,7 @@ public final class Clientes extends javax.swing.JPanel {
         }
     }
 
-    public void buscarClientes(){
+    private void buscarClientes(){
         limpiarTabla();
        try
        {
@@ -69,7 +69,7 @@ public final class Clientes extends javax.swing.JPanel {
        } 
     }
 
-    public void buscarClientesCedula(){
+    private void buscarClientesCedula(){
         limpiarTabla();
        try
        {
@@ -88,7 +88,7 @@ public final class Clientes extends javax.swing.JPanel {
        } 
     }
      
-    public void limpiarTabla(){         
+    private void limpiarTabla(){         
           try{          
             int a =modelo.getRowCount()-1;           
             for(int i=a; i>=0; i--){
@@ -99,7 +99,7 @@ public final class Clientes extends javax.swing.JPanel {
           }
       }
 
-    public void actualizar(){
+    private void actualizar(){
       
         try{
 
@@ -120,12 +120,7 @@ public final class Clientes extends javax.swing.JPanel {
         {
             LabelEstado.setText("Error en actualizar(): "+ex);   
         }
-    } 
-    
-
-            
-    
-    
+    }                
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

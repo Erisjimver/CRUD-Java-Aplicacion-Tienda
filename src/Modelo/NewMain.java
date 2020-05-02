@@ -16,7 +16,7 @@ static boolean ced;
         //System.out.println(cedula);
         Caja caja = new Caja();
         String fec="29/04/2020";
-        caja.buscarFacturasDetallesDia1(fec);
+        //caja.buscarFacturasDetallesDia(fec);
             
     }
     

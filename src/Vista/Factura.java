@@ -41,11 +41,11 @@ public final class Factura extends javax.swing.JPanel {
 
     }
     
-    public void fecha(){
+    private void fecha(){
         txtFecha.setText(funcionalidad.fechaActual());      
     }
     
-    public void DatosEmpresa(){
+    private void DatosEmpresa(){
      try{
         r = crud.consultarDatosEmpresa();
         while (r.next()) {
@@ -70,7 +70,7 @@ public final class Factura extends javax.swing.JPanel {
      }       
 }
  
-    public void codigofac(){
+    private void codigofac(){
         try{
            facturLabel=crud.consultarCodigoFactura();
            lblnumfact.setText(facturLabel);       
@@ -207,8 +207,8 @@ public final class Factura extends javax.swing.JPanel {
 
     }
     
-
-    public void eliminar(){
+    //en el boton eliminar o el evento suprimir
+    private void eliminar(){
     
         try
         {            
@@ -225,7 +225,7 @@ public final class Factura extends javax.swing.JPanel {
     }
 
     //metodo para verificar la existencia de un usuario
-    public void verificaUsuario(){
+    private void verificaUsuario(){
         try{
             cedula = TextCedula.getText().toLowerCase(); 
             String cedu = crud.consultarCompruebaCliente(cedula);

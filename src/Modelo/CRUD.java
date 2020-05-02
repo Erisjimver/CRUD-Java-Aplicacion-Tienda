@@ -457,7 +457,7 @@ public class CRUD {
     
 //consultar todas las facturas por fecha
     public ResultSet consultarFacturasFecha(String fecha){
-        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total,f.Fecha_Emision as FECHA_COMPRA from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') order by f.Fecha_Emision desc";  
+        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total,f.Fecha_Emision as FECHA_COMPRA from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') and f.Fecha_Emision < to_date('"+fecha+"','DD/MM/YYYY')+1 order by f.Fecha_Emision desc";  
         //SELECT * FROM Factura WHERE fecha_emision > to_date('28/04/2020', 'DD/MM/YYYY') ;
         try{
                 rs = consultar(sql);  
@@ -484,7 +484,6 @@ public class CRUD {
 //consultar todas las facturas y sus detalles por fecha 
     public ResultSet consultarFacturasDetalleDia(String fecha){
         String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') and f.Fecha_Emision < to_date('"+fecha+"','DD/MM/YYYY')+1 order by f.Fecha_Emision desc";  
-
         try{
             rs = consultar(sql);
         }catch(Exception e){
@@ -494,8 +493,8 @@ public class CRUD {
     } 
     
 //consultar todas las facturas y sus detalles por fecha 
-    public ResultSet consultarFacturasDetalleMes(String fecha){
-        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') order by f.Fecha_Emision desc";  
+    public ResultSet consultarFacturasDetalleMes(String mes){
+        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where extract(month from f.fecha_emision) = '"+mes+"' order by f.Fecha_Emision desc";  
         //SELECT * FROM Factura WHERE fecha_emision > to_date('28/04/2020', 'DD/MM/YYYY') ;
         try{
             rs = consultar(sql);
@@ -506,8 +505,8 @@ public class CRUD {
     }
     
 //consultar todas las facturas y sus detalles por fecha 
-    public ResultSet consultarFacturasDetalleAño(String fecha){
-        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.Fecha_Emision > to_date('"+fecha+"','DD/MM/YYYY') order by f.Fecha_Emision desc";  
+    public ResultSet consultarFacturasDetalleAnio(int year){
+        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where extract(year from f.fecha_emision) = '"+year+"' order by f.Fecha_Emision desc";  
         //SELECT * FROM Factura WHERE fecha_emision > to_date('28/04/2020', 'DD/MM/YYYY') ;
         try{
             rs = consultar(sql);
