@@ -23,7 +23,7 @@ public class CRUD {
     static Statement s;
     static ResultSet rs;
     private int bdcantidad=0,idClienteI=0, idEmpleadoI=0;
-    private String tipoUsuario,nombreEmpleado, idEmpleadoS, cedulaClienteS,idProductoS,idCategoriaS,idSucursalS,codigoFactura="0";
+    private String tipoUsuario,nombreEmpleado,idEmpleadoS,cedulaClienteS,idProductoS,idCategoriaS,idSucursalS,codigoFacturaS="0",inversionS,totalVentaS,totalVentaEstimadaS;
     private static PreparedStatement ps;
     
 //creando objeto de clases
@@ -515,7 +515,18 @@ public class CRUD {
         }
       return rs;          
     }
-
+    
+//consultar todas las facturas y sus detalles por fecha 
+    public ResultSet consultarFacturasDetalleSemana(){
+        String sql= "select f.IdFactura as CODIGO, dv.Cantidad as CANTIDAD, c.Nombre_Cliente as CLIENTE, p.Nombre_Producto as NOMBRE_PRODUCTO,dv.valor_unitario,dv.Valor_Total from Factura f inner join Detalle_Venta dv on dv.IdFactura = f.IdFactura inner join Producto p on p.IdProducto = dv.IdProducto inner join Cliente c on c.idCliente = f.idCliente where f.fecha_emision > TRUNC(sysdate, 'iw') and f.fecha_emision < (TRUNC(sysdate, 'iw') + 7 - 1/86400) order by f.Fecha_Emision desc";  
+        //SELECT * FROM Factura WHERE fecha_emision > to_date('28/04/2020', 'DD/MM/YYYY') ;
+        try{
+            rs = consultar(sql);
+        }catch(Exception e){
+            System.out.println("Error en consultarFacturasFecha(String fecha): "+ e);
+        }
+      return rs;          
+    }
 //----------------------------------------------------------------------------//
 //-------------------------- TERMINA CONSULTAS CAJA --------------------------//
 //----------------------------------------------------------------------------//
@@ -544,7 +555,7 @@ public class CRUD {
       return rs; 
     }
 
-//Consulta de los productos por nombre usando like   
+//Consulta de los productos  
     public ResultSet consultarTodosProducto(){
         String sql = "select * from producto order by idproducto";
         try{
@@ -553,8 +564,48 @@ public class CRUD {
             System.out.println("Error en consultarTodosProducto(): "+ e);
         }
       return rs;         
-    } 
+    }
     
+//Consulta de inversion en todos lso productos registrados    
+     public String consultarInversion(){
+        String sql = "select sum(costo * stock) as costo from producto";
+        try{
+            rs = consultar(sql);
+            while(rs.next()){
+                inversionS = rs.getString(1);
+            }
+        }catch(SQLException e){
+            System.out.println("Error en consultarInversion(): "+ e);
+        }
+      return inversionS;         
+    } 
+ //Consulta de inversion en todos lso productos registrados    
+     public String consultarTotalVentasEstimada(){
+        String sql = "select sum(precio_venta * stock) as total_venta from producto";
+        try{
+            rs = consultar(sql);
+            while(rs.next()){
+                totalVentaEstimadaS = rs.getString(1);
+            }
+        }catch(SQLException e){
+            System.out.println("Error en consultarTotalVentasEstimada(): "+ e);
+        }
+      return totalVentaEstimadaS;         
+    }     
+//Consulta el total de dinero en ventas realizadas
+     public String consultarTotalVentasReales(){
+        String sql = "select sum(dv.valor_total) from factura f inner join detalle_venta dv on f.idfactura = dv.idfactura";
+        try{
+            rs = consultar(sql);
+            while(rs.next()){
+                totalVentaS = rs.getString(1);
+            }
+        }catch(SQLException e){
+            System.out.println("Error en consultarTotalVentasReales(): "+ e);
+        }
+      return totalVentaS;         
+    } 
+     
 //Consultar id_emopleado y Tipo Empleado de Empleado para el jcombobox de TipoEmpleado    
     public ResultSet consultarLlenarComboTipoEmpleado(){
         String sql="select IdTipo_Usuario,Tipo_Usuario from Tipo_Usuario";             
@@ -775,13 +826,13 @@ public class CRUD {
         {
         rs = consultar("select max(IdFactura)+1 from Factura");
             while(rs.next()){
-            codigoFactura=rs.getString(1);
+            codigoFacturaS=rs.getString(1);
             }
         }
         catch(SQLException e){
             System.out.println("Error en obteneriIDEmpleado(String usuario): "+ e);           
         }
-        return codigoFactura;
+        return codigoFacturaS;
     }     
      
 //consulta el nombre de usuario

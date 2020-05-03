@@ -36,7 +36,7 @@ public final class ProductosBuscar extends javax.swing.JPanel {
             modelo.addColumn(rsd.getColumnLabel(i));
             }           
         }
-        catch(Exception e)
+        catch(SQLException e)
         {
            LabelEstado.setText("Error: "+e); 
         }

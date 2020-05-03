@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 public class Funcionalidades {
     
- public String m,m2,fech;   
-   
+ public String m,m2,fech;  
+ private int annio, mes;
+    
+    Calendar c1 = Calendar.getInstance();   
     Calendar calendario = new GregorianCalendar();
     Map<String,Integer> categorias = new HashMap<>();
     Map<String,Integer> sucursales = new HashMap<>();
@@ -24,7 +26,18 @@ public class Funcionalidades {
     m=formatoFecha.format(fecha);
     fech=String.format(m);
     return fech;   
-    } 
+    }
+    
+    public int obtenerAño() {
+       annio = c1.get(Calendar.YEAR);
+       return annio;
+    }
+    
+    public String obtenerMes(){
+        mes = c1.get(Calendar.MONTH)+1;
+        String mesS= String.valueOf(mes);
+        return mesS;
+    }
     
 
     //Validacion si la cedula es correcta    
