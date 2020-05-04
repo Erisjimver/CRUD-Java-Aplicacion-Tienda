@@ -177,8 +177,8 @@ public final class Caja extends javax.swing.JPanel {
     
     public void limpiarTabla(){         
           try{          
-            int a =modelo.getRowCount()-1;           
-            for(int i=a; i>=0; i--){
+            int a = modelo.getRowCount()-1;           
+            for(int i = a; i>=0 ; i--){
                 modelo.removeRow(i );
                 labeltotal.setText("$ 0");
             } 

@@ -1,15 +1,11 @@
 package Modelo;
 import java.sql.*;
 import javax.swing.JOptionPane;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JasperViewer;
+
 public class Conexion {   
-Connection conexion=null;
-static Statement s;
-static ResultSet rs;
+    Connection conexion=null;
+    static Statement s;
+    static ResultSet rs;
 
     public Connection conexion(){
 
@@ -30,31 +26,5 @@ static ResultSet rs;
     public void cerrarconexion() throws SQLException { 
         System.out.println("cerrando conexion");
                 conexion.close();       
-    }
-
-
-    public ResultSet consultar(String sql) { 
-            try { 
-                s = conexion.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-                rs = s.executeQuery(sql); 
-
-            } catch (SQLException e) { 
-                return null; 
-            } 
-            return rs; 
-    }
-
-    public void resportesPDF(String ruta, String archi) {
-        try {
-            String rutaInforme = ruta;
-            JasperPrint informe = JasperFillManager.fillReport(rutaInforme, null, conexion);
-            JasperExportManager.exportReportToPdfFile(informe, archi);
-
-            JasperViewer ventanavisor = new JasperViewer(informe, false);
-            ventanavisor.setTitle("Facturas");
-            ventanavisor.setVisible(true);
-        } catch (JRException e) {
-            JOptionPane.showMessageDialog(null, "ERROR AL EXPORTAR DOCUMENTO");
-        }
     }
 }

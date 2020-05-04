@@ -7,11 +7,14 @@ import java.awt.Graphics;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
     public class EntornoAdmin extends javax.swing.JFrame {
 
     CRUD crud=new CRUD();
-    
+    JFileChooser file=new JFileChooser("C:\\Users\\Home\\Documents\\NetBeansProjects\\Java-Aplicacion-registro-consulta-venta-master\\src\\Vista\\Reportes");
+    String archivo=null;
 
     public class IEntornoAdmin extends javax.swing.JPanel {
  
@@ -38,7 +41,23 @@ import javax.swing.ImageIcon;
         PanelPrincipal.add(Imagen,BorderLayout.CENTER);
         PanelPrincipal.revalidate();
         PanelPrincipal.repaint();
-        setIconImage(new ImageIcon(getClass().getResource("/Vista/Imagenes/Icono.png")).getImage());
+        this.setIconImage(new ImageIcon(getClass().getResource("/Vista/Imagenes/Icono.png")).getImage());
+    }
+    
+    private void abrirReporte(){
+        
+        file.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        file.setDialogTitle("Explorador de archivos...");
+        int buscar=file.showOpenDialog(this);
+            if(buscar!=JFileChooser.CANCEL_OPTION){
+                try{
+                    archivo = file.getSelectedFile().toString();
+                    crud.Reportes(archivo);
+                    LabelEstado.setText(archivo);
+                }catch(Exception e){
+                    JOptionPane.showMessageDialog(rootPane, e);
+                }
+            }
     }
 
     @SuppressWarnings("unchecked")
@@ -65,10 +84,9 @@ import javax.swing.ImageIcon;
         Efectivo = new javax.swing.JMenuItem();
         Facturas = new javax.swing.JMenuItem();
         MenuReportes = new javax.swing.JMenu();
-        EmpleadosItem = new javax.swing.JMenuItem();
-        SucursalesItem = new javax.swing.JMenuItem();
         ClientesItem = new javax.swing.JMenuItem();
         FacturaItem = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         MenuAdministrador = new javax.swing.JMenu();
         ManuUsuario = new javax.swing.JMenuItem();
         MenuSucursal = new javax.swing.JMenuItem();
@@ -221,7 +239,7 @@ import javax.swing.ImageIcon;
         });
         MenuCaja.add(Efectivo);
 
-        Facturas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. facturas.png"))); // NOI18N
+        Facturas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. analitica.png"))); // NOI18N
         Facturas.setText("Facturas");
         Facturas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -235,29 +253,16 @@ import javax.swing.ImageIcon;
         MenuReportes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#Reportes.png"))); // NOI18N
         MenuReportes.setText("Reportes");
 
-        EmpleadosItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. archivo (1).png"))); // NOI18N
-        EmpleadosItem.setText("Reporte de empleados");
-        EmpleadosItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EmpleadosItemActionPerformed(evt);
-            }
-        });
-        MenuReportes.add(EmpleadosItem);
-
-        SucursalesItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. archivo (2).png"))); // NOI18N
-        SucursalesItem.setText("Reporte de sucursales");
-        SucursalesItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SucursalesItemActionPerformed(evt);
-            }
-        });
-        MenuReportes.add(SucursalesItem);
-
-        ClientesItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. archivo (2).png"))); // NOI18N
+        ClientesItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. lista.png"))); // NOI18N
         ClientesItem.setText("Reportes de clientes");
+        ClientesItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ClientesItemActionPerformed(evt);
+            }
+        });
         MenuReportes.add(ClientesItem);
 
-        FacturaItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. archivo (2).png"))); // NOI18N
+        FacturaItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. tarea-completada.png"))); // NOI18N
         FacturaItem.setText("Reporte Facturas");
         FacturaItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -265,6 +270,15 @@ import javax.swing.ImageIcon;
             }
         });
         MenuReportes.add(FacturaItem);
+
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/1. lupa.png"))); // NOI18N
+        jMenuItem1.setText("Buscar Reportes");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        MenuReportes.add(jMenuItem1);
 
         Menu.add(MenuReportes);
 
@@ -306,14 +320,18 @@ import javax.swing.ImageIcon;
     }//GEN-LAST:event_CerrarCecionActionPerformed
 
     private void EfectivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EfectivoActionPerformed
-        // TODO add your handling code here:
-        Facturas in = new Facturas();
-        in.setSize(1195,575);
-        in.setLocation(2,2);
-        PanelPrincipal.removeAll();
-        PanelPrincipal.add(in,BorderLayout.CENTER);
-        PanelPrincipal.revalidate();
-        PanelPrincipal.repaint();        
+        try {
+            // TODO add your handling code here:
+            Caja caja = new Caja();
+            caja.setSize(1195,575);
+            caja.setLocation(2,2);
+            PanelPrincipal.removeAll();
+            PanelPrincipal.add(caja,BorderLayout.CENTER);
+            PanelPrincipal.revalidate();        
+            PanelPrincipal.repaint();
+        } catch (Exception ex) {
+            Logger.getLogger(EntornoAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_EfectivoActionPerformed
 
     private void ManuUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ManuUsuarioActionPerformed
@@ -380,16 +398,6 @@ import javax.swing.ImageIcon;
 
     }//GEN-LAST:event_PrincipalActionPerformed
 
-    private void EmpleadosItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmpleadosItemActionPerformed
-      //  crud.Reportes("C:\\Users\\Isra\\Documents\\NetBeansProjects\\ZonaMovil\\src\\Reportes\\Vendedores.jrxml");
-        crud.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Vendedores.jrxml");
-        
-    }//GEN-LAST:event_EmpleadosItemActionPerformed
-
-    private void SucursalesItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SucursalesItemActionPerformed
-        crud.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Sucursal.jrxml");
-    }//GEN-LAST:event_SucursalesItemActionPerformed
-
     private void FacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FacturasActionPerformed
         // TODO add your handling code here:
         Facturas in = new Facturas();
@@ -402,8 +410,18 @@ import javax.swing.ImageIcon;
     }//GEN-LAST:event_FacturasActionPerformed
 
     private void FacturaItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FacturaItemActionPerformed
-        crud.Reportes("C:\\Users\\Ichigo\\Documents\\NetBeansProjects\\Proyectos\\ZonaMovil\\src\\Reportes\\Facturas.jrxml");
+        crud.Reportes("C:\\Users\\Home\\Documents\\NetBeansProjects\\Java-Aplicacion-registro-consulta-venta-master\\src\\Vista\\Reportes\\Facturas.jrxml");
     }//GEN-LAST:event_FacturaItemActionPerformed
+
+    private void ClientesItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClientesItemActionPerformed
+        crud.Reportes("C:\\Users\\Home\\Documents\\NetBeansProjects\\Java-Aplicacion-registro-consulta-venta-master\\src\\Vista\\Reportes\\Clientes.jrxml");
+    }//GEN-LAST:event_ClientesItemActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        
+        abrirReporte();
+
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
 
     public static void main(String args[]) {
@@ -419,24 +437,18 @@ import javax.swing.ImageIcon;
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EntornoAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EntornoAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EntornoAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(EntornoAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
+        
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new EntornoAdmin().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new EntornoAdmin().setVisible(true);
         });
     }
 
@@ -444,7 +456,6 @@ import javax.swing.ImageIcon;
     private javax.swing.JMenuItem CerrarCecion;
     private javax.swing.JMenuItem ClientesItem;
     private javax.swing.JMenuItem Efectivo;
-    private javax.swing.JMenuItem EmpleadosItem;
     private javax.swing.JMenuItem FacturaItem;
     private javax.swing.JMenuItem Facturas;
     public static javax.swing.JLabel LabelEstado;
@@ -461,9 +472,9 @@ import javax.swing.ImageIcon;
     private javax.swing.JMenuItem MenuSucursal;
     public static javax.swing.JPanel PanelPrincipal;
     private javax.swing.JMenuItem Principal;
-    private javax.swing.JMenuItem SucursalesItem;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLayeredPane jLayeredPane1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSplitPane jSplitPane1;

@@ -12,6 +12,7 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -879,5 +880,17 @@ public class CRUD {
         }
     }    
 
-  
+    public void resportesPDF(String ruta, String archi) {
+        try {
+            String rutaInforme = ruta;
+            JasperPrint informe = JasperFillManager.fillReport(rutaInforme, null, c);
+            JasperExportManager.exportReportToPdfFile(informe, archi);
+
+            JasperViewer ventanavisor = new JasperViewer(informe, false);
+            ventanavisor.setTitle("Facturas");
+            ventanavisor.setVisible(true);
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(null, "ERROR AL EXPORTAR DOCUMENTO");
+        }
+    }  
 }//fin de la clase
