@@ -582,8 +582,10 @@ public final class Productos extends javax.swing.JPanel {
     }//GEN-LAST:event_BtnBuscarCategoriasActionPerformed
 
     private void BtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEliminarActionPerformed
+           int confirmado = JOptionPane.showConfirmDialog(null,"¿Estas seguro?");
 
-        Delete();
+            if (JOptionPane.OK_OPTION == confirmado)
+                Delete();      
         
     }//GEN-LAST:event_BtnEliminarActionPerformed
 

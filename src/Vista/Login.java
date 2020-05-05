@@ -2,6 +2,7 @@ package Vista;
 import Modelo.CRUD;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
+import javax.swing.ImageIcon;
 
 public class Login extends javax.swing.JFrame {
 
@@ -11,8 +12,14 @@ public class Login extends javax.swing.JFrame {
     
     public Login() {
         initComponents();
-        this.setLocationRelativeTo(null);
+        centro();
     }
+    //iniciar el jframe en el centro y con un icono
+    private void centro(){
+        this.setLocationRelativeTo(null);
+        this.setIconImage(new ImageIcon(getClass().getResource("/Vista/Imagenes/Icono.png")).getImage());
+    }
+    
     private void acceder(String usuario, String pas)
     {
         try {

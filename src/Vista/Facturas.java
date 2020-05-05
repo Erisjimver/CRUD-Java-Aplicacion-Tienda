@@ -5,10 +5,18 @@ import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 public final class Facturas extends javax.swing.JPanel {
 
@@ -162,6 +170,21 @@ public final class Facturas extends javax.swing.JPanel {
         }
             
     }
+    private void generarFacturaPDF(){
+          
+        int fila = TablaFactura.getSelectedRow();
+
+            String cantidad = TablaFactura.getValueAt(fila, 1).toString();
+            String detalle = TablaFactura.getValueAt(fila, 3).toString();
+            String valor_unitario = TablaFactura.getValueAt(fila, 4).toString();
+            String valor_total = TablaFactura.getValueAt(fila, 5).toString();
+        
+        crud.ReportesParametros1(cantidad, detalle, valor_unitario, valor_total); 
+            
+                JOptionPane.showMessageDialog(null, "Factura  Generada con Exito");
+        
+    }
+
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -181,6 +204,7 @@ public final class Facturas extends javax.swing.JPanel {
         RadioButtonTodo = new javax.swing.JRadioButton();
         BtnLimpiar = new javax.swing.JButton();
         DateChooserFactura = new com.toedter.calendar.JDateChooser();
+        generarFormulario = new javax.swing.JButton();
 
         jToolBar1.setRollover(true);
 
@@ -287,6 +311,20 @@ public final class Facturas extends javax.swing.JPanel {
 
         DateChooserFactura.setEnabled(false);
 
+        generarFormulario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/#genera.png"))); // NOI18N
+        generarFormulario.setBorderPainted(false);
+        generarFormulario.setContentAreaFilled(false);
+        generarFormulario.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        generarFormulario.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        generarFormulario.setIconTextGap(-4);
+        generarFormulario.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        generarFormulario.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        generarFormulario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generarFormularioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -308,7 +346,9 @@ public final class Facturas extends javax.swing.JPanel {
                 .addComponent(BtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(BtnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(498, 498, 498))
+                .addGap(28, 28, 28)
+                .addComponent(generarFormulario, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(398, 398, 398))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -326,8 +366,9 @@ public final class Facturas extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(RadioButtonTodo))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(BtnLimpiar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
-                        .addComponent(BtnBuscar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(BtnLimpiar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(BtnBuscar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(generarFormulario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(23, 23, 23)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
         );
@@ -349,15 +390,9 @@ public final class Facturas extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBuscarActionPerformed
-    //        if(RadioButtonNF.isSelected()==false&&RadioButtonFecha.isSelected()==false&&RadioButtonTodo.isSelected()==false)
-   //         {
-               //LabelEstado.setText("No ha selecionado ninguna opcion");//mensaje de alerta
-     //          JOptionPane.showMessageDialog(null, "No ha seleccionado ninguna opcion","Alerta",JOptionPane.WARNING_MESSAGE); 
-      //      }else{
+
                 limpiarTabla();
-                verificaSeleccion();
-     //       }       
-        
+                verificaSeleccion();          
         
     }//GEN-LAST:event_BtnBuscarActionPerformed
 
@@ -413,6 +448,17 @@ public final class Facturas extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_TextNumeroFacturaKeyReleased
 
+    private void generarFormularioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generarFormularioActionPerformed
+        // TODO add your handling code here:
+           
+           int confirmado = JOptionPane.showConfirmDialog(null,"¿Estas seguro?");
+
+            if (JOptionPane.OK_OPTION == confirmado)
+                generarFacturaPDF(); 
+            else
+                System.out.println("vale... no borro nada...");
+    }//GEN-LAST:event_generarFormularioActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnBuscar;
     private javax.swing.JButton BtnLimpiar;
@@ -423,6 +469,7 @@ public final class Facturas extends javax.swing.JPanel {
     private javax.swing.JRadioButton RadioButtonTodo;
     private javax.swing.JTable TablaFactura;
     private javax.swing.JTextField TextNumeroFactura;
+    private javax.swing.JButton generarFormulario;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

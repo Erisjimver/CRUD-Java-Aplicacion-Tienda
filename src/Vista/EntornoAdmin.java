@@ -34,13 +34,17 @@ import javax.swing.JOptionPane;
     
     public EntornoAdmin() {
         initComponents();
-        this.setLocationRelativeTo(null);
+        centro();
         IEntornoAdmin Imagen = new IEntornoAdmin();
         Imagen.setLocation(2,2);
         PanelPrincipal.removeAll();
         PanelPrincipal.add(Imagen,BorderLayout.CENTER);
         PanelPrincipal.revalidate();
-        PanelPrincipal.repaint();
+        PanelPrincipal.repaint();       
+    }
+    
+    private void centro(){
+        this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(getClass().getResource("/Vista/Imagenes/Icono.png")).getImage());
     }
     

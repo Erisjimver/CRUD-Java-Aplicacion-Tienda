@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -878,8 +880,47 @@ public class CRUD {
        }catch(JRException e){
           System.out.println("error"+e);   
         }
-    }    
-
+    } 
+    
+    //se crea el reporte enviando parametros
+    public void ReportesParametros(String Cadena){
+    try{
+        
+        Map<String, String> parametros = new HashMap<>();
+        parametros.put("cantidad", "1");
+        parametros.put("detalle", "Auticulares");
+        parametros.put("valor_unitario", "5");
+        parametros.put("valor_total", "5");
+        
+        JasperReport reporte = JasperCompileManager.compileReport(Cadena); 
+        JasperPrint print = JasperFillManager.fillReport(reporte,parametros,this.c);
+        JasperViewer.viewReport(print,false);   
+            
+       }catch(JRException e){
+          System.out.println("error"+e);   
+        }
+    }
+    //se crea el reporte enviando parametros
+    public void ReportesParametros1(String cantidad, String detalle, String valor_unitario, String valor_total){
+    String rutaInforme = "C:\\Users\\Home\\Documents\\NetBeansProjects\\Java-Aplicacion-registro-consulta-venta-master\\src\\Vista\\Reportes\\facturaParamatros.jrxml";    
+ 
+    try{
+        
+        Map<String, String> parametros = new HashMap<>();
+        parametros.put("cantidad", cantidad);
+        parametros.put("detalle", detalle);
+        parametros.put("valor_unitario", valor_unitario);
+        parametros.put("valor_total", valor_total);
+        
+        JasperReport reporte = JasperCompileManager.compileReport(rutaInforme); 
+        JasperPrint print = JasperFillManager.fillReport(reporte,parametros,this.c);
+        JasperViewer.viewReport(print,false);   
+            
+       }catch(JRException e){
+          System.out.println("error"+e);   
+        }
+    }
+    
     public void resportesPDF(String ruta, String archi) {
         try {
             String rutaInforme = ruta;
@@ -892,5 +933,7 @@ public class CRUD {
         } catch (JRException e) {
             JOptionPane.showMessageDialog(null, "ERROR AL EXPORTAR DOCUMENTO");
         }
-    }  
+    } 
+    
+
 }//fin de la clase

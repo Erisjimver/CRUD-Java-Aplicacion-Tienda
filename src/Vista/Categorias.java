@@ -421,9 +421,10 @@ public final class Categorias extends javax.swing.JPanel {
     }//GEN-LAST:event_BtnBuscarCategoriasActionPerformed
 
     private void BtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEliminarActionPerformed
+           int confirmado = JOptionPane.showConfirmDialog(null,"¿Estas seguro?");
 
-        eliminar();
-        
+            if (JOptionPane.OK_OPTION == confirmado)
+                eliminar(); 
     }//GEN-LAST:event_BtnEliminarActionPerformed
 
     private void TablaCategoriasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TablaCategoriasKeyReleased

@@ -139,8 +139,8 @@ public final class Sucursal extends javax.swing.JPanel {
     public void actualizar(){
         
         try{
-
-        int fila = TablaSucursal.getSelectedRow();
+                
+            int fila = TablaSucursal.getSelectedRow();
 
             set.setIdEmpresa(Integer.parseInt(TablaSucursal.getValueAt(fila, 0).toString()));
             set.setRuc(TablaSucursal.getValueAt(fila, 1).toString());
