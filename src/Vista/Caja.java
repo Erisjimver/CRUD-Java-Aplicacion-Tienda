@@ -24,7 +24,8 @@ public final class Caja extends javax.swing.JPanel {
 
     //declarando variables
     private static ResultSet r;
-    int idsucur=0,cantidadColumnas,idv,total=0,totalVentaEstimada,totalInversion,totalVendido,capital;
+    int idsucur=0,cantidadColumnas,idv,total=0;
+    private double totalVentaEstimada,totalInversion,totalVendido,capital;
     
     //invocacion de clases   
     Funcionalidades fun = new Funcionalidades();
@@ -246,11 +247,12 @@ public final class Caja extends javax.swing.JPanel {
         return mes;
     }
     
+    //total vendido en la tabla
     private void total(){
         total=0;
         int filas = TablaFacturasDetalles.getRowCount();
         for (int i = 0; i < filas; i++) {
-        total += Integer.parseInt(TablaFacturasDetalles.getValueAt(i, 5).toString());
+        total += Double.parseDouble(TablaFacturasDetalles.getValueAt(i, 5).toString());
         labeltotal.setText("$ " +String.valueOf(total));  
        
         }
@@ -261,16 +263,17 @@ public final class Caja extends javax.swing.JPanel {
         if(crud.consultarInversion().equals("")){
             labelinversion.setText("$ 0.0");
         }else{
-            totalInversion=Integer.parseInt(crud.consultarInversion());
-            labelinversion.setText("$ "+totalInversion);
+            totalInversion=Double.parseDouble(crud.consultarInversion());
+            labelinversion.setText("$ "+totalInversion);            
         }     
     }
+    
     //total de las ventas realizadas por el momento
     private void consultaTotalVenta(){
         if(crud.consultarTotalVentasReales().equals("")){
             labeltotalventa.setText("$ 0.0");
         }else{
-            totalVendido=Integer.parseInt(crud.consultarTotalVentasReales());
+            totalVendido=Double.parseDouble(crud.consultarTotalVentasReales());
             labeltotalventa.setText("$ "+totalVendido);
         }     
     }
@@ -279,7 +282,7 @@ public final class Caja extends javax.swing.JPanel {
         if(crud.consultarTotalVentasEstimada().equals("")){
             labeltotalventaestimada.setText("$ 0.0");
         }else{
-            totalVentaEstimada = Integer.parseInt(crud.consultarTotalVentasEstimada());
+            totalVentaEstimada = Double.parseDouble(crud.consultarTotalVentasEstimada());
             labeltotalventaestimada.setText("$ "+totalVentaEstimada);
         }     
     } 

@@ -5,6 +5,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
 import static Vista.EntornoVendedor.lblusuario;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 public class Funcionalidades {
@@ -148,6 +154,18 @@ public class Funcionalidades {
         return resultado;
     }
     
-    
+    //Escribir en un archivo log todo los errores y cosas mas
+    public void escribirLog(String texto) {
+        File f;
+        f = new File("registro.log");
+        try {
+            FileWriter w = new FileWriter(f, true);
+            try (BufferedWriter bw = new BufferedWriter(w); PrintWriter wr = new PrintWriter(bw)) {
+                wr.println(new Date()+": "+texto);
+                wr.append("");
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());        }
+    } 
     
 }//fin de la clase

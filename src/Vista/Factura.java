@@ -185,6 +185,7 @@ public final class Factura extends javax.swing.JPanel {
             crud.registrarFactura(set);
 
             int filas = TablaDetalles.getRowCount();
+            System.out.println(filas);
                 for (int i = 0; i < filas; i++) {
 
                     set.setIdFactura(Integer.parseInt(lblnumfact.getText()));

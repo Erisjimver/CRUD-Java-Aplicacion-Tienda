@@ -1,7 +1,9 @@
 package Modelo;
 
+import Controlador.Funcionalidades;
 import Controlador.SettersAndGetters;
 import static Vista.EntornoAdmin.LabelEstado;
+import static Vista.EntornoVendedor.LabelEstadoV;
 import Vista.Login;
 import java.awt.HeadlessException;
 import java.sql.Connection;
@@ -26,13 +28,13 @@ public class CRUD {
     static Statement s;
     static ResultSet rs;
     private int bdcantidad=0,idClienteI=0, idEmpleadoI=0;
-    private String tipoUsuario,nombreEmpleado,idEmpleadoS,cedulaClienteS,idProductoS,idCategoriaS,idSucursalS,codigoFacturaS="0",inversionS,totalVentaS,totalVentaEstimadaS;
+    private String mensaje,tipoUsuario,nombreEmpleado,idEmpleadoS,cedulaClienteS,idProductoS,idCategoriaS,idSucursalS,codigoFacturaS="0",inversionS,totalVentaS,totalVentaEstimadaS;
     private static PreparedStatement ps;
     
 //creando objeto de clases
     Conexion cn=new Conexion(); 
     Connection c= cn.conexion();
-
+    Funcionalidades w = new Funcionalidades();
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////CRUD///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,13 +53,15 @@ public class CRUD {
             ps.setString(6, to.getEmailEmpresa());
 
             ps.execute();
-            
-            LabelEstado.setText("Registro exitoso de la nueva sucursal"); 
-            
+            mensaje = "Registro exitoso de la nueva sucursal..";
+            LabelEstado.setText(mensaje); 
+            w.escribirLog(mensaje);
         }
         catch(HeadlessException | SQLException e)
         {
-            LabelEstado.setText("Error de registro de la sucursal: "+e); 
+            mensaje = "Error de registro de la sucursal: "+e;
+            LabelEstado.setText(mensaje);
+            w.escribirLog(mensaje);
         }
 
     }
@@ -81,11 +85,14 @@ public class CRUD {
 
             ps.execute();
             
-            LabelEstado.setText("Registro exitoso del empleado"); 
+            mensaje = "Registro exitoso del empleado..";
+            LabelEstado.setText(mensaje); 
+            w.escribirLog(mensaje);
             
         }catch(SQLException e){
-            
-            LabelEstado.setText("Error de registro del Empleado: "+e);
+            mensaje = "Error de registro del Empleado: "+e;
+            LabelEstado.setText(mensaje);
+            w.escribirLog(mensaje);
         }
         
     }
@@ -99,13 +106,16 @@ public class CRUD {
             ps.setString(1, to.getDescripcion());  
             
             ps.execute();
-            
-            LabelEstado.setText("Registro exitoso de la categoria"); 
+            mensaje = "Registro exitoso de la categoria..";
+            LabelEstado.setText(mensaje); 
+            w.escribirLog(mensaje);
             
         }
         catch(SQLException e)
         {
-            LabelEstado.setText("Error en registrarCategorias: "+e); 
+            mensaje = "Error en registrarCategorias: "+e;
+            LabelEstado.setText(mensaje); 
+            w.escribirLog(mensaje);
         }
 
     } 
@@ -126,11 +136,15 @@ public class CRUD {
             
             ps.execute();
             
-            LabelEstado.setText("Registro del producto exitoso"); 
+            mensaje = "Registro del producto exitoso..";
+            LabelEstado.setText(mensaje); 
+            w.escribirLog(mensaje);
             
         }catch(SQLException e){
             
-            LabelEstado.setText("Error en registrarProductos: "+e);
+            mensaje = "Error en registrarProductos: "+e;
+            LabelEstado.setText(mensaje);
+            w.escribirLog(mensaje);
         }
     }
 
@@ -148,10 +162,11 @@ public class CRUD {
             ps.setString(5, to.getEmailCliente());
             
             ps.execute();  
-            
+            mensaje = "Registro de cliente exitoso..";
+            w.escribirLog(mensaje);
         }catch(SQLException e){
-            
-            LabelEstado.setText("Error en registrarCliente(): "+e);
+            mensaje = "Error en registrarCliente(): "+e;
+            w.escribirLog(mensaje);
         }
         
     }
@@ -168,9 +183,12 @@ public class CRUD {
             
             ps.execute();
             
-        }catch(SQLException e){
+            mensaje = "Registro exitoso de la factura..";
+            w.escribirLog(mensaje);
             
-            LabelEstado.setText("Error en registrarFactura: "+e);
+        }catch(SQLException e){
+            mensaje = "Error en registrarFactura: "+e;
+            w.escribirLog(mensaje);
         }
     }
     
@@ -189,8 +207,12 @@ public class CRUD {
           
             ps.execute();
             
+            mensaje = "Registro exitoso del detalle de la factura..";
+            w.escribirLog(mensaje);
+            
         }catch(SQLException e){
-            LabelEstado.setText("Error en registrarDetalleFactura: "+e);
+            mensaje = "Error en registrarDetalleFactura: "+e;
+            w.escribirLog(mensaje);
         }
     }
    
@@ -213,13 +235,17 @@ public class CRUD {
             ps.execute();
             
             if(ps.execute()==false){
-                LabelEstado.setText("Actualizacion exitosa de la sucursal");       
+                mensaje = "Actualizacion exitosa de la sucursal..";
+                LabelEstado.setText(mensaje);
+                w.escribirLog(mensaje);
             } 
             
         }
         catch(SQLException e)
         {
-            LabelEstado.setText("Error al actualizar la sucursal: "+e); 
+            mensaje = "Error al actualizar la sucursal: "+e;
+            LabelEstado.setText(mensaje); 
+            w.escribirLog(mensaje);
         }
 
     } 
@@ -243,12 +269,17 @@ public class CRUD {
             ps.execute();
             
             if(ps.execute()==false){
-                LabelEstado.setText("Actualizacion de empleado exitosa");      
+                
+                mensaje = "Actualizacion exitosa de la sucursal..";              
+                LabelEstado.setText(mensaje);     
+                w.escribirLog(mensaje);
             }    
             
         }catch(SQLException e)
         {
-            LabelEstado.setText("Error al actualizar los datos del empleado: "+e); 
+            mensaje = "Error al actualizar los datos del empleado: "+e;
+            LabelEstado.setText(mensaje); 
+            w.escribirLog(mensaje);
         }
     }
 
@@ -263,13 +294,17 @@ public class CRUD {
             ps.execute();
             
             if(ps.execute()==false){
-                LabelEstado.setText("Actualizacion exitosa de la categoria");      
+                mensaje = "Actualizacion exitosa de la categoria..";
+                LabelEstado.setText(mensaje); 
+                w.escribirLog(mensaje);
             }            
             
         }
         catch(SQLException e)
         {
-            LabelEstado.setText("Error al actualizar la categoria: "+e); 
+            mensaje = "Error al actualizar la categoria: "+e;
+            LabelEstado.setText(mensaje); 
+            w.escribirLog(mensaje);
         }
 
     } 
@@ -291,11 +326,13 @@ public class CRUD {
             ps.execute();
             
             if(ps.execute()==false){
-                LabelEstado.setText("Actualizacion del producto exitosa");     
+                LabelEstado.setText("Actualizacion del producto exitosa");
+                w.escribirLog(mensaje);
             }
 
         }catch(SQLException e){
             LabelEstado.setText("Error al actualizar el Producto: "+e);
+            w.escribirLog(mensaje);
         }
     }
 
@@ -315,12 +352,16 @@ public class CRUD {
             ps.execute();
             
             if(ps.execute()==false){
-                JOptionPane.showMessageDialog(null, "Actualizacion del cliente se realizo con exito..","MENSAJE",JOptionPane.INFORMATION_MESSAGE);
-            //LabelEstado.setText("Actualizacion del cliente se realizo con exito");     
+                mensaje = "Actualizacion del cliente se realizo con exito..";
+                JOptionPane.showMessageDialog(null, mensaje,"MENSAJE",JOptionPane.INFORMATION_MESSAGE);
+                LabelEstadoV.setText(mensaje); 
+                w.escribirLog(mensaje);
             }
             
         }catch(SQLException e){
-            LabelEstado.setText("Error al actualizar el cliente: "+e);
+            mensaje  = "Error al actualizar el cliente: "+e;
+            LabelEstadoV.setText(mensaje);
+            w.escribirLog(mensaje);
         }   
     }
 
@@ -338,14 +379,17 @@ public class CRUD {
             ps.setInt(1, id_empresa);
             ps.execute();
             
-            if(ps.execute()==false){
-                LabelEstado.setText("Sucursal eliminada con exito ");      
+            if(ps.execute()==false){  
+                mensaje = "Sucursal eliminada con exito..";
+                LabelEstado.setText(mensaje);  
+                w.escribirLog(mensaje);
             }
             
         }
         catch(SQLException e)
         {
-            LabelEstado.setText("Error al eliminar Sucursal: "+e); 
+            LabelEstado.setText("Error al eliminar Sucursal: "+e);
+            w.escribirLog(mensaje);
         }
        
     }
@@ -360,13 +404,17 @@ public class CRUD {
             ps.execute();
             
             if(ps.execute()==false){
-                LabelEstado.setText("Empleado eliminado con exito ");      
+                mensaje = "Empleado eliminado con exito..";
+                LabelEstado.setText(mensaje); 
+                w.escribirLog(mensaje);
             }
             
         }
         catch(SQLException e)
         {
-            LabelEstado.setText("Error al eliminar Empleado: "+e); 
+            mensaje = "Error al eliminar Empleado: "+e; 
+            LabelEstado.setText(mensaje); 
+            w.escribirLog(mensaje);            
         }
        
     }      
@@ -381,13 +429,17 @@ public class CRUD {
             ps.execute();
             
             if(ps.execute()==false){
-                LabelEstado.setText("Categoria eliminada con exito ");       
+                mensaje = "Categoria eliminada con exito..";
+                LabelEstado.setText(mensaje);
+                w.escribirLog(mensaje);
             }
             
         }
         catch(SQLException e)
         {
-            LabelEstado.setText("Error al eliminar Categoria: "+e); 
+            mensaje = "Error al eliminar Categoria: "+e;
+            LabelEstado.setText(mensaje);
+            w.escribirLog(mensaje);
         }
         
     } 
@@ -402,15 +454,18 @@ public class CRUD {
             ps.execute();
             
             if(ps.execute()==false){
-                LabelEstado.setText("Producto eliminado con exito ");       
+                mensaje = "Producto eliminado con exito..";
+                LabelEstado.setText(mensaje);
+                w.escribirLog(mensaje);
             }          
             
         }
         catch(SQLException e)
         {
-            LabelEstado.setText("Error al eliminar Producto: "+e); 
-        }
-        
+            mensaje = "Error al eliminar Producto: "+e;
+            LabelEstado.setText(mensaje); 
+            w.escribirLog(mensaje);
+        }        
     } 
     
     
